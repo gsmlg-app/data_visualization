@@ -1,0 +1,52 @@
+name: data_visualization
+description: Comprehensive data visualization library for Flutter.
+version: 0.1.0
+publish_to: none
+resolution: workspace
+
+environment:
+  sdk: ">=3.8.0 <4.0.0"
+  flutter: ">=3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  dv_vendor:
+  dv_point:
+  dv_scale:
+  dv_curve:
+  dv_geo_core:
+  dv_delaunay:
+  dv_voronoi:
+  dv_stats:
+  dv_hierarchy:
+  dv_group:
+  dv_shape:
+  dv_glyph:
+  dv_gradient:
+  dv_pattern:
+  dv_clip_path:
+  dv_marker:
+  dv_text:
+  dv_axis:
+  dv_grid:
+  dv_legend:
+  dv_annotation:
+  dv_geo:
+  dv_event:
+  dv_tooltip:
+  dv_brush:
+  dv_drag:
+  dv_zoom:
+  dv_bounds:
+  dv_responsive:
+  dv_xychart:
+  dv_heatmap:
+  dv_network:
+  dv_threshold:
+  dv_mock_data:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0

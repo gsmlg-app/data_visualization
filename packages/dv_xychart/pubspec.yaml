@@ -1,0 +1,26 @@
+name: dv_xychart
+description: XY chart components - line, bar, area, scatter charts.
+version: 0.1.0
+publish_to: none
+resolution: workspace
+
+environment:
+  sdk: ">=3.8.0 <4.0.0"
+  flutter: ">=3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  dv_scale:
+  dv_shape:
+  dv_axis:
+  dv_grid:
+  dv_glyph:
+  dv_tooltip:
+  dv_legend:
+  dv_group:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0

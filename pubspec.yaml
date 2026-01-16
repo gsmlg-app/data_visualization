@@ -1,0 +1,63 @@
+name: data_visualization_workspace
+publish_to: none
+
+environment:
+  sdk: ">=3.8.0 <4.0.0"
+
+workspace:
+  - packages/dv_vendor
+  - packages/dv_point
+  - packages/dv_scale
+  - packages/dv_curve
+  - packages/dv_geo_core
+  - packages/dv_delaunay
+  - packages/dv_voronoi
+  - packages/dv_stats
+  - packages/dv_hierarchy
+  - packages/dv_group
+  - packages/dv_shape
+  - packages/dv_glyph
+  - packages/dv_gradient
+  - packages/dv_pattern
+  - packages/dv_clip_path
+  - packages/dv_marker
+  - packages/dv_text
+  - packages/dv_axis
+  - packages/dv_grid
+  - packages/dv_legend
+  - packages/dv_annotation
+  - packages/dv_geo
+  - packages/dv_event
+  - packages/dv_tooltip
+  - packages/dv_brush
+  - packages/dv_drag
+  - packages/dv_zoom
+  - packages/dv_bounds
+  - packages/dv_responsive
+  - packages/dv_xychart
+  - packages/dv_heatmap
+  - packages/dv_network
+  - packages/dv_threshold
+  - packages/dv_mock_data
+  - packages/data_visualization
+  - examples/showcase_app
+
+dev_dependencies:
+  melos: ^7.0.0
+
+melos:
+  name: data_visualization
+  packages:
+    - packages/**
+    - examples/**
+
+  scripts:
+    analyze:
+      exec: dart analyze
+      description: Run dart analyze on all packages
+    test:
+      exec: flutter test
+      description: Run tests on all packages
+    format:
+      exec: dart format .
+      description: Format all packages
