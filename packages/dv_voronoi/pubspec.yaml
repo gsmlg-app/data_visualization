@@ -1,7 +1,8 @@
 name: dv_voronoi
 description: Voronoi diagrams derived from Delaunay triangulation.
+repository: https://github.com/gsmlg-dev/data_visualization/tree/main/packages/dv_voronoi
+homepage: https://github.com/gsmlg-dev/data_visualization
 version: 0.1.0
-publish_to: none
 resolution: workspace
 
 environment:

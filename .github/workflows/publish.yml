@@ -1,0 +1,110 @@
+name: Publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_type:
+        description: 'Version bump type'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+      dry_run:
+        description: 'Dry run (do not actually publish)'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  publish:
+    name: Publish to pub.dev
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pub-cache
+            .dart_tool
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: ${{ runner.os }}-pub-
+
+      - name: Install tools
+        run: dart pub global activate melos
+
+      - name: Prepare project
+        run: melos run prepare
+
+      - name: Run tests
+        run: melos run test
+
+      - name: Bump version
+        id: version
+        run: |
+          melos version --yes ${{ github.event.inputs.version_type }}
+
+          # Get the new version from CHANGELOG
+          VERSION=$(grep -m1 "^## " CHANGELOG.md | sed 's/## //' | head -1)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+          # Extract release notes for this version
+          awk '/^## /{if(p)exit; p=1; next} p' CHANGELOG.md > RELEASE_NOTES.md
+          echo "Release notes:"
+          cat RELEASE_NOTES.md
+
+      - name: Push version changes
+        run: |
+          git push origin main --follow-tags
+
+      - name: Dry run publish
+        if: ${{ github.event.inputs.dry_run == 'true' }}
+        run: melos run publish:dry-run
+
+      - name: Publish to pub.dev
+        if: ${{ github.event.inputs.dry_run != 'true' }}
+        run: |
+          mkdir -p ~/.config/dart
+          echo '${{ secrets.PUB_CREDENTIALS }}' > ~/.config/dart/pub-credentials.json
+          melos run publish
+
+      - name: Create GitHub Release
+        if: ${{ github.event.inputs.dry_run != 'true' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: Release v${{ steps.version.outputs.version }}
+          body_path: RELEASE_NOTES.md
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Summary
+        run: |
+          echo "## Published Packages" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Version: ${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Packages" >> $GITHUB_STEP_SUMMARY
+          melos list --json | jq -r '.[] | "- \(.name)@\(.version)"' >> $GITHUB_STEP_SUMMARY

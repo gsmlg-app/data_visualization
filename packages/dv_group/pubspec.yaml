@@ -1,7 +1,8 @@
 name: dv_group
 description: Grouping widget for organizing chart elements.
+repository: https://github.com/gsmlg-dev/data_visualization/tree/main/packages/dv_group
+homepage: https://github.com/gsmlg-dev/data_visualization
 version: 0.1.0
-publish_to: none
 resolution: workspace
 
 environment:

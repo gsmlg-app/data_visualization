@@ -51,6 +51,24 @@ melos:
     - packages/**
     - examples/**
 
+  versioning:
+    mode: independent
+    updateDependentsConstraints: true
+
+  command:
+    version:
+      includeCommitId: false
+      linkToCommits: true
+      workspaceChangelog: true
+      branch: main
+      message: |
+        chore(release): publish packages
+
+        {new_package_versions}
+    publish:
+      hooks:
+        pre: melos run prepare
+
   scripts:
     prepare:
       run: melos bootstrap
@@ -73,3 +91,27 @@ melos:
     format-check:
       exec: dart format --set-exit-if-changed .
       description: Check formatting of all packages
+
+    version:patch:
+      run: melos version --yes --no-git-tag-version patch
+      description: Bump patch version for all changed packages
+
+    version:minor:
+      run: melos version --yes --no-git-tag-version minor
+      description: Bump minor version for all changed packages
+
+    version:major:
+      run: melos version --yes --no-git-tag-version major
+      description: Bump major version for all changed packages
+
+    publish:
+      run: melos publish --yes --no-dry-run
+      description: Publish all packages to pub.dev
+      packageFilters:
+        noPrivate: true
+
+    publish:dry-run:
+      run: melos publish --yes
+      description: Dry run publish to check for issues
+      packageFilters:
+        noPrivate: true

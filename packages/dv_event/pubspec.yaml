@@ -1,7 +1,8 @@
 name: dv_event
 description: Event handling for chart interactions.
+repository: https://github.com/gsmlg-dev/data_visualization/tree/main/packages/dv_event
+homepage: https://github.com/gsmlg-dev/data_visualization
 version: 0.1.0
-publish_to: none
 resolution: workspace
 
 environment:
