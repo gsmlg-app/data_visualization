@@ -3,7 +3,7 @@ description: XY chart components - line, bar, area, scatter charts.
 repository: https://github.com/gsmlg-dev/data_visualization/tree/main/packages/dv_xychart
 homepage: https://github.com/gsmlg-dev/data_visualization
 publisher: gsmlg.dev
-version: 0.1.0
+version: 1.0.0
 resolution: workspace
 
 environment:

@@ -3,7 +3,7 @@ description: Shape primitives for data visualization - lines, areas, arcs, pies.
 repository: https://github.com/gsmlg-dev/data_visualization/tree/main/packages/dv_shape
 homepage: https://github.com/gsmlg-dev/data_visualization
 publisher: gsmlg.dev
-version: 0.1.0
+version: 1.0.0
 resolution: workspace
 
 environment:

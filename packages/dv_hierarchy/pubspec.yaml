@@ -3,7 +3,7 @@ description: Hierarchical data structures and layout algorithms.
 repository: https://github.com/gsmlg-dev/data_visualization/tree/main/packages/dv_hierarchy
 homepage: https://github.com/gsmlg-dev/data_visualization
 publisher: gsmlg.dev
-version: 0.1.0
+version: 1.0.0
 resolution: workspace
 
 environment:

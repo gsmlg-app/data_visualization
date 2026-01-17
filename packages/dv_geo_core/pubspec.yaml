@@ -3,7 +3,7 @@ description: Core geographic projections and GeoJSON parsing.
 repository: https://github.com/gsmlg-dev/data_visualization/tree/main/packages/dv_geo_core
 homepage: https://github.com/gsmlg-dev/data_visualization
 publisher: gsmlg.dev
-version: 0.1.0
+version: 1.0.0
 resolution: workspace
 
 environment:

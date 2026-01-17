@@ -66,23 +66,23 @@ jobs:
       - name: Run tests
         run: melos run test
 
-      - name: Bump version
+      - name: Get version
         id: version
         run: |
-          melos version --yes ${{ github.event.inputs.version_type }}
-
-          # Get the new version from CHANGELOG
-          VERSION=$(grep -m1 "^## " CHANGELOG.md | sed 's/## //' | head -1)
+          # Get version from main data_visualization package
+          VERSION=$(grep "^version:" packages/data_visualization/pubspec.yaml | sed 's/version: //')
           echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Publishing version: $VERSION"
 
-          # Extract release notes for this version
-          awk '/^## /{if(p)exit; p=1; next} p' CHANGELOG.md > RELEASE_NOTES.md
-          echo "Release notes:"
+          # Create release notes
+          echo "## Release v$VERSION" > RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          echo "Initial stable release of data_visualization packages." >> RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          echo "### Packages" >> RELEASE_NOTES.md
+          melos list --json | jq -r '.[] | select(.private != true) | "- \(.name)@\(.version)"' >> RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
           cat RELEASE_NOTES.md
-
-      - name: Push version changes
-        run: |
-          git push origin main --follow-tags
 
       - name: Dry run publish
         if: ${{ github.event.inputs.dry_run == 'true' }}
