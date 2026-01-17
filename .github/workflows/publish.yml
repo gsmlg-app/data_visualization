@@ -94,11 +94,11 @@ jobs:
 
       - name: Dry run publish
         if: ${{ github.event.inputs.dry_run == 'true' }}
-        run: melos publish --no-private
+        run: dart pub global run melos publish --no-private
 
       - name: Publish to pub.dev
         if: ${{ github.event.inputs.dry_run != 'true' }}
-        run: melos publish --no-private --no-dry-run -y
+        run: dart pub global run melos publish --no-private --no-dry-run -y
 
       - name: Create GitHub Release
         if: ${{ github.event.inputs.dry_run != 'true' }}

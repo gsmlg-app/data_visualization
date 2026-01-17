@@ -107,14 +107,10 @@ melos:
       run: melos version --yes --no-git-tag-version major
       description: Bump major version for all changed packages
 
-    publish:
-      run: melos publish -y --no-dry-run
+    pub-publish:
+      run: dart pub global run melos publish -y --no-dry-run --no-private
       description: Publish all packages to pub.dev
-      packageFilters:
-        noPrivate: true
 
-    publish:dry-run:
-      run: melos publish -y
+    pub-publish:dry-run:
+      run: dart pub global run melos publish -y --no-private
       description: Dry run publish to check for issues
-      packageFilters:
-        noPrivate: true
