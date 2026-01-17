@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:data_visualization/data_visualization.dart';
+import 'dart:convert';
 
-import 'world_data.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:data_visualization/data_visualization.dart';
 
 class GeoMapExample extends StatefulWidget {
   const GeoMapExample({super.key});
@@ -16,13 +17,31 @@ class _GeoMapExampleState extends State<GeoMapExample> {
 
   final projections = ['Mercator', 'Equirectangular', 'Orthographic'];
 
-  // Parse GeoJSON once
-  late final GeoJsonFeatureCollection _worldData;
+  GeoJsonFeatureCollection? _worldData;
+  bool _loading = true;
+  String? _error;
 
   @override
   void initState() {
     super.initState();
-    _worldData = GeoJsonFeatureCollection.fromJson(worldLandGeoJson);
+    _loadGeoJson();
+  }
+
+  Future<void> _loadGeoJson() async {
+    try {
+      final jsonString =
+          await rootBundle.loadString('assets/world.geo.json');
+      final jsonData = json.decode(jsonString) as Map<String, dynamic>;
+      setState(() {
+        _worldData = GeoJsonFeatureCollection.fromJson(jsonData);
+        _loading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _error = e.toString();
+        _loading = false;
+      });
+    }
   }
 
   @override
@@ -67,23 +86,53 @@ class _GeoMapExampleState extends State<GeoMapExample> {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    return CustomPaint(
-                      size: Size(constraints.maxWidth, constraints.maxHeight),
-                      painter: GeoMapPainter(
-                        projection: _projection,
-                        rotation: _rotation,
-                        worldData: _worldData,
-                      ),
-                    );
-                  },
-                ),
+                child: _buildMapContent(),
               ),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildMapContent() {
+    if (_loading) {
+      return const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 16),
+            Text('Loading world map...'),
+          ],
+        ),
+      );
+    }
+
+    if (_error != null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.error_outline, size: 48, color: Colors.red.shade400),
+            const SizedBox(height: 16),
+            Text('Error loading map: $_error'),
+          ],
+        ),
+      );
+    }
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return CustomPaint(
+          size: Size(constraints.maxWidth, constraints.maxHeight),
+          painter: GeoMapPainter(
+            projection: _projection,
+            rotation: _rotation,
+            worldData: _worldData!,
+          ),
+        );
+      },
     );
   }
 }
@@ -107,7 +156,8 @@ class GeoMapPainter extends CustomPainter {
     Projection proj;
     switch (projection) {
       case 'Equirectangular':
-        proj = geoEquirectangular(center: (0, 0), scale: scale, translate: center);
+        proj =
+            geoEquirectangular(center: (0, 0), scale: scale, translate: center);
         break;
       case 'Orthographic':
         proj = geoOrthographic(
@@ -140,7 +190,7 @@ class GeoMapPainter extends CustomPainter {
 
     final landBorderPaint = Paint()
       ..color = Colors.green.shade700
-      ..strokeWidth = 1
+      ..strokeWidth = 0.5
       ..style = PaintingStyle.stroke;
 
     for (final pathPoints in landPaths) {
@@ -227,7 +277,11 @@ class GeoMapPainter extends CustomPainter {
 
     for (final city in cities) {
       final p = proj.project(city.$2, city.$3);
-      if (!p.hasNaN && p.x > 0 && p.x < size.width && p.y > 0 && p.y < size.height) {
+      if (!p.hasNaN &&
+          p.x > 0 &&
+          p.x < size.width &&
+          p.y > 0 &&
+          p.y < size.height) {
         // City marker shadow
         canvas.drawCircle(
           Offset(p.x, p.y),
