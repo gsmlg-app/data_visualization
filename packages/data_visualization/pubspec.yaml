@@ -2,6 +2,7 @@ name: data_visualization
 description: Comprehensive data visualization library for Flutter.
 repository: https://github.com/gsmlg-dev/data_visualization/tree/main/packages/data_visualization
 homepage: https://github.com/gsmlg-dev/data_visualization
+publisher: gsmlg.dev
 version: 0.1.0
 resolution: workspace
 

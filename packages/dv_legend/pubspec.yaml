@@ -2,6 +2,7 @@ name: dv_legend
 description: Legend components for charts.
 repository: https://github.com/gsmlg-dev/data_visualization/tree/main/packages/dv_legend
 homepage: https://github.com/gsmlg-dev/data_visualization
+publisher: gsmlg.dev
 version: 0.1.0
 resolution: workspace
 
