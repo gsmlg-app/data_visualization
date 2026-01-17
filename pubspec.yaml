@@ -108,13 +108,13 @@ melos:
       description: Bump major version for all changed packages
 
     publish:
-      run: melos publish --yes --no-dry-run
+      run: melos publish -y --no-dry-run
       description: Publish all packages to pub.dev
       packageFilters:
         noPrivate: true
 
     publish:dry-run:
-      run: melos publish --yes
+      run: melos publish -y
       description: Dry run publish to check for issues
       packageFilters:
         noPrivate: true
