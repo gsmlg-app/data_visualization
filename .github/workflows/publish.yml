@@ -36,6 +36,13 @@ jobs:
         with:
           channel: stable
 
+      - uses: dart-lang/setup-dart@v1
+
+      - name: Setup credentials
+        run: |
+          mkdir -p ~/.config/dart
+          echo '${{ secrets.PUB_CREDENTIALS }}' > ~/.config/dart/pub-credentials.json
+
       - name: Configure Git
         run: |
           git config user.name "github-actions[bot]"
@@ -83,10 +90,7 @@ jobs:
 
       - name: Publish to pub.dev
         if: ${{ github.event.inputs.dry_run != 'true' }}
-        run: |
-          mkdir -p ~/.config/dart
-          echo '${{ secrets.PUB_CREDENTIALS }}' > ~/.config/dart/pub-credentials.json
-          melos run publish
+        run: melos run publish
 
       - name: Create GitHub Release
         if: ${{ github.event.inputs.dry_run != 'true' }}
