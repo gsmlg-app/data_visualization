@@ -75,13 +75,21 @@ jobs:
           echo "Publishing version: $VERSION"
 
           # Create release notes
-          echo "## Release v$VERSION" > RELEASE_NOTES.md
-          echo "" >> RELEASE_NOTES.md
-          echo "Initial stable release of data_visualization packages." >> RELEASE_NOTES.md
-          echo "" >> RELEASE_NOTES.md
-          echo "### Packages" >> RELEASE_NOTES.md
-          melos list --json | jq -r '.[] | select(.private != true) | "- \(.name)@\(.version)"' >> RELEASE_NOTES.md
-          echo "" >> RELEASE_NOTES.md
+          cat > RELEASE_NOTES.md << 'NOTES'
+          ## Release v1.0.0
+
+          Initial stable release of the Data Visualization package suite for Flutter.
+
+          A comprehensive collection of 36 packages providing D3.js-inspired data visualization capabilities.
+
+          ### Core Features
+          - Scales (linear, log, band, ordinal, time)
+          - Shapes and curves
+          - Geographic projections (Mercator, Orthographic, Equirectangular)
+          - Hierarchical layouts (treemap, pack, partition)
+          - Statistical functions
+          - Delaunay/Voronoi diagrams
+          NOTES
           cat RELEASE_NOTES.md
 
       - name: Dry run publish
