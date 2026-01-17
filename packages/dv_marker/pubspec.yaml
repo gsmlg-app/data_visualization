@@ -2,7 +2,6 @@ name: dv_marker
 description: Marker definitions for line endpoints and data points.
 repository: https://github.com/gsmlg-dev/data_visualization/tree/main/packages/dv_marker
 homepage: https://github.com/gsmlg-dev/data_visualization
-publisher: gsmlg.dev
 version: 1.0.0
 resolution: workspace
 

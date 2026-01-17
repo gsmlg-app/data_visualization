@@ -2,7 +2,6 @@ name: dv_point
 description: Point class for 2D coordinate operations.
 repository: https://github.com/gsmlg-dev/data_visualization/tree/main/packages/dv_point
 homepage: https://github.com/gsmlg-dev/data_visualization
-publisher: gsmlg.dev
 version: 1.0.0
 resolution: workspace
 

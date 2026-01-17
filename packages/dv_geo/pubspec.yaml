@@ -2,7 +2,6 @@ name: dv_geo
 description: Flutter widgets for geographic visualizations.
 repository: https://github.com/gsmlg-dev/data_visualization/tree/main/packages/dv_geo
 homepage: https://github.com/gsmlg-dev/data_visualization
-publisher: gsmlg.dev
 version: 1.0.0
 resolution: workspace
 

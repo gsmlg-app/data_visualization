@@ -2,7 +2,6 @@ name: dv_scale
 description: Scale functions for data visualization - linear, log, band, ordinal, etc.
 repository: https://github.com/gsmlg-dev/data_visualization/tree/main/packages/dv_scale
 homepage: https://github.com/gsmlg-dev/data_visualization
-publisher: gsmlg.dev
 version: 1.0.0
 resolution: workspace
 

@@ -2,7 +2,6 @@ name: dv_tooltip
 description: Tooltip component for chart data display.
 repository: https://github.com/gsmlg-dev/data_visualization/tree/main/packages/dv_tooltip
 homepage: https://github.com/gsmlg-dev/data_visualization
-publisher: gsmlg.dev
 version: 1.0.0
 resolution: workspace
 

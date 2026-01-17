@@ -2,7 +2,6 @@ name: dv_glyph
 description: Glyph primitives for data points - circles, squares, triangles.
 repository: https://github.com/gsmlg-dev/data_visualization/tree/main/packages/dv_glyph
 homepage: https://github.com/gsmlg-dev/data_visualization
-publisher: gsmlg.dev
 version: 1.0.0
 resolution: workspace
 

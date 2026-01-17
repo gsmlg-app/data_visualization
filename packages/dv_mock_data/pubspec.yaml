@@ -2,7 +2,6 @@ name: dv_mock_data
 description: Mock data generators for testing and demos.
 repository: https://github.com/gsmlg-dev/data_visualization/tree/main/packages/dv_mock_data
 homepage: https://github.com/gsmlg-dev/data_visualization
-publisher: gsmlg.dev
 version: 1.0.0
 resolution: workspace
 
