@@ -83,6 +83,7 @@ melos:
     test:
       exec: flutter test
       description: Run tests on all packages
+      concurrency: 1
       packageFilters:
         dirExists: test
 
