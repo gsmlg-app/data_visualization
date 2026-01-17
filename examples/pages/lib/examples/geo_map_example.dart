@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:data_visualization/data_visualization.dart';
 
+import 'world_data.dart';
+
 class GeoMapExample extends StatefulWidget {
   const GeoMapExample({super.key});
 
@@ -13,6 +15,15 @@ class _GeoMapExampleState extends State<GeoMapExample> {
   double _rotation = 0;
 
   final projections = ['Mercator', 'Equirectangular', 'Orthographic'];
+
+  // Parse GeoJSON once
+  late final GeoJsonFeatureCollection _worldData;
+
+  @override
+  void initState() {
+    super.initState();
+    _worldData = GeoJsonFeatureCollection.fromJson(worldLandGeoJson);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,18 +61,23 @@ class _GeoMapExampleState extends State<GeoMapExample> {
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.lightBlue.shade50,
+                color: Colors.lightBlue.shade100,
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: Colors.grey.shade300),
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: CustomPaint(
-                  size: Size.infinite,
-                  painter: GeoMapPainter(
-                    projection: _projection,
-                    rotation: _rotation,
-                  ),
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return CustomPaint(
+                      size: Size(constraints.maxWidth, constraints.maxHeight),
+                      painter: GeoMapPainter(
+                        projection: _projection,
+                        rotation: _rotation,
+                        worldData: _worldData,
+                      ),
+                    );
+                  },
                 ),
               ),
             ),
@@ -75,8 +91,13 @@ class _GeoMapExampleState extends State<GeoMapExample> {
 class GeoMapPainter extends CustomPainter {
   final String projection;
   final double rotation;
+  final GeoJsonFeatureCollection worldData;
 
-  GeoMapPainter({required this.projection, required this.rotation});
+  GeoMapPainter({
+    required this.projection,
+    required this.rotation,
+    required this.worldData,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -100,9 +121,45 @@ class GeoMapPainter extends CustomPainter {
         proj = geoMercator(center: (0, 0), scale: scale, translate: center);
     }
 
+    // Draw ocean background for orthographic
+    if (projection == 'Orthographic') {
+      canvas.drawCircle(
+        Offset(center.x, center.y),
+        scale * 1.5,
+        Paint()..color = Colors.lightBlue.shade200,
+      );
+    }
+
+    // Draw land masses
+    final geoPathGenerator = GeoPath(proj);
+    final landPaths = geoPathGenerator.generate(worldData);
+
+    final landPaint = Paint()
+      ..color = Colors.green.shade300
+      ..style = PaintingStyle.fill;
+
+    final landBorderPaint = Paint()
+      ..color = Colors.green.shade700
+      ..strokeWidth = 1
+      ..style = PaintingStyle.stroke;
+
+    for (final pathPoints in landPaths) {
+      if (pathPoints.length < 3) continue;
+
+      final path = Path();
+      path.moveTo(pathPoints.first.x, pathPoints.first.y);
+      for (int i = 1; i < pathPoints.length; i++) {
+        path.lineTo(pathPoints[i].x, pathPoints[i].y);
+      }
+      path.close();
+
+      canvas.drawPath(path, landPaint);
+      canvas.drawPath(path, landBorderPaint);
+    }
+
     // Draw graticule
     final graticulePaint = Paint()
-      ..color = Colors.blue.withAlpha(50)
+      ..color = Colors.blue.shade300.withAlpha(100)
       ..strokeWidth = 0.5
       ..style = PaintingStyle.stroke;
 
@@ -140,8 +197,8 @@ class GeoMapPainter extends CustomPainter {
 
     // Draw equator
     final equatorPaint = Paint()
-      ..color = Colors.red.withAlpha(128)
-      ..strokeWidth = 1
+      ..color = Colors.red.withAlpha(150)
+      ..strokeWidth = 1.5
       ..style = PaintingStyle.stroke;
 
     final equatorPoints = <Offset>[];
@@ -171,11 +228,31 @@ class GeoMapPainter extends CustomPainter {
     for (final city in cities) {
       final p = proj.project(city.$2, city.$3);
       if (!p.hasNaN && p.x > 0 && p.x < size.width && p.y > 0 && p.y < size.height) {
-        canvas.drawCircle(Offset(p.x, p.y), 5, Paint()..color = Colors.red);
+        // City marker shadow
+        canvas.drawCircle(
+          Offset(p.x, p.y),
+          6,
+          Paint()..color = Colors.black26,
+        );
+        // City marker
+        canvas.drawCircle(
+          Offset(p.x, p.y),
+          5,
+          Paint()..color = Colors.red.shade600,
+        );
+        canvas.drawCircle(
+          Offset(p.x, p.y),
+          2,
+          Paint()..color = Colors.white,
+        );
 
         textPainter.text = TextSpan(
           text: city.$1,
-          style: const TextStyle(color: Colors.black87, fontSize: 11),
+          style: TextStyle(
+            color: Colors.grey.shade800,
+            fontSize: 11,
+            fontWeight: FontWeight.w500,
+          ),
         );
         textPainter.layout();
         textPainter.paint(canvas, Offset(p.x + 8, p.y - 6));
