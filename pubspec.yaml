@@ -41,12 +41,14 @@ workspace:
   - packages/dv_mock_data
   - packages/data_visualization
   - examples/showcase_app
+  - examples/pages
 
 dev_dependencies:
   melos: ^7.0.0
 
 melos:
   name: data_visualization
+  repository: https://github.com/gsmlg-dev/data_visualization
   packages:
     - packages/**
     - examples/**
