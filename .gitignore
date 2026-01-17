@@ -57,3 +57,5 @@ mason-lock.json
 /.claude/*
 !/.claude/commands/
 !/.claude/skills/
+
+.playwright-mcp
