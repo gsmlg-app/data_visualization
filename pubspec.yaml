@@ -52,12 +52,24 @@ melos:
     - examples/**
 
   scripts:
+    prepare:
+      run: melos bootstrap
+      description: Bootstrap the workspace
+
     analyze:
       exec: dart analyze
       description: Run dart analyze on all packages
+
     test:
       exec: flutter test
       description: Run tests on all packages
+      packageFilters:
+        dirExists: test
+
     format:
       exec: dart format .
       description: Format all packages
+
+    format-check:
+      exec: dart format --set-exit-if-changed .
+      description: Check formatting of all packages
