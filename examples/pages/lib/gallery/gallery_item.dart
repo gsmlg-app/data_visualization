@@ -59,6 +59,9 @@ class GalleryItem {
   final List<String> tags;
   final ChartDocumentation? documentation;
 
+  /// Path to the source file asset (e.g., 'assets/sources/line_chart_example.txt')
+  final String? sourcePath;
+
   const GalleryItem({
     required this.id,
     required this.title,
@@ -68,5 +71,6 @@ class GalleryItem {
     required this.primaryColor,
     this.tags = const [],
     this.documentation,
+    this.sourcePath,
   });
 }

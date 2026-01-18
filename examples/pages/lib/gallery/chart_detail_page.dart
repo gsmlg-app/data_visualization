@@ -3,8 +3,9 @@ import 'package:flutter/services.dart';
 
 import 'gallery_item.dart';
 import 'gallery_registry.dart';
+import 'source_code_viewer.dart';
 
-/// Detail page for viewing a chart example with documentation
+/// Detail page for viewing a chart example with documentation and source code
 class ChartDetailPage extends StatefulWidget {
   final GalleryItem item;
 
@@ -20,12 +21,13 @@ class ChartDetailPage extends StatefulWidget {
 class _ChartDetailPageState extends State<ChartDetailPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  bool _showDocs = false;
+  int _selectedTab = 0; // 0: Preview, 1: Documentation, 2: Source Code
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    final tabCount = widget.item.sourcePath != null ? 3 : 2;
+    _tabController = TabController(length: tabCount, vsync: this);
   }
 
   @override
@@ -39,7 +41,9 @@ class _ChartDetailPageState extends State<ChartDetailPage>
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final hasDoc = widget.item.documentation != null;
-    final isWide = MediaQuery.of(context).size.width > 900;
+    final hasSource = widget.item.sourcePath != null;
+    final isWide = MediaQuery.of(context).size.width > 1200;
+    final isMedium = MediaQuery.of(context).size.width > 900;
 
     return Scaffold(
       appBar: AppBar(
@@ -90,21 +94,18 @@ class _ChartDetailPageState extends State<ChartDetailPage>
               ],
             ),
           ),
-          if (hasDoc && !isWide)
-            IconButton(
-              icon: Icon(_showDocs ? Icons.code : Icons.menu_book),
-              tooltip: _showDocs ? 'Show Chart' : 'Show Documentation',
-              onPressed: () => setState(() => _showDocs = !_showDocs),
-            ),
           const SizedBox(width: 8),
         ],
-        bottom: hasDoc && !isWide
+        bottom: !isWide
             ? TabBar(
                 controller: _tabController,
-                onTap: (index) => setState(() => _showDocs = index == 1),
-                tabs: const [
-                  Tab(icon: Icon(Icons.show_chart), text: 'Preview'),
-                  Tab(icon: Icon(Icons.menu_book), text: 'Documentation'),
+                onTap: (index) => setState(() => _selectedTab = index),
+                tabs: [
+                  const Tab(icon: Icon(Icons.show_chart), text: 'Preview'),
+                  if (hasDoc)
+                    const Tab(icon: Icon(Icons.menu_book), text: 'Docs'),
+                  if (hasSource)
+                    const Tab(icon: Icon(Icons.code), text: 'Source'),
                 ],
               )
             : null,
@@ -158,16 +159,71 @@ class _ChartDetailPageState extends State<ChartDetailPage>
           ),
           // Content
           Expanded(
-            child: isWide && hasDoc
-                ? _buildWideLayout(isDark, theme)
-                : _buildNarrowLayout(isDark, theme),
+            child: isWide
+                ? _buildWideLayout(isDark, theme, hasDoc, hasSource)
+                : isMedium && hasDoc
+                    ? _buildMediumLayout(isDark, theme, hasSource)
+                    : _buildNarrowLayout(isDark, theme, hasDoc, hasSource),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildWideLayout(bool isDark, ThemeData theme) {
+  /// Wide layout: Chart + Docs side panel + Source below
+  Widget _buildWideLayout(
+      bool isDark, ThemeData theme, bool hasDoc, bool hasSource) {
+    return Column(
+      children: [
+        Expanded(
+          flex: 2,
+          child: Row(
+            children: [
+              // Chart preview
+              Expanded(
+                flex: 3,
+                child: Container(
+                  color: isDark ? theme.colorScheme.surface : Colors.white,
+                  child: widget.item.builder(),
+                ),
+              ),
+              // Documentation panel
+              if (hasDoc)
+                Container(
+                  width: 400,
+                  decoration: BoxDecoration(
+                    color: isDark
+                        ? theme.colorScheme.surfaceContainerHighest
+                        : theme.colorScheme.surfaceContainerLow,
+                    border: Border(
+                      left: BorderSide(
+                        color:
+                            isDark ? Colors.grey.shade800 : Colors.grey.shade200,
+                      ),
+                    ),
+                  ),
+                  child: _buildDocumentation(isDark, theme),
+                ),
+            ],
+          ),
+        ),
+        // Source code section
+        if (hasSource)
+          _ExpandableSourceSection(
+            sourcePath: widget.item.sourcePath!,
+            accentColor: widget.item.primaryColor,
+            isDark: isDark,
+          ),
+      ],
+    );
+  }
+
+  /// Medium layout: Chart with docs panel, tabs for source
+  Widget _buildMediumLayout(bool isDark, ThemeData theme, bool hasSource) {
+    if (_selectedTab == 2 && hasSource) {
+      return _buildSourceView(isDark, theme);
+    }
+
     return Row(
       children: [
         // Chart preview
@@ -197,14 +253,42 @@ class _ChartDetailPageState extends State<ChartDetailPage>
     );
   }
 
-  Widget _buildNarrowLayout(bool isDark, ThemeData theme) {
-    if (widget.item.documentation == null || !_showDocs) {
-      return Container(
-        color: isDark ? theme.colorScheme.surface : Colors.white,
-        child: widget.item.builder(),
-      );
+  /// Narrow layout: Tabs for all content
+  Widget _buildNarrowLayout(
+      bool isDark, ThemeData theme, bool hasDoc, bool hasSource) {
+    switch (_selectedTab) {
+      case 0:
+        return Container(
+          color: isDark ? theme.colorScheme.surface : Colors.white,
+          child: widget.item.builder(),
+        );
+      case 1:
+        if (hasDoc) {
+          return _buildDocumentation(isDark, theme);
+        } else if (hasSource) {
+          return _buildSourceView(isDark, theme);
+        }
+        break;
+      case 2:
+        if (hasSource) {
+          return _buildSourceView(isDark, theme);
+        }
+        break;
     }
-    return _buildDocumentation(isDark, theme);
+    return Container(
+      color: isDark ? theme.colorScheme.surface : Colors.white,
+      child: widget.item.builder(),
+    );
+  }
+
+  Widget _buildSourceView(bool isDark, ThemeData theme) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: SourceCodeViewer(
+        sourcePath: widget.item.sourcePath!,
+        accentColor: widget.item.primaryColor,
+      ),
+    );
   }
 
   Widget _buildDocumentation(bool isDark, ThemeData theme) {
@@ -385,6 +469,95 @@ class _ChartDetailPageState extends State<ChartDetailPage>
         ],
         const SizedBox(height: 40),
       ],
+    );
+  }
+}
+
+/// An expandable section for source code in wide layout
+class _ExpandableSourceSection extends StatefulWidget {
+  final String sourcePath;
+  final Color accentColor;
+  final bool isDark;
+
+  const _ExpandableSourceSection({
+    required this.sourcePath,
+    required this.accentColor,
+    required this.isDark,
+  });
+
+  @override
+  State<_ExpandableSourceSection> createState() =>
+      _ExpandableSourceSectionState();
+}
+
+class _ExpandableSourceSectionState extends State<_ExpandableSourceSection> {
+  bool _isExpanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+      height: _isExpanded ? 400 : 48,
+      decoration: BoxDecoration(
+        color: widget.isDark
+            ? theme.colorScheme.surfaceContainerHighest
+            : theme.colorScheme.surfaceContainerLow,
+        border: Border(
+          top: BorderSide(
+            color: widget.isDark ? Colors.grey.shade800 : Colors.grey.shade200,
+          ),
+        ),
+      ),
+      child: Column(
+        children: [
+          // Header
+          InkWell(
+            onTap: () => setState(() => _isExpanded = !_isExpanded),
+            child: Container(
+              height: 48,
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.code,
+                    size: 20,
+                    color: widget.accentColor,
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    'Source Code',
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: widget.accentColor,
+                    ),
+                  ),
+                  const Spacer(),
+                  Icon(
+                    _isExpanded
+                        ? Icons.keyboard_arrow_down
+                        : Icons.keyboard_arrow_up,
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          // Content
+          if (_isExpanded)
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                child: SourceCodeViewer(
+                  sourcePath: widget.sourcePath,
+                  accentColor: widget.accentColor,
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }
