@@ -12,7 +12,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Verify that the app title is displayed
-    expect(find.text('Data Visualization Gallery'), findsOneWidget);
+    expect(find.text('Data Visualization'), findsOneWidget);
 
     // Reset the view
     addTearDown(() => tester.view.resetPhysicalSize());
