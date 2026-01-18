@@ -28,7 +28,7 @@ class GalleryTheme {
       elevation: 0,
       scrolledUnderElevation: 1,
     ),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
@@ -73,7 +73,7 @@ class GalleryTheme {
       elevation: 0,
       scrolledUnderElevation: 1,
     ),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       elevation: 0,
       color: const Color(0xFF2A2A3E),
       shape: RoundedRectangleBorder(
