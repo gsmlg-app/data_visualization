@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'gallery_item.dart';
+import 'chart_docs.dart';
 import '../examples/line_chart_example.dart';
 import '../examples/bar_chart_example.dart';
 import '../examples/bar_chart_horizontal_example.dart';
@@ -44,6 +45,7 @@ class GalleryRegistry {
       builder: () => const LineChartExample(),
       primaryColor: Colors.indigo,
       tags: ['line', 'series', 'time-series', 'trend'],
+      documentation: ChartDocs.lineChart,
     ),
     GalleryItem(
       id: 'area-chart',
@@ -53,6 +55,7 @@ class GalleryRegistry {
       builder: () => const AreaChartExample(),
       primaryColor: Colors.teal,
       tags: ['area', 'stacked', 'cumulative', 'flow'],
+      documentation: ChartDocs.areaChart,
     ),
     GalleryItem(
       id: 'curves',
@@ -62,6 +65,7 @@ class GalleryRegistry {
       builder: () => const CurvesExample(),
       primaryColor: Colors.purple,
       tags: ['curve', 'interpolation', 'smooth', 'spline'],
+      documentation: ChartDocs.curves,
     ),
     GalleryItem(
       id: 'streamgraph',
@@ -71,6 +75,7 @@ class GalleryRegistry {
       builder: () => const StreamgraphExample(),
       primaryColor: Colors.deepPurple,
       tags: ['stream', 'stacked', 'area', 'flow', 'time'],
+      documentation: ChartDocs.streamgraph,
     ),
     GalleryItem(
       id: 'threshold',
@@ -80,6 +85,7 @@ class GalleryRegistry {
       builder: () => const ThresholdExample(),
       primaryColor: Colors.green,
       tags: ['threshold', 'difference', 'area', 'comparison'],
+      documentation: ChartDocs.threshold,
     ),
 
     // Bars
@@ -91,6 +97,7 @@ class GalleryRegistry {
       builder: () => const BarChartExample(),
       primaryColor: Colors.blue,
       tags: ['bar', 'grouped', 'comparison', 'categorical'],
+      documentation: ChartDocs.barChart,
     ),
     GalleryItem(
       id: 'bar-horizontal',
@@ -100,6 +107,7 @@ class GalleryRegistry {
       builder: () => const BarChartHorizontalExample(),
       primaryColor: Colors.lightBlue,
       tags: ['bar', 'horizontal', 'grouped', 'stacked'],
+      documentation: ChartDocs.barHorizontal,
     ),
     GalleryItem(
       id: 'bar-stacked',
@@ -109,6 +117,7 @@ class GalleryRegistry {
       builder: () => const BarChartStackedExample(),
       primaryColor: Colors.indigo,
       tags: ['bar', 'stacked', 'vertical', 'cumulative'],
+      documentation: ChartDocs.barStacked,
     ),
 
     // Radial
@@ -120,6 +129,7 @@ class GalleryRegistry {
       builder: () => const PieChartExample(),
       primaryColor: Colors.orange,
       tags: ['pie', 'donut', 'proportion', 'percentage'],
+      documentation: ChartDocs.pieChart,
     ),
     GalleryItem(
       id: 'radar-chart',
@@ -129,6 +139,7 @@ class GalleryRegistry {
       builder: () => const RadarChartExample(),
       primaryColor: Colors.deepOrange,
       tags: ['radar', 'spider', 'polar', 'comparison'],
+      documentation: ChartDocs.radarChart,
     ),
     GalleryItem(
       id: 'radial-bar',
@@ -138,6 +149,7 @@ class GalleryRegistry {
       builder: () => const RadialBarExample(),
       primaryColor: Colors.amber,
       tags: ['radial', 'bar', 'circular', 'activity'],
+      documentation: ChartDocs.radialBar,
     ),
 
     // Hierarchy
@@ -149,6 +161,7 @@ class GalleryRegistry {
       builder: () => const HierarchyExample(),
       primaryColor: Colors.green,
       tags: ['treemap', 'hierarchy', 'nested', 'proportional'],
+      documentation: ChartDocs.treemap,
     ),
     GalleryItem(
       id: 'tree',
@@ -158,6 +171,7 @@ class GalleryRegistry {
       builder: () => const TreeExample(),
       primaryColor: Colors.teal,
       tags: ['tree', 'dendrogram', 'hierarchy', 'org-chart'],
+      documentation: ChartDocs.tree,
     ),
     GalleryItem(
       id: 'pack',
@@ -167,6 +181,7 @@ class GalleryRegistry {
       builder: () => const PackExample(),
       primaryColor: Colors.cyan,
       tags: ['pack', 'circle', 'hierarchy', 'nested'],
+      documentation: ChartDocs.pack,
     ),
 
     // Scatter & Distribution
@@ -178,6 +193,7 @@ class GalleryRegistry {
       builder: () => const ScatterChartExample(),
       primaryColor: Colors.pink,
       tags: ['scatter', 'bubble', 'correlation', 'distribution'],
+      documentation: ChartDocs.scatterChart,
     ),
     GalleryItem(
       id: 'heatmap',
@@ -187,6 +203,7 @@ class GalleryRegistry {
       builder: () => const HeatmapExample(),
       primaryColor: Colors.deepOrange,
       tags: ['heatmap', 'matrix', 'color', 'intensity'],
+      documentation: ChartDocs.heatmap,
     ),
     GalleryItem(
       id: 'box-plot',
@@ -196,6 +213,7 @@ class GalleryRegistry {
       builder: () => const BoxPlotExample(),
       primaryColor: Colors.purple,
       tags: ['box', 'whisker', 'quartile', 'statistics', 'distribution'],
+      documentation: ChartDocs.boxPlot,
     ),
 
     // Network
@@ -207,6 +225,7 @@ class GalleryRegistry {
       builder: () => const DelaunayVoronoiExample(),
       primaryColor: Colors.cyan,
       tags: ['voronoi', 'delaunay', 'triangulation', 'tessellation'],
+      documentation: ChartDocs.voronoi,
     ),
     GalleryItem(
       id: 'network-graph',
@@ -216,6 +235,7 @@ class GalleryRegistry {
       builder: () => const NetworkGraphExample(),
       primaryColor: Colors.indigo,
       tags: ['network', 'graph', 'force', 'nodes', 'edges'],
+      documentation: ChartDocs.networkGraph,
     ),
     GalleryItem(
       id: 'chord-diagram',
@@ -225,6 +245,7 @@ class GalleryRegistry {
       builder: () => const ChordDiagramExample(),
       primaryColor: Colors.pink,
       tags: ['chord', 'relationships', 'circular', 'flow'],
+      documentation: ChartDocs.chordDiagram,
     ),
     GalleryItem(
       id: 'sankey',
@@ -234,6 +255,7 @@ class GalleryRegistry {
       builder: () => const SankeyDiagramExample(),
       primaryColor: Colors.teal,
       tags: ['sankey', 'flow', 'energy', 'alluvial'],
+      documentation: ChartDocs.sankey,
     ),
 
     // Geographic
@@ -245,6 +267,7 @@ class GalleryRegistry {
       builder: () => const GeoMapExample(),
       primaryColor: Colors.lightGreen,
       tags: ['map', 'geo', 'projection', 'world'],
+      documentation: ChartDocs.geoMap,
     ),
 
     // Utilities
@@ -256,6 +279,7 @@ class GalleryRegistry {
       builder: () => const ScalesExample(),
       primaryColor: Colors.blueGrey,
       tags: ['scale', 'axis', 'linear', 'logarithmic'],
+      documentation: ChartDocs.scales,
     ),
     GalleryItem(
       id: 'interactive',
@@ -265,6 +289,7 @@ class GalleryRegistry {
       builder: () => const InteractiveExample(),
       primaryColor: Colors.amber,
       tags: ['interactive', 'tooltip', 'hover', 'brush'],
+      documentation: ChartDocs.interactive,
     ),
     GalleryItem(
       id: 'brush',
@@ -274,6 +299,7 @@ class GalleryRegistry {
       builder: () => const BrushExample(),
       primaryColor: Colors.blue,
       tags: ['brush', 'selection', 'interactive', 'filter'],
+      documentation: ChartDocs.brush,
     ),
     GalleryItem(
       id: 'zoom',
@@ -283,6 +309,7 @@ class GalleryRegistry {
       builder: () => const ZoomExample(),
       primaryColor: Colors.indigo,
       tags: ['zoom', 'pan', 'interactive', 'navigation'],
+      documentation: ChartDocs.zoom,
     ),
     GalleryItem(
       id: 'annotations',
@@ -292,6 +319,7 @@ class GalleryRegistry {
       builder: () => const AnnotationsExample(),
       primaryColor: Colors.red,
       tags: ['annotation', 'label', 'callout', 'reference'],
+      documentation: ChartDocs.annotations,
     ),
     GalleryItem(
       id: 'legends',
@@ -301,6 +329,7 @@ class GalleryRegistry {
       builder: () => const LegendsExample(),
       primaryColor: Colors.teal,
       tags: ['legend', 'series', 'toggle', 'interactive'],
+      documentation: ChartDocs.legends,
     ),
     GalleryItem(
       id: 'gradients',
@@ -310,6 +339,7 @@ class GalleryRegistry {
       builder: () => const GradientsExample(),
       primaryColor: Colors.purple,
       tags: ['gradient', 'color', 'fill', 'linear', 'radial'],
+      documentation: ChartDocs.gradients,
     ),
     GalleryItem(
       id: 'wordcloud',
@@ -319,6 +349,7 @@ class GalleryRegistry {
       builder: () => const WordcloudExample(),
       primaryColor: Colors.deepPurple,
       tags: ['wordcloud', 'tags', 'text', 'frequency'],
+      documentation: ChartDocs.wordcloud,
     ),
   ];
 
