@@ -1,11 +1,11 @@
 {
-    "name": "pages",
-    "short_name": "pages",
+    "name": "Data Visualization Gallery",
+    "short_name": "DataViz",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#1A1A2E",
+    "theme_color": "#38B2AC",
+    "description": "Interactive data visualization gallery showcasing charts, graphs, and diagrams built with Flutter.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
