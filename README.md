@@ -6,6 +6,12 @@ A comprehensive data visualization library for Flutter, inspired by D3.js.
 [![pub package](https://img.shields.io/pub/v/data_visualization.svg)](https://pub.dev/packages/data_visualization)
 [![publisher](https://img.shields.io/pub/publisher/data_visualization.svg)](https://pub.dev/publishers/gsmlg.dev)
 
+## 🌐 Live Demo
+
+**[View Interactive Gallery →](https://gsmlg-app.github.io/data_visualization/)**
+
+Explore 30+ chart types with live examples, source code, and documentation.
+
 ## Features
 
 - **Scales**: Linear, logarithmic, power, time, band, ordinal, and more
@@ -220,21 +226,39 @@ for (final node in root.descendants()) {
 
 ## Examples
 
-See the [showcase app](examples/showcase_app) for complete examples:
+### Online Gallery
 
-- Line Chart
-- Bar Chart
-- Area Chart
-- Pie Chart
-- Geographic Map
-- Interactive Chart with Tooltips
+Visit the **[Interactive Gallery](https://gsmlg-app.github.io/data_visualization/)** to explore all chart types with:
 
-Run the showcase:
+- 📊 **30+ visualizations** - Lines, bars, pies, maps, networks, hierarchies, and more
+- 📖 **Documentation** - API reference and usage guides for each package
+- 💻 **Source code** - View the implementation code for every example
+- 🎨 **Interactive** - Tooltips, brushing, zooming, and dragging
+
+### Run Locally
 
 ```bash
+# Run the gallery app
+cd examples/pages
+flutter run
+
+# Or run the showcase app
 cd examples/showcase_app
 flutter run
 ```
+
+### Chart Types
+
+| Category | Charts |
+|----------|--------|
+| Lines & Curves | Line, Area, Streamgraph, Threshold, Curves |
+| Bars | Grouped, Stacked, Horizontal |
+| Radial | Pie/Donut, Radar, Radial Bar |
+| Hierarchy | Treemap, Tree/Dendrogram, Circle Packing |
+| Scatter & Distribution | Scatter, Heatmap, Box Plot |
+| Network | Force Graph, Chord, Sankey, Voronoi |
+| Geographic | World Map with projections |
+| Utilities | Scales, Brush, Zoom, Annotations, Legends |
 
 ## Development
 
