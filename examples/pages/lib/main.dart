@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
 
-import 'gallery/gallery_home.dart';
+import 'shell/app_shell.dart';
 import 'gallery/theme_provider.dart';
 
 void main() {
-  runApp(const DataVisualizationGallery());
+  runApp(const DataVisualizationApp());
 }
 
-class DataVisualizationGallery extends StatefulWidget {
-  const DataVisualizationGallery({super.key});
+class DataVisualizationApp extends StatefulWidget {
+  const DataVisualizationApp({super.key});
 
   @override
-  State<DataVisualizationGallery> createState() =>
-      _DataVisualizationGalleryState();
+  State<DataVisualizationApp> createState() => _DataVisualizationAppState();
 }
 
-class _DataVisualizationGalleryState extends State<DataVisualizationGallery> {
+class _DataVisualizationAppState extends State<DataVisualizationApp> {
   final _themeNotifier = ThemeModeNotifier();
 
   @override
@@ -30,12 +29,12 @@ class _DataVisualizationGalleryState extends State<DataVisualizationGallery> {
       listenable: _themeNotifier,
       builder: (context, child) {
         return MaterialApp(
-          title: 'Data Visualization Gallery',
+          title: 'Data Visualization',
           debugShowCheckedModeBanner: false,
           theme: GalleryTheme.lightTheme,
           darkTheme: GalleryTheme.darkTheme,
           themeMode: _themeNotifier.themeMode,
-          home: GalleryHome(themeNotifier: _themeNotifier),
+          home: AppShell(themeNotifier: _themeNotifier),
         );
       },
     );
