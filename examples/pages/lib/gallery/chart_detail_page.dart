@@ -26,7 +26,7 @@ class _ChartDetailPageState extends State<ChartDetailPage>
   @override
   void initState() {
     super.initState();
-    final tabCount = widget.item.sourcePath != null ? 3 : 2;
+    final tabCount = widget.item.sourceCode != null ? 3 : 2;
     _tabController = TabController(length: tabCount, vsync: this);
   }
 
@@ -41,7 +41,7 @@ class _ChartDetailPageState extends State<ChartDetailPage>
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final hasDoc = widget.item.documentation != null;
-    final hasSource = widget.item.sourcePath != null;
+    final hasSource = widget.item.sourceCode != null;
     final isWide = MediaQuery.of(context).size.width > 1200;
     final isMedium = MediaQuery.of(context).size.width > 900;
 
@@ -210,7 +210,8 @@ class _ChartDetailPageState extends State<ChartDetailPage>
         // Source code section
         if (hasSource)
           _ExpandableSourceSection(
-            sourcePath: widget.item.sourcePath!,
+            sourceCode: widget.item.sourceCode!,
+            title: '${widget.item.id}_example.dart',
             accentColor: widget.item.primaryColor,
             isDark: isDark,
           ),
@@ -285,7 +286,8 @@ class _ChartDetailPageState extends State<ChartDetailPage>
     return Padding(
       padding: const EdgeInsets.all(16),
       child: SourceCodeViewer(
-        sourcePath: widget.item.sourcePath!,
+        sourceCode: widget.item.sourceCode!,
+        title: '${widget.item.id}_example.dart',
         accentColor: widget.item.primaryColor,
       ),
     );
@@ -475,12 +477,14 @@ class _ChartDetailPageState extends State<ChartDetailPage>
 
 /// An expandable section for source code in wide layout
 class _ExpandableSourceSection extends StatefulWidget {
-  final String sourcePath;
+  final String sourceCode;
+  final String? title;
   final Color accentColor;
   final bool isDark;
 
   const _ExpandableSourceSection({
-    required this.sourcePath,
+    required this.sourceCode,
+    this.title,
     required this.accentColor,
     required this.isDark,
   });
@@ -551,7 +555,8 @@ class _ExpandableSourceSectionState extends State<_ExpandableSourceSection> {
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                 child: SourceCodeViewer(
-                  sourcePath: widget.sourcePath,
+                  sourceCode: widget.sourceCode,
+                  title: widget.title,
                   accentColor: widget.accentColor,
                 ),
               ),
