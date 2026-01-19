@@ -16,6 +16,9 @@ import '../examples/delaunay_voronoi_example.dart';
 import '../examples/scales_example.dart';
 import '../examples/curves_example.dart';
 import '../examples/geo_map_example.dart';
+import '../examples/geo_choropleth_example.dart';
+import '../examples/geo_usa_example.dart';
+import '../examples/geo_globe_example.dart';
 import '../examples/interactive_example.dart';
 import '../examples/streamgraph_example.dart';
 import '../examples/radar_chart_example.dart';
@@ -33,6 +36,7 @@ import '../examples/annotations_example.dart';
 import '../examples/legends_example.dart';
 import '../examples/gradients_example.dart';
 import '../examples/threshold_example.dart';
+import '../examples/mock_data_example.dart';
 
 /// Registry of all gallery items
 class GalleryRegistry {
@@ -292,6 +296,39 @@ class GalleryRegistry {
       documentation: ChartDocs.geoMap,
       sourceCode: ChartSources.geoMap,
     ),
+    GalleryItem(
+      id: 'geo-choropleth',
+      title: 'Choropleth Map',
+      description: 'World map with countries colored by population density',
+      category: ChartCategory.geographic,
+      builder: () => const GeoChoroplethExample(),
+      primaryColor: Colors.blue,
+      tags: ['map', 'choropleth', 'density', 'world', 'data'],
+      documentation: ChartDocs.geoChoropleth,
+      sourceCode: ChartSources.geoChoropleth,
+    ),
+    GalleryItem(
+      id: 'geo-usa',
+      title: 'USA Map',
+      description: 'United States map with Albers projection',
+      category: ChartCategory.geographic,
+      builder: () => const GeoUsaExample(),
+      primaryColor: Colors.green,
+      tags: ['map', 'usa', 'albers', 'states', 'america'],
+      documentation: ChartDocs.geoUsa,
+      sourceCode: ChartSources.geoUsa,
+    ),
+    GalleryItem(
+      id: 'geo-globe',
+      title: 'Interactive Globe',
+      description: '3D globe with drag-to-rotate interaction',
+      category: ChartCategory.geographic,
+      builder: () => const GeoGlobeExample(),
+      primaryColor: Colors.indigo,
+      tags: ['globe', 'orthographic', '3d', 'interactive', 'rotation'],
+      documentation: ChartDocs.geoGlobe,
+      sourceCode: ChartSources.geoGlobe,
+    ),
 
     // Utilities
     GalleryItem(
@@ -381,6 +418,17 @@ class GalleryRegistry {
       tags: ['wordcloud', 'tags', 'text', 'frequency'],
       documentation: ChartDocs.wordcloud,
       sourceCode: ChartSources.wordcloud,
+    ),
+    GalleryItem(
+      id: 'mock-data',
+      title: 'Mock Data',
+      description: 'Interactive demo of data generators for testing',
+      category: ChartCategory.utilities,
+      builder: () => const MockDataExample(),
+      primaryColor: Colors.grey,
+      tags: ['mock', 'data', 'generator', 'random', 'testing', 'sample'],
+      documentation: ChartDocs.mockData,
+      sourceCode: ChartSources.mockData,
     ),
   ];
 

@@ -1122,6 +1122,210 @@ class GeoMapPainter extends CustomPainter {
 //   ..center = [0, 20];
 ''';
 
+  static const geoChoropleth = r'''
+import 'dart:math' as math;
+import 'package:flutter/material.dart';
+import 'package:data_visualization/data_visualization.dart';
+
+class ChoroplethPainter extends CustomPainter {
+  final GeoJsonFeatureCollection worldData;
+  final Map<String, double> densityData;
+
+  ChoroplethPainter({required this.worldData, required this.densityData});
+
+  Color getColorForDensity(double? density) {
+    if (density == null) return Colors.grey.shade300;
+    // Log scale for better distribution
+    final logDensity = density > 0 ? math.log(density + 1) : 0;
+    final maxLog = math.log(1300);
+    final t = (logDensity / maxLog).clamp(0.0, 1.0);
+    return Color.lerp(const Color(0xFFE3F2FD), const Color(0xFF0D47A1), t)!;
+  }
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Point(size.width / 2, size.height / 2);
+    final scale = size.width / 6.5;
+
+    final proj = geoMercator(center: (0, 20), scale: scale, translate: center);
+    final geoPathGenerator = GeoPath(proj);
+
+    for (final feature in worldData.features) {
+      final name = feature.properties?['name'] as String?;
+      final density = densityData[name];
+      final color = getColorForDensity(density);
+
+      final paths = geoPathGenerator.generate(feature);
+
+      for (final pathPoints in paths) {
+        if (pathPoints.length < 3) continue;
+        final path = Path();
+        path.moveTo(pathPoints.first.x, pathPoints.first.y);
+        for (int i = 1; i < pathPoints.length; i++) {
+          path.lineTo(pathPoints[i].x, pathPoints[i].y);
+        }
+        path.close();
+        canvas.drawPath(path, Paint()..color = color);
+        canvas.drawPath(path, Paint()
+          ..color = Colors.grey.shade600
+          ..strokeWidth = 0.5
+          ..style = PaintingStyle.stroke);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+''';
+
+  static const geoUsa = r'''
+import 'package:flutter/material.dart';
+import 'package:data_visualization/data_visualization.dart';
+
+class UsaMapPainter extends CustomPainter {
+  final GeoJsonFeatureCollection usaData;
+
+  UsaMapPainter({required this.usaData});
+
+  Color getColorForDensity(double density) {
+    if (density < 20) return const Color(0xFFE8F5E9);
+    if (density < 50) return const Color(0xFFC8E6C9);
+    if (density < 100) return const Color(0xFFA5D6A7);
+    if (density < 200) return const Color(0xFF81C784);
+    if (density < 500) return const Color(0xFF66BB6A);
+    return const Color(0xFF4CAF50);
+  }
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Point(size.width / 2, size.height / 2);
+    final scale = size.width / 1.3;
+
+    // Create Albers projection optimized for USA
+    final proj = geoAlbers(
+      center: (-96, 38),
+      scale: scale,
+      translate: center,
+      parallels0: 29.5,
+      parallels1: 45.5,
+    );
+
+    final geoPathGenerator = GeoPath(proj);
+
+    for (final feature in usaData.features) {
+      final density = (feature.properties?['density'] as num?)?.toDouble() ?? 0;
+      final color = getColorForDensity(density);
+      final paths = geoPathGenerator.generate(feature);
+
+      for (final pathPoints in paths) {
+        if (pathPoints.length < 3) continue;
+        final path = Path();
+        path.moveTo(pathPoints.first.x, pathPoints.first.y);
+        for (int i = 1; i < pathPoints.length; i++) {
+          path.lineTo(pathPoints[i].x, pathPoints[i].y);
+        }
+        path.close();
+        canvas.drawPath(path, Paint()..color = color);
+        canvas.drawPath(path, Paint()
+          ..color = Colors.grey.shade600
+          ..strokeWidth = 0.5
+          ..style = PaintingStyle.stroke);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+''';
+
+  static const geoGlobe = r'''
+import 'dart:math' as math;
+import 'package:flutter/material.dart';
+import 'package:data_visualization/data_visualization.dart';
+
+class GlobePainter extends CustomPainter {
+  final GeoJsonFeatureCollection worldData;
+  final double rotationX;  // longitude rotation
+  final double rotationY;  // latitude rotation
+
+  GlobePainter({
+    required this.worldData,
+    required this.rotationX,
+    required this.rotationY,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Point(size.width / 2, size.height / 2);
+    final radius = math.min(size.width, size.height) * 0.4;
+
+    // Draw globe background with ocean gradient
+    final globeGradient = RadialGradient(
+      colors: [
+        const Color(0xFF4FC3F7),
+        const Color(0xFF0288D1),
+        const Color(0xFF01579B),
+      ],
+      center: const Alignment(-0.3, -0.3),
+    );
+    canvas.drawCircle(
+      Offset(center.x, center.y),
+      radius,
+      Paint()..shader = globeGradient.createShader(
+        Rect.fromCircle(center: Offset(center.x, center.y), radius: radius),
+      ),
+    );
+
+    // Create orthographic projection with rotation
+    final proj = geoOrthographic(
+      center: (0, 0),
+      scale: radius,
+      translate: center,
+      rotate: (-rotationX, -rotationY, 0),
+    );
+
+    final geoPathGenerator = GeoPath(proj);
+
+    // Draw land masses (back hemisphere points return NaN)
+    for (final feature in worldData.features) {
+      final paths = geoPathGenerator.generate(feature);
+      for (final pathPoints in paths) {
+        if (pathPoints.any((p) => p.hasNaN)) continue;
+        if (pathPoints.length < 3) continue;
+
+        final path = Path();
+        path.moveTo(pathPoints.first.x, pathPoints.first.y);
+        for (int i = 1; i < pathPoints.length; i++) {
+          path.lineTo(pathPoints[i].x, pathPoints[i].y);
+        }
+        path.close();
+        canvas.drawPath(path, Paint()..color = const Color(0xFF81C784));
+        canvas.drawPath(path, Paint()
+          ..color = const Color(0xFF388E3C)
+          ..strokeWidth = 0.5
+          ..style = PaintingStyle.stroke);
+      }
+    }
+
+    // Draw globe border
+    canvas.drawCircle(
+      Offset(center.x, center.y),
+      radius,
+      Paint()
+        ..color = const Color(0xFF90CAF9)
+        ..strokeWidth = 2
+        ..style = PaintingStyle.stroke,
+    );
+  }
+
+  @override
+  bool shouldRepaint(GlobePainter old) =>
+      old.rotationX != rotationX || old.rotationY != rotationY;
+}
+''';
+
   static const scales = r'''
 import 'package:flutter/material.dart';
 import 'package:data_visualization/data_visualization.dart';
@@ -1712,5 +1916,63 @@ class ThresholdChartPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
+''';
+
+  static const mockData = r'''
+import 'package:flutter/material.dart';
+import 'package:dv_mock_data/dv_mock_data.dart';
+
+class MockDataDemo extends StatefulWidget {
+  const MockDataDemo({super.key});
+
+  @override
+  State<MockDataDemo> createState() => _MockDataDemoState();
+}
+
+class _MockDataDemoState extends State<MockDataDemo> {
+  final mock = MockData(42); // Seeded for reproducibility
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        // Scatter plot with correlated data
+        Expanded(
+          child: CustomPaint(
+            painter: ScatterPainter(
+              mock.scatterData(count: 100, correlation: 0.7),
+            ),
+          ),
+        ),
+        // Time series stock prices
+        Expanded(
+          child: CustomPaint(
+            painter: TimeSeriesPainter(
+              mock.timeSeries.stockPrice(
+                start: DateTime.now().subtract(Duration(days: 90)),
+                end: DateTime.now(),
+                interval: Duration(days: 1),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// Available generators:
+// mock.scatterData() - Scatter plot points
+// mock.lineData() - Line chart data
+// mock.barData() - Bar chart categories
+// mock.pieData() - Pie slices with percentages
+// mock.treemapData() - Hierarchical tree data
+// mock.networkData() - Nodes and links
+// mock.heatmapData() - Matrix data
+// mock.boxPlotData() - Statistical quartiles
+// mock.timeSeries.stockPrice() - GBM stock prices
+// mock.timeSeries.ohlc() - Candlestick data
+// mock.random.normal() - Normal distribution
+// mock.random.randomWalk() - Random walk sequence
 ''';
 }

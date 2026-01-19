@@ -1153,39 +1153,288 @@ ThresholdChart(
     // Testing
     PackageDoc(
       name: 'dv_mock_data',
-      description: 'Mock data generators for testing',
+      description: 'Mock data generators for testing and demos',
       category: PackageCategory.testing,
       overview:
-          'The dv_mock_data package provides mock data generators for testing and examples. '
-          'Generate random but realistic data for various chart types.',
+          'The dv_mock_data package provides comprehensive mock data generators for testing and examples. '
+          'It includes three main components:\n\n'
+          '• **MockData** - High-level generators for various chart types (scatter, line, bar, pie, treemap, network, heatmap, box plot, etc.)\n'
+          '• **RandomGenerator** - Statistical distributions (normal, exponential, poisson, beta, gamma, etc.) and utilities\n'
+          '• **TimeSeriesGenerator** - Time series patterns (linear, sinusoidal, random walk, stock prices, seasonal, OHLC candlestick)',
       api: [
+        // MockData class
         ApiItem(
-          name: 'generateTimeSeries',
-          type: 'function',
-          description: 'Generates time series data',
-          signature: 'List<DataPoint> generateTimeSeries({int count, double volatility})',
+          name: 'MockData',
+          type: 'class',
+          description: 'Main mock data generator with methods for various chart types',
+          signature: 'MockData([int? seed])',
         ),
         ApiItem(
-          name: 'generateCategories',
-          type: 'function',
-          description: 'Generates categorical data',
-          signature: 'List<CategoryData> generateCategories({int count})',
+          name: 'scatterData',
+          type: 'method',
+          description: 'Generates scatter plot data points with optional correlation',
+          signature: 'List<Map<String, double>> scatterData({int count, double? correlation})',
         ),
         ApiItem(
-          name: 'generateHierarchy',
-          type: 'function',
-          description: 'Generates hierarchical data',
-          signature: 'HierarchyNode generateHierarchy({int depth, int breadth})',
+          name: 'lineData',
+          type: 'method',
+          description: 'Generates line chart data using random walk',
+          signature: 'List<Map<String, dynamic>> lineData({int points, double volatility})',
+        ),
+        ApiItem(
+          name: 'barData',
+          type: 'method',
+          description: 'Generates bar chart data with categories',
+          signature: 'List<Map<String, dynamic>> barData({int bars, List<String>? categories})',
+        ),
+        ApiItem(
+          name: 'groupedBarData',
+          type: 'method',
+          description: 'Generates grouped bar chart data with multiple series',
+          signature: 'List<Map<String, dynamic>> groupedBarData({int groups, int seriesCount})',
+        ),
+        ApiItem(
+          name: 'stackedData',
+          type: 'method',
+          description: 'Generates stacked chart data',
+          signature: 'List<Map<String, dynamic>> stackedData({int categories, int seriesCount})',
+        ),
+        ApiItem(
+          name: 'pieData',
+          type: 'method',
+          description: 'Generates pie/donut chart data with percentages',
+          signature: 'List<Map<String, dynamic>> pieData({int slices, bool sorted})',
+        ),
+        ApiItem(
+          name: 'treemapData',
+          type: 'method',
+          description: 'Generates hierarchical treemap data',
+          signature: 'Map<String, dynamic> treemapData({int depth, int minChildren, int maxChildren})',
+        ),
+        ApiItem(
+          name: 'networkData',
+          type: 'method',
+          description: 'Generates network graph data with nodes and links',
+          signature: 'Map<String, dynamic> networkData({int nodeCount, double linkProbability})',
+        ),
+        ApiItem(
+          name: 'treeData',
+          type: 'method',
+          description: 'Generates tree structure data',
+          signature: 'Map<String, dynamic> treeData({int depth, int minChildren, int maxChildren})',
+        ),
+        ApiItem(
+          name: 'heatmapData',
+          type: 'method',
+          description: 'Generates heatmap matrix data',
+          signature: 'List<List<double>> heatmapData({int rows, int columns})',
+        ),
+        ApiItem(
+          name: 'correlationMatrix',
+          type: 'method',
+          description: 'Generates symmetric correlation matrix',
+          signature: 'List<List<double>> correlationMatrix({int size})',
+        ),
+        ApiItem(
+          name: 'calendarHeatmapData',
+          type: 'method',
+          description: 'Generates calendar heatmap data',
+          signature: 'Map<DateTime, double> calendarHeatmapData({DateTime start, DateTime end})',
+        ),
+        ApiItem(
+          name: 'geoPoints',
+          type: 'method',
+          description: 'Generates random geographic points',
+          signature: 'List<Map<String, double>> geoPoints({int count})',
+        ),
+        ApiItem(
+          name: 'geoPointsClustered',
+          type: 'method',
+          description: 'Generates clustered geographic points',
+          signature: 'List<Map<String, double>> geoPointsClustered({int clusterCount, int pointsPerCluster})',
+        ),
+        ApiItem(
+          name: 'boxPlotData',
+          type: 'method',
+          description: 'Generates box plot statistical data with quartiles and outliers',
+          signature: 'List<Map<String, dynamic>> boxPlotData({int groups, int samplesPerGroup})',
+        ),
+        ApiItem(
+          name: 'histogramData',
+          type: 'method',
+          description: 'Generates histogram data with bins',
+          signature: 'Map<String, dynamic> histogramData({int sampleCount, int binCount})',
+        ),
+        ApiItem(
+          name: 'violinData',
+          type: 'method',
+          description: 'Generates violin plot data',
+          signature: 'List<Map<String, dynamic>> violinData({int groups, int samplesPerGroup})',
+        ),
+        // RandomGenerator class
+        ApiItem(
+          name: 'RandomGenerator',
+          type: 'class',
+          description: 'Random number generator with various statistical distributions',
+          signature: 'RandomGenerator([int? seed])',
+        ),
+        ApiItem(
+          name: 'uniform',
+          type: 'method',
+          description: 'Generates random double between min and max',
+          signature: 'double uniform(double min, double max)',
+        ),
+        ApiItem(
+          name: 'normal',
+          type: 'method',
+          description: 'Generates random value from normal (Gaussian) distribution',
+          signature: 'double normal(double mean, double stdDev)',
+        ),
+        ApiItem(
+          name: 'exponential',
+          type: 'method',
+          description: 'Generates random value from exponential distribution',
+          signature: 'double exponential(double lambda)',
+        ),
+        ApiItem(
+          name: 'poisson',
+          type: 'method',
+          description: 'Generates random value from Poisson distribution',
+          signature: 'int poisson(double lambda)',
+        ),
+        ApiItem(
+          name: 'beta',
+          type: 'method',
+          description: 'Generates random value from beta distribution',
+          signature: 'double beta(double alpha, double beta)',
+        ),
+        ApiItem(
+          name: 'gamma',
+          type: 'method',
+          description: 'Generates random value from gamma distribution',
+          signature: 'double gamma(double shape, [double scale])',
+        ),
+        ApiItem(
+          name: 'randomWalk',
+          type: 'method',
+          description: 'Generates random walk sequence',
+          signature: 'List<double> randomWalk(int steps, {double start, double stepSize})',
+        ),
+        ApiItem(
+          name: 'brownianMotion',
+          type: 'method',
+          description: 'Generates geometric Brownian motion (stock prices)',
+          signature: 'List<double> brownianMotion(int steps, {double start, double mu, double sigma})',
+        ),
+        // TimeSeriesGenerator class
+        ApiItem(
+          name: 'TimeSeriesGenerator',
+          type: 'class',
+          description: 'Generator for time series data with various patterns',
+          signature: 'TimeSeriesGenerator([int? seed])',
+        ),
+        ApiItem(
+          name: 'linear',
+          type: 'method',
+          description: 'Generates linear trend time series',
+          signature: 'List<TimeSeriesPoint> linear({DateTime start, DateTime end, Duration interval, double slope})',
+        ),
+        ApiItem(
+          name: 'sinusoidal',
+          type: 'method',
+          description: 'Generates sinusoidal pattern time series',
+          signature: 'List<TimeSeriesPoint> sinusoidal({DateTime start, DateTime end, double amplitude, double frequency})',
+        ),
+        ApiItem(
+          name: 'stockPrice',
+          type: 'method',
+          description: 'Generates stock-like prices using geometric Brownian motion',
+          signature: 'List<TimeSeriesPoint> stockPrice({DateTime start, DateTime end, double startPrice, double volatility})',
+        ),
+        ApiItem(
+          name: 'seasonal',
+          type: 'method',
+          description: 'Generates data with daily/weekly/monthly seasonal patterns',
+          signature: 'List<TimeSeriesPoint> seasonal({DateTime start, DateTime end, List<double>? dailyPattern})',
+        ),
+        ApiItem(
+          name: 'ohlc',
+          type: 'method',
+          description: 'Generates OHLC candlestick data',
+          signature: 'List<OHLCPoint> ohlc({DateTime start, DateTime end, Duration interval, double volatility})',
+        ),
+        ApiItem(
+          name: 'meanReverting',
+          type: 'method',
+          description: 'Generates mean-reverting time series (Ornstein-Uhlenbeck)',
+          signature: 'List<TimeSeriesPoint> meanReverting({DateTime start, DateTime end, double mean, double theta})',
+        ),
+        ApiItem(
+          name: 'correlated',
+          type: 'method',
+          description: 'Generates multiple correlated time series',
+          signature: 'List<List<TimeSeriesPoint>> correlated({DateTime start, DateTime end, int seriesCount, double correlation})',
+        ),
+        // Data classes
+        ApiItem(
+          name: 'TimeSeriesPoint',
+          type: 'class',
+          description: 'Data point with timestamp and value',
+          signature: 'TimeSeriesPoint({DateTime timestamp, double value})',
+        ),
+        ApiItem(
+          name: 'OHLCPoint',
+          type: 'class',
+          description: 'OHLC candlestick data point (Open-High-Low-Close)',
+          signature: 'OHLCPoint({DateTime timestamp, double open, double high, double low, double close, int? volume})',
         ),
       ],
       usageExample: '''
-import 'package:data_visualization/data_visualization.dart';
+import 'package:dv_mock_data/dv_mock_data.dart';
 
-final timeSeries = generateTimeSeries(count: 100, volatility: 0.1);
-final categories = generateCategories(count: 5);
-final hierarchy = generateHierarchy(depth: 3, breadth: 4);
+// Create generator with optional seed for reproducibility
+final mock = MockData(42);
+
+// Generate scatter data with correlation
+final scatter = mock.scatterData(count: 100, correlation: 0.7);
+
+// Generate bar chart data
+final bars = mock.barData(
+  bars: 5,
+  categories: ['A', 'B', 'C', 'D', 'E'],
+);
+
+// Generate time series stock prices
+final now = DateTime.now();
+final prices = mock.timeSeries.stockPrice(
+  start: now.subtract(Duration(days: 365)),
+  end: now,
+  interval: Duration(days: 1),
+  startPrice: 100,
+  annualVolatility: 0.3,
+);
+
+// Generate OHLC candlestick data
+final candles = mock.timeSeries.ohlc(
+  start: now.subtract(Duration(days: 30)),
+  end: now,
+  interval: Duration(days: 1),
+);
+
+// Use random generator directly
+final random = mock.random;
+final normalValues = random.normalList(100, mean: 50, stdDev: 10);
+final walkValues = random.randomWalk(50, start: 100, stepSize: 2);
+
+// Generate network graph data
+final network = mock.networkData(nodeCount: 30, linkProbability: 0.15);
+print('Nodes: \${network["nodes"].length}');
+print('Links: \${network["links"].length}');
+
+// Generate hierarchical data
+final tree = mock.treemapData(depth: 3, minChildren: 2, maxChildren: 4);
 ''',
-      relatedPackages: [],
+      relatedPackages: ['dv_stats', 'dv_xychart'],
     ),
   ];
 }

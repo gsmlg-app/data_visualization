@@ -1063,6 +1063,160 @@ for (final feature in geoJson['features']) {
     relatedCharts: ['heatmap', 'scatter-chart'],
   );
 
+  static const geoChoropleth = ChartDocumentation(
+    overview: '''
+A choropleth map uses color to represent data values for geographic regions. The intensity of color corresponds to the data value, making it easy to identify patterns and compare regions.
+''',
+    useCases: [
+      'Visualizing population density by region',
+      'Showing election results by state/country',
+      'Displaying economic indicators geographically',
+      'Comparing health statistics across regions',
+    ],
+    features: [
+      'Color scales mapped to data values',
+      'Hover interactions to show details',
+      'Multiple color scheme options',
+      'Legend showing value ranges',
+    ],
+    dataFormat: '''
+GeoJSON with data values in properties:
+```dart
+final geoJson = {
+  'type': 'FeatureCollection',
+  'features': [
+    {
+      'type': 'Feature',
+      'properties': {'name': 'Country', 'density': 153},
+      'geometry': {...},
+    },
+  ],
+};
+```
+''',
+    codeSnippet: '''
+// Get color for density value using log scale
+Color getColorForDensity(double? density) {
+  if (density == null) return Colors.grey.shade300;
+  final logDensity = density > 0 ? math.log(density + 1) : 0;
+  final t = (logDensity / maxLog).clamp(0.0, 1.0);
+  return Color.lerp(lightColor, darkColor, t)!;
+}
+
+// Draw each country with data-driven color
+for (final feature in worldData.features) {
+  final name = feature.properties?['name'];
+  final density = densityData[name];
+  final color = getColorForDensity(density);
+  canvas.drawPath(path, Paint()..color = color);
+}
+''',
+    relatedCharts: ['geo-map', 'geo-usa', 'heatmap'],
+  );
+
+  static const geoUsa = ChartDocumentation(
+    overview: '''
+The USA map uses the Albers equal-area conic projection, which is optimized for the contiguous United States. It preserves area measurements and is the standard projection for US statistical maps.
+''',
+    useCases: [
+      'Displaying state-level statistics',
+      'Showing election maps',
+      'Visualizing regional economic data',
+      'Comparing state demographics',
+    ],
+    features: [
+      'Albers equal-area projection',
+      'State boundary rendering',
+      'Interactive state selection',
+      'State abbreviation labels',
+    ],
+    dataFormat: '''
+US States GeoJSON with properties:
+```dart
+{
+  'type': 'Feature',
+  'properties': {'name': 'California', 'density': 253.6},
+  'geometry': {'type': 'Polygon', 'coordinates': [...]},
+}
+```
+''',
+    codeSnippet: '''
+// Create Albers projection for USA
+final proj = geoAlbers(
+  center: (-96, 38),
+  scale: scale,
+  translate: center,
+  parallels0: 29.5,
+  parallels1: 45.5,
+);
+
+// Draw states with density coloring
+for (final feature in usaData.features) {
+  final density = feature.properties?['density'];
+  final color = getColorForDensity(density);
+  final paths = geoPathGenerator.generate(feature);
+
+  for (final pathPoints in paths) {
+    final path = Path()..addPolygon(pathPoints, true);
+    canvas.drawPath(path, Paint()..color = color);
+  }
+}
+''',
+    relatedCharts: ['geo-choropleth', 'geo-map'],
+  );
+
+  static const geoGlobe = ChartDocumentation(
+    overview: '''
+An interactive globe uses orthographic projection to create a 3D sphere effect. Users can rotate the globe by dragging, revealing different parts of the world with a natural globe-like perspective.
+''',
+    useCases: [
+      'Creating engaging global visualizations',
+      'Showing worldwide data with 3D effect',
+      'Educational geographic displays',
+      'Navigation and exploration interfaces',
+    ],
+    features: [
+      'Orthographic (globe) projection',
+      'Interactive drag-to-rotate',
+      'Auto-rotation animation',
+      'Atmosphere glow effect',
+    ],
+    dataFormat: '''
+World GeoJSON with standard format:
+```dart
+final worldData = GeoJsonFeatureCollection.fromJson(geoJson);
+```
+''',
+    codeSnippet: '''
+// Create orthographic projection with rotation
+final proj = geoOrthographic(
+  center: (0, 0),
+  scale: radius,
+  translate: center,
+  rotate: (-rotationX, -rotationY, 0),
+);
+
+// Handle drag gestures for rotation
+void onPanUpdate(DragUpdateDetails details) {
+  final delta = details.localPosition - lastPanPosition!;
+  setState(() {
+    rotationX = (rotationX - delta.dx * 0.5) % 360;
+    rotationY = (rotationY + delta.dy * 0.3).clamp(-90.0, 90.0);
+  });
+}
+
+// Draw globe background with gradient
+canvas.drawCircle(center, radius, Paint()..shader = globeGradient);
+
+// Draw land masses (only visible hemisphere)
+for (final feature in worldData.features) {
+  final paths = geoPathGenerator.generate(feature);
+  // Points on back hemisphere return NaN and are filtered out
+}
+''',
+    relatedCharts: ['geo-map', 'geo-choropleth'],
+  );
+
   // ============================================================
   // UTILITIES
   // ============================================================
@@ -1452,5 +1606,86 @@ for (final word in placedWords) {
 }
 ''',
     relatedCharts: ['heatmap', 'treemap'],
+  );
+
+  static const mockData = ChartDocumentation(
+    overview: '''
+The dv_mock_data package provides comprehensive mock data generators for testing and demos. Generate realistic random data for various chart types including scatter plots, line charts, bar charts, pie charts, heatmaps, networks, trees, and statistical distributions.
+''',
+    useCases: [
+      'Testing chart implementations with realistic data',
+      'Prototyping visualizations before real data is available',
+      'Creating demo applications and examples',
+      'Generating reproducible test cases with seeded random',
+      'Simulating time series data with various patterns',
+    ],
+    features: [
+      'Seeded random for reproducible results',
+      'Multiple chart data generators (scatter, line, bar, pie, etc.)',
+      'Statistical distributions (normal, exponential, Poisson, etc.)',
+      'Time series patterns (linear, sinusoidal, random walk, stock prices)',
+      'Hierarchical data (trees, treemaps)',
+      'Network graph data (nodes and links)',
+      'Geographic point data with clustering',
+      'OHLC candlestick data generation',
+    ],
+    dataFormat: '''
+MockData generators:
+```dart
+final mock = MockData(42); // optional seed
+
+// Scatter data
+final scatter = mock.scatterData(
+  count: 100,
+  correlation: 0.7,
+);
+
+// Bar data
+final bars = mock.barData(
+  bars: 5,
+  categories: ['A', 'B', 'C', 'D', 'E'],
+);
+
+// Hierarchical data
+final tree = mock.treemapData(
+  depth: 3,
+  minChildren: 2,
+  maxChildren: 4,
+);
+
+// Network data
+final network = mock.networkData(
+  nodeCount: 30,
+  linkProbability: 0.15,
+);
+```
+''',
+    codeSnippet: '''
+import 'package:dv_mock_data/dv_mock_data.dart';
+
+// Create seeded generator
+final mock = MockData(42);
+
+// Generate time series stock prices
+final now = DateTime.now();
+final prices = mock.timeSeries.stockPrice(
+  start: now.subtract(Duration(days: 365)),
+  end: now,
+  interval: Duration(days: 1),
+  startPrice: 100,
+  annualVolatility: 0.3,
+);
+
+// Generate box plot statistical data
+final boxData = mock.boxPlotData(
+  groups: 5,
+  samplesPerGroup: 100,
+);
+
+// Use random generator directly
+final values = mock.random.normalList(100, 50, 10);
+final walk = mock.random.randomWalk(50, start: 100, stepSize: 2);
+''',
+    relatedCharts: ['scatter-chart', 'line-chart', 'bar-chart', 'box-plot'],
   );
 }
