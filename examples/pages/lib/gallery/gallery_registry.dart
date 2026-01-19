@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'gallery_item.dart';
 import 'chart_docs.dart';
+import 'chart_sources.dart';
 import '../examples/line_chart_example.dart';
 import '../examples/bar_chart_example.dart';
 import '../examples/bar_chart_horizontal_example.dart';
@@ -46,7 +47,7 @@ class GalleryRegistry {
       primaryColor: Colors.indigo,
       tags: ['line', 'series', 'time-series', 'trend'],
       documentation: ChartDocs.lineChart,
-      sourcePath: 'assets/sources/line_chart_example.txt',
+      sourceCode: ChartSources.lineChart,
     ),
     GalleryItem(
       id: 'area-chart',
@@ -57,7 +58,7 @@ class GalleryRegistry {
       primaryColor: Colors.teal,
       tags: ['area', 'stacked', 'cumulative', 'flow'],
       documentation: ChartDocs.areaChart,
-      sourcePath: 'assets/sources/area_chart_example.txt',
+      sourceCode: ChartSources.areaChart,
     ),
     GalleryItem(
       id: 'curves',
@@ -68,7 +69,7 @@ class GalleryRegistry {
       primaryColor: Colors.purple,
       tags: ['curve', 'interpolation', 'smooth', 'spline'],
       documentation: ChartDocs.curves,
-      sourcePath: 'assets/sources/curves_example.txt',
+      sourceCode: ChartSources.curves,
     ),
     GalleryItem(
       id: 'streamgraph',
@@ -79,7 +80,7 @@ class GalleryRegistry {
       primaryColor: Colors.deepPurple,
       tags: ['stream', 'stacked', 'area', 'flow', 'time'],
       documentation: ChartDocs.streamgraph,
-      sourcePath: 'assets/sources/streamgraph_example.txt',
+      sourceCode: ChartSources.streamgraph,
     ),
     GalleryItem(
       id: 'threshold',
@@ -90,7 +91,7 @@ class GalleryRegistry {
       primaryColor: Colors.green,
       tags: ['threshold', 'difference', 'area', 'comparison'],
       documentation: ChartDocs.threshold,
-      sourcePath: 'assets/sources/threshold_example.txt',
+      sourceCode: ChartSources.threshold,
     ),
 
     // Bars
@@ -103,7 +104,7 @@ class GalleryRegistry {
       primaryColor: Colors.blue,
       tags: ['bar', 'grouped', 'comparison', 'categorical'],
       documentation: ChartDocs.barChart,
-      sourcePath: 'assets/sources/bar_chart_example.txt',
+      sourceCode: ChartSources.barChart,
     ),
     GalleryItem(
       id: 'bar-horizontal',
@@ -114,7 +115,7 @@ class GalleryRegistry {
       primaryColor: Colors.lightBlue,
       tags: ['bar', 'horizontal', 'grouped', 'stacked'],
       documentation: ChartDocs.barHorizontal,
-      sourcePath: 'assets/sources/bar_chart_horizontal_example.txt',
+      sourceCode: ChartSources.barHorizontal,
     ),
     GalleryItem(
       id: 'bar-stacked',
@@ -125,7 +126,7 @@ class GalleryRegistry {
       primaryColor: Colors.indigo,
       tags: ['bar', 'stacked', 'vertical', 'cumulative'],
       documentation: ChartDocs.barStacked,
-      sourcePath: 'assets/sources/bar_chart_stacked_example.txt',
+      sourceCode: ChartSources.barStacked,
     ),
 
     // Radial
@@ -138,7 +139,7 @@ class GalleryRegistry {
       primaryColor: Colors.orange,
       tags: ['pie', 'donut', 'proportion', 'percentage'],
       documentation: ChartDocs.pieChart,
-      sourcePath: 'assets/sources/pie_chart_example.txt',
+      sourceCode: ChartSources.pieChart,
     ),
     GalleryItem(
       id: 'radar-chart',
@@ -149,7 +150,7 @@ class GalleryRegistry {
       primaryColor: Colors.deepOrange,
       tags: ['radar', 'spider', 'polar', 'comparison'],
       documentation: ChartDocs.radarChart,
-      sourcePath: 'assets/sources/radar_chart_example.txt',
+      sourceCode: ChartSources.radarChart,
     ),
     GalleryItem(
       id: 'radial-bar',
@@ -160,7 +161,7 @@ class GalleryRegistry {
       primaryColor: Colors.amber,
       tags: ['radial', 'bar', 'circular', 'activity'],
       documentation: ChartDocs.radialBar,
-      sourcePath: 'assets/sources/radial_bar_example.txt',
+      sourceCode: ChartSources.radialBar,
     ),
 
     // Hierarchy
@@ -173,7 +174,7 @@ class GalleryRegistry {
       primaryColor: Colors.green,
       tags: ['treemap', 'hierarchy', 'nested', 'proportional'],
       documentation: ChartDocs.treemap,
-      sourcePath: 'assets/sources/hierarchy_example.txt',
+      sourceCode: ChartSources.treemap,
     ),
     GalleryItem(
       id: 'tree',
@@ -184,7 +185,7 @@ class GalleryRegistry {
       primaryColor: Colors.teal,
       tags: ['tree', 'dendrogram', 'hierarchy', 'org-chart'],
       documentation: ChartDocs.tree,
-      sourcePath: 'assets/sources/tree_example.txt',
+      sourceCode: ChartSources.tree,
     ),
     GalleryItem(
       id: 'pack',
@@ -195,7 +196,7 @@ class GalleryRegistry {
       primaryColor: Colors.cyan,
       tags: ['pack', 'circle', 'hierarchy', 'nested'],
       documentation: ChartDocs.pack,
-      sourcePath: 'assets/sources/pack_example.txt',
+      sourceCode: ChartSources.pack,
     ),
 
     // Scatter & Distribution
@@ -208,7 +209,7 @@ class GalleryRegistry {
       primaryColor: Colors.pink,
       tags: ['scatter', 'bubble', 'correlation', 'distribution'],
       documentation: ChartDocs.scatterChart,
-      sourcePath: 'assets/sources/scatter_chart_example.txt',
+      sourceCode: ChartSources.scatterChart,
     ),
     GalleryItem(
       id: 'heatmap',
@@ -219,7 +220,7 @@ class GalleryRegistry {
       primaryColor: Colors.deepOrange,
       tags: ['heatmap', 'matrix', 'color', 'intensity'],
       documentation: ChartDocs.heatmap,
-      sourcePath: 'assets/sources/heatmap_example.txt',
+      sourceCode: ChartSources.heatmap,
     ),
     GalleryItem(
       id: 'box-plot',
@@ -230,7 +231,7 @@ class GalleryRegistry {
       primaryColor: Colors.purple,
       tags: ['box', 'whisker', 'quartile', 'statistics', 'distribution'],
       documentation: ChartDocs.boxPlot,
-      sourcePath: 'assets/sources/box_plot_example.txt',
+      sourceCode: ChartSources.boxPlot,
     ),
 
     // Network
@@ -243,7 +244,7 @@ class GalleryRegistry {
       primaryColor: Colors.cyan,
       tags: ['voronoi', 'delaunay', 'triangulation', 'tessellation'],
       documentation: ChartDocs.voronoi,
-      sourcePath: 'assets/sources/delaunay_voronoi_example.txt',
+      sourceCode: ChartSources.voronoi,
     ),
     GalleryItem(
       id: 'network-graph',
@@ -254,7 +255,7 @@ class GalleryRegistry {
       primaryColor: Colors.indigo,
       tags: ['network', 'graph', 'force', 'nodes', 'edges'],
       documentation: ChartDocs.networkGraph,
-      sourcePath: 'assets/sources/network_graph_example.txt',
+      sourceCode: ChartSources.networkGraph,
     ),
     GalleryItem(
       id: 'chord-diagram',
@@ -265,7 +266,7 @@ class GalleryRegistry {
       primaryColor: Colors.pink,
       tags: ['chord', 'relationships', 'circular', 'flow'],
       documentation: ChartDocs.chordDiagram,
-      sourcePath: 'assets/sources/chord_diagram_example.txt',
+      sourceCode: ChartSources.chordDiagram,
     ),
     GalleryItem(
       id: 'sankey',
@@ -276,7 +277,7 @@ class GalleryRegistry {
       primaryColor: Colors.teal,
       tags: ['sankey', 'flow', 'energy', 'alluvial'],
       documentation: ChartDocs.sankey,
-      sourcePath: 'assets/sources/sankey_diagram_example.txt',
+      sourceCode: ChartSources.sankeyDiagram,
     ),
 
     // Geographic
@@ -289,7 +290,7 @@ class GalleryRegistry {
       primaryColor: Colors.lightGreen,
       tags: ['map', 'geo', 'projection', 'world'],
       documentation: ChartDocs.geoMap,
-      sourcePath: 'assets/sources/geo_map_example.txt',
+      sourceCode: ChartSources.geoMap,
     ),
 
     // Utilities
@@ -302,7 +303,7 @@ class GalleryRegistry {
       primaryColor: Colors.blueGrey,
       tags: ['scale', 'axis', 'linear', 'logarithmic'],
       documentation: ChartDocs.scales,
-      sourcePath: 'assets/sources/scales_example.txt',
+      sourceCode: ChartSources.scales,
     ),
     GalleryItem(
       id: 'interactive',
@@ -313,7 +314,7 @@ class GalleryRegistry {
       primaryColor: Colors.amber,
       tags: ['interactive', 'tooltip', 'hover', 'brush'],
       documentation: ChartDocs.interactive,
-      sourcePath: 'assets/sources/interactive_example.txt',
+      sourceCode: ChartSources.interactive,
     ),
     GalleryItem(
       id: 'brush',
@@ -324,7 +325,7 @@ class GalleryRegistry {
       primaryColor: Colors.blue,
       tags: ['brush', 'selection', 'interactive', 'filter'],
       documentation: ChartDocs.brush,
-      sourcePath: 'assets/sources/brush_example.txt',
+      sourceCode: ChartSources.brush,
     ),
     GalleryItem(
       id: 'zoom',
@@ -335,7 +336,7 @@ class GalleryRegistry {
       primaryColor: Colors.indigo,
       tags: ['zoom', 'pan', 'interactive', 'navigation'],
       documentation: ChartDocs.zoom,
-      sourcePath: 'assets/sources/zoom_example.txt',
+      sourceCode: ChartSources.zoom,
     ),
     GalleryItem(
       id: 'annotations',
@@ -346,7 +347,7 @@ class GalleryRegistry {
       primaryColor: Colors.red,
       tags: ['annotation', 'label', 'callout', 'reference'],
       documentation: ChartDocs.annotations,
-      sourcePath: 'assets/sources/annotations_example.txt',
+      sourceCode: ChartSources.annotations,
     ),
     GalleryItem(
       id: 'legends',
@@ -357,7 +358,7 @@ class GalleryRegistry {
       primaryColor: Colors.teal,
       tags: ['legend', 'series', 'toggle', 'interactive'],
       documentation: ChartDocs.legends,
-      sourcePath: 'assets/sources/legends_example.txt',
+      sourceCode: ChartSources.legends,
     ),
     GalleryItem(
       id: 'gradients',
@@ -368,7 +369,7 @@ class GalleryRegistry {
       primaryColor: Colors.purple,
       tags: ['gradient', 'color', 'fill', 'linear', 'radial'],
       documentation: ChartDocs.gradients,
-      sourcePath: 'assets/sources/gradients_example.txt',
+      sourceCode: ChartSources.gradients,
     ),
     GalleryItem(
       id: 'wordcloud',
@@ -379,7 +380,7 @@ class GalleryRegistry {
       primaryColor: Colors.deepPurple,
       tags: ['wordcloud', 'tags', 'text', 'frequency'],
       documentation: ChartDocs.wordcloud,
-      sourcePath: 'assets/sources/wordcloud_example.txt',
+      sourceCode: ChartSources.wordcloud,
     ),
   ];
 

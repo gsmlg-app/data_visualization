@@ -2,109 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 /// A widget that displays source code with syntax highlighting
-class SourceCodeViewer extends StatefulWidget {
-  final String sourcePath;
+class SourceCodeViewer extends StatelessWidget {
+  final String sourceCode;
+  final String? title;
   final Color accentColor;
 
   const SourceCodeViewer({
     super.key,
-    required this.sourcePath,
+    required this.sourceCode,
+    this.title,
     required this.accentColor,
   });
 
-  @override
-  State<SourceCodeViewer> createState() => _SourceCodeViewerState();
-}
-
-class _SourceCodeViewerState extends State<SourceCodeViewer> {
-  String? _sourceCode;
-  bool _isLoading = true;
-  String? _error;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadSourceCode();
-  }
-
-  @override
-  void didUpdateWidget(SourceCodeViewer oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.sourcePath != widget.sourcePath) {
-      _loadSourceCode();
-    }
-  }
-
-  Future<void> _loadSourceCode() async {
-    setState(() {
-      _isLoading = true;
-      _error = null;
-    });
-
-    try {
-      final source = await rootBundle.loadString(widget.sourcePath);
-      if (mounted) {
-        setState(() {
-          _sourceCode = source;
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _error = 'Failed to load source code: $e';
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
-  void _copyToClipboard() {
-    if (_sourceCode != null) {
-      Clipboard.setData(ClipboardData(text: _sourceCode!));
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Source code copied to clipboard'),
-          duration: Duration(seconds: 2),
-        ),
-      );
-    }
+  void _copyToClipboard(BuildContext context) {
+    Clipboard.setData(ClipboardData(text: sourceCode));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Source code copied to clipboard'),
+        duration: Duration(seconds: 2),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-
-    if (_isLoading) {
-      return Center(
-        child: CircularProgressIndicator(
-          color: widget.accentColor,
-        ),
-      );
-    }
-
-    if (_error != null) {
-      return Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.error_outline,
-              size: 48,
-              color: theme.colorScheme.error,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              _error!,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.error,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
 
     return Column(
       children: [
@@ -120,11 +43,11 @@ class _SourceCodeViewerState extends State<SourceCodeViewer> {
               Icon(
                 Icons.code,
                 size: 18,
-                color: widget.accentColor,
+                color: accentColor,
               ),
               const SizedBox(width: 8),
               Text(
-                _getFileName(),
+                title ?? 'source.dart',
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: Colors.white70,
                   fontFamily: 'monospace',
@@ -135,7 +58,7 @@ class _SourceCodeViewerState extends State<SourceCodeViewer> {
                 icon: const Icon(Icons.copy, size: 18),
                 color: Colors.white70,
                 tooltip: 'Copy source code',
-                onPressed: _copyToClipboard,
+                onPressed: () => _copyToClipboard(context),
                 visualDensity: VisualDensity.compact,
               ),
             ],
@@ -153,7 +76,7 @@ class _SourceCodeViewerState extends State<SourceCodeViewer> {
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: SelectableText.rich(
-                _buildHighlightedCode(_sourceCode!),
+                _buildHighlightedCode(sourceCode),
                 style: const TextStyle(
                   fontFamily: 'monospace',
                   fontSize: 13,
@@ -167,13 +90,7 @@ class _SourceCodeViewerState extends State<SourceCodeViewer> {
     );
   }
 
-  String _getFileName() {
-    final parts = widget.sourcePath.split('/');
-    final fileName = parts.last.replaceAll('.txt', '.dart');
-    return fileName;
-  }
-
-  TextSpan _buildHighlightedCode(String code) {
+  static TextSpan _buildHighlightedCode(String code) {
     final spans = <TextSpan>[];
     final lines = code.split('\n');
 
@@ -188,7 +105,7 @@ class _SourceCodeViewerState extends State<SourceCodeViewer> {
     return TextSpan(children: spans);
   }
 
-  List<TextSpan> _highlightLine(String line) {
+  static List<TextSpan> _highlightLine(String line) {
     final spans = <TextSpan>[];
 
     // Keywords
@@ -394,7 +311,7 @@ class _SourceCodeViewerState extends State<SourceCodeViewer> {
     return spans;
   }
 
-  void _addTokenSpan(
+  static void _addTokenSpan(
     List<TextSpan> spans,
     String token,
     List<String> keywords,
