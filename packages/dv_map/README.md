@@ -73,16 +73,14 @@ Each map file (e.g., `world/110m.dart`, `asia/china/110m.dart`) exports:
 - **Data getter**: `world110m`, `asiaChina110m`, etc.
 - **Widget class**: `World110mWidget`, `AsiaChina110mWidget`, etc.
 
-**Base widgets** (for custom use):
-- `MapWidget` - Base widget for rendering any GeoJSON data
-- `WorldMapWidget` - Specialized for world maps with default styling
-- `CountryMapWidget` - Specialized for country maps with default styling
-
-All widgets support:
+All generated widgets support:
 - Custom projections (Mercator, Orthographic, Albers, etc.)
 - Custom fill and stroke colors
 - Interactive tap detection
 - Full customization via parameters
+
+**Base widget** (for advanced custom use):
+- `MapWidget` - Base widget for rendering any GeoJSON data with full control
 
 ### Raw Data Access
 
