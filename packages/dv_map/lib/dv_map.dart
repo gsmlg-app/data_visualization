@@ -23,6 +23,11 @@ library dv_map;
 // Export all generated maps
 export 'maps/maps.dart';
 
+// Export map widgets
+export 'src/map_widget.dart';
+export 'src/world_map_widget.dart';
+export 'src/country_map_widget.dart';
+
 // Export dynamic loading API
 export 'src/map_assets.dart';
 export 'src/map_index.dart';

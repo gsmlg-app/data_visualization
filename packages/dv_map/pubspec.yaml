@@ -13,6 +13,8 @@ dependencies:
   flutter:
     sdk: flutter
   dv_geo_core:
+  dv_geo:
+  dv_point:
 
 dev_dependencies:
   flutter_test:
