@@ -3,17 +3,17 @@
 import 'dart:io';
 
 /// Generates Dart files for each GeoJSON map asset.
-/// Each generated file contains a const String with the GeoJSON data.
+/// Organized as: lib/maps/<continent>/<country>/<scale>.dart
 void main() async {
   final assetsDir = Directory('assets');
-  final outputDir = Directory('lib/maps');
+  final mapsDir = Directory('lib/maps');
 
-  if (outputDir.existsSync()) {
-    outputDir.deleteSync(recursive: true);
+  if (mapsDir.existsSync()) {
+    mapsDir.deleteSync(recursive: true);
   }
-  outputDir.createSync(recursive: true);
+  mapsDir.createSync(recursive: true);
 
-  final allMaps = <String, String>{};
+  final allMaps = <String, MapInfo>{};
 
   // Process all JSON files
   await for (final entity in assetsDir.list(recursive: true)) {
@@ -21,45 +21,136 @@ void main() async {
       final relativePath = entity.path.replaceFirst('assets/', '');
       final content = await entity.readAsString();
 
-      // Generate Dart-safe file name (lowercase with underscores)
-      final fileName = relativePath
+      final parts = relativePath.split('/');
+      String outputPath;
+      String importPath;
+
+      if (parts.length == 1) {
+        // Top-level files like world.110m.json or index-110m.json
+        final name = parts[0].replaceAll('.json', '');
+        outputPath = 'lib/maps/$name.dart';
+        importPath = 'package:dv_map/maps/$name.dart';
+      } else {
+        // Continent/country files like africa/nigeria.110m.json
+        final continent = parts[0];
+        final countryFile = parts[1].replaceAll('.json', '');
+        outputPath = 'lib/maps/$continent/$countryFile.dart';
+        importPath = 'package:dv_map/maps/$continent/$countryFile.dart';
+      }
+
+      // Generate camelCase getter name
+      final identifier = relativePath
           .replaceAll('.json', '')
           .replaceAll('/', '_')
           .replaceAll('-', '_')
           .replaceAll('.', '_')
           .toLowerCase();
+      final getterName = _toCamelCase(identifier);
 
-      // Generate camelCase getter name
-      final getterName = _toCamelCase(fileName);
-
-      // Create Dart file
-      final dartFileName = '$fileName.dart';
-      final outputFile = File('${outputDir.path}/$dartFileName');
+      // Create output directory
+      final outputFile = File(outputPath);
+      outputFile.parent.createSync(recursive: true);
 
       // Generate the Dart code
       final dartCode = generateMapFile(getterName, relativePath, content);
       await outputFile.writeAsString(dartCode);
 
-      allMaps[fileName] = dartFileName;
-      print('Generated: $dartFileName');
+      allMaps[identifier] = MapInfo(
+        getterName: getterName,
+        importPath: importPath,
+        assetPath: relativePath,
+      );
+      print('Generated: $outputPath');
     }
   }
 
-  // Generate index file that exports all maps
-  final indexFile = File('${outputDir.path}/maps.dart');
-  final exports =
-      allMaps.values.map((fileName) => "export '$fileName';").join('\n');
+  // Generate index file
+  await _generateIndexFile(mapsDir, allMaps);
 
-  await indexFile.writeAsString('''
-/// Generated map exports.
-/// Import only the maps you need for tree shaking.
-library dv_map.maps;
-
-$exports
-''');
+  // Generate continent index files
+  await _generateContinentIndexes(mapsDir, allMaps);
 
   print('\nGenerated ${allMaps.length} map files');
   print('Index file: lib/maps/maps.dart');
+}
+
+/// Generates the main index file that exports all maps
+Future<void> _generateIndexFile(
+  Directory mapsDir,
+  Map<String, MapInfo> allMaps,
+) async {
+  final indexFile = File('${mapsDir.path}/maps.dart');
+
+  final continents = <String>{};
+  for (final info in allMaps.values) {
+    final parts = info.importPath.split('/');
+    if (parts.length > 4) {
+      continents.add(parts[3]); // Extract continent from path
+    }
+  }
+
+  final exports = StringBuffer();
+  exports.writeln('/// Generated map exports.');
+  exports.writeln('/// Import specific continents or individual maps.');
+  exports.writeln('library dv_map.maps;');
+  exports.writeln();
+
+  // Export continent indexes
+  for (final continent in continents.toList()..sort()) {
+    exports.writeln("export '$continent/$continent.dart';");
+  }
+
+  // Export top-level maps (world, index files)
+  for (final info in allMaps.values) {
+    if (!info.importPath.contains('africa') &&
+        !info.importPath.contains('asia') &&
+        !info.importPath.contains('europe') &&
+        !info.importPath.contains('north_america') &&
+        !info.importPath.contains('south_america') &&
+        !info.importPath.contains('oceania') &&
+        !info.importPath.contains('antarctica') &&
+        !info.importPath.contains('seven_seas')) {
+      final fileName = info.importPath.split('/').last;
+      exports.writeln("export '$fileName';");
+    }
+  }
+
+  await indexFile.writeAsString(exports.toString());
+}
+
+/// Generates continent-level index files
+Future<void> _generateContinentIndexes(
+  Directory mapsDir,
+  Map<String, MapInfo> allMaps,
+) async {
+  final continentMaps = <String, List<MapInfo>>{};
+
+  for (final info in allMaps.values) {
+    final parts = info.assetPath.split('/');
+    if (parts.length > 1) {
+      final continent = parts[0];
+      continentMaps.putIfAbsent(continent, () => []).add(info);
+    }
+  }
+
+  for (final entry in continentMaps.entries) {
+    final continent = entry.key;
+    final maps = entry.value;
+
+    final indexFile = File('${mapsDir.path}/$continent/$continent.dart');
+    final exports = StringBuffer();
+    exports.writeln('/// Maps for $continent.');
+    exports.writeln('library dv_map.maps.$continent;');
+    exports.writeln();
+
+    for (final info in maps) {
+      final fileName = info.assetPath.split('/').last.replaceAll('.json', '');
+      exports.writeln("export '$fileName.dart';");
+    }
+
+    await indexFile.writeAsString(exports.toString());
+    print('Generated continent index: ${indexFile.path}');
+  }
 }
 
 /// Converts snake_case to camelCase
@@ -84,7 +175,6 @@ String generateMapFile(
   String assetPath,
   String jsonContent,
 ) {
-  // Use single quotes for the JSON content to avoid escaping issues
   final escaped = jsonContent.replaceAll("'", r"\'");
 
   return """
@@ -106,4 +196,16 @@ GeoJsonFeatureCollection get $getterName {
   throw StateError('Invalid GeoJSON format');
 }
 """;
+}
+
+class MapInfo {
+  final String getterName;
+  final String importPath;
+  final String assetPath;
+
+  MapInfo({
+    required this.getterName,
+    required this.importPath,
+    required this.assetPath,
+  });
 }

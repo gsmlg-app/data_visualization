@@ -26,15 +26,21 @@ The maps are Natural Earth country boundaries converted to GeoJSON at scales 110
 Import only the maps you need. Your app will only bundle the imported maps:
 
 ```dart
-import 'package:dv_map/maps/world_110m.dart';
-import 'package:dv_map/maps/africa_nigeria_50m.dart';
-import 'package:dv_map/maps/asia_china_10m.dart';
+// Import world map
+import 'package:dv_map/maps/world.110m.dart';
+
+// Import specific country maps
+import 'package:dv_map/maps/africa/nigeria.50m.dart';
+import 'package:dv_map/maps/asia/china.10m.dart';
+
+// Or import all maps from a continent
+import 'package:dv_map/maps/africa/africa.dart';
 
 void main() {
   // Maps are available as camelCase getters (no async loading needed)
-  final world = world110m;           // GeoJsonFeatureCollection
-  final nigeria = africaNigeria50m;  // GeoJsonFeatureCollection
-  final china = asiaChina10m;        // GeoJsonFeatureCollection
+  final world = world110m;             // GeoJsonFeatureCollection
+  final nigeria = africaNigeria50m;    // GeoJsonFeatureCollection
+  final china = asiaChina10m;          // GeoJsonFeatureCollection
 
   print('World has ${world.features.length} countries');
 }
@@ -42,27 +48,45 @@ void main() {
 
 ### Available maps
 
-**File naming:** `{region}_{country}_{scale}.dart` (snake_case)
-**Getter naming:** `{region}{Country}{Scale}` (camelCase)
+**Directory structure:**
+```
+lib/maps/
+├── world.{scale}.dart        # World maps
+├── index-{scale}.dart        # Country metadata indexes
+├── africa/
+│   ├── africa.dart          # Exports all African country maps
+│   ├── {country}.{scale}.dart
+├── asia/
+│   ├── asia.dart            # Exports all Asian country maps
+│   ├── {country}.{scale}.dart
+├── europe/
+│   ├── europe.dart          # Exports all European country maps
+│   ├── {country}.{scale}.dart
+├── north-america/
+│   ├── north-america.dart   # Exports all North American country maps
+│   ├── {country}.{scale}.dart
+├── south-america/
+│   ├── south-america.dart   # Exports all South American country maps
+│   ├── {country}.{scale}.dart
+└── oceania/
+    ├── oceania.dart         # Exports all Oceanian country maps
+    └── {country}.{scale}.dart
+```
+
+**Naming conventions:**
+- **Files**: `{country}.{scale}.dart` (kebab-case with dots)
+- **Getters**: `{region}{Country}{Scale}` (camelCase)
 
 **World maps:**
-- `world_110m.dart` → `world110m` (~921 KB) - Low resolution
-- `world_50m.dart` → `world50m` (~8.4 MB) - Medium resolution
-- `world_10m.dart` → `world10m` (~46 MB) - High resolution
-
-**Country maps:**
-- `africa_*.dart` → `africa*` - African countries
-- `asia_*.dart` → `asia*` - Asian countries
-- `europe_*.dart` → `europe*` - European countries
-- `north_america_*.dart` → `northAmerica*` - North American countries
-- `south_america_*.dart` → `southAmerica*` - South American countries
-- `oceania_*.dart` → `oceania*` - Oceanian countries
+- `maps/world.110m.dart` → `world110m` getter (~921 KB)
+- `maps/world.50m.dart` → `world50m` getter (~8.4 MB)
+- `maps/world.10m.dart` → `world10m` getter (~46 MB)
 
 **Examples:**
-- `africa_nigeria_110m.dart` → `africaNigeria110m` getter
-- `asia_japan_50m.dart` → `asiaJapan50m` getter
-- `europe_france_10m.dart` → `europeFrance10m` getter
-- `north_america_usa_110m.dart` → `northAmericaUsa110m` getter
+- `maps/africa/nigeria.110m.dart` → `africaNigeria110m` getter
+- `maps/asia/japan.50m.dart` → `asiaJapan50m` getter
+- `maps/europe/france.10m.dart` → `europeFrance10m` getter
+- `maps/north-america/usa.110m.dart` → `northAmericaUsa110m` getter
 
 ### Legacy API (no tree shaking)
 

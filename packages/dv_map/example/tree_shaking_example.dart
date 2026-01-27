@@ -1,5 +1,5 @@
-import 'package:dv_map/maps/world_110m.dart';
-import 'package:dv_map/maps/africa_nigeria_110m.dart';
+import 'package:dv_map/maps/world.110m.dart';
+import 'package:dv_map/maps/africa/nigeria.110m.dart';
 
 /// Example demonstrating tree shaking with dv_map.
 ///
