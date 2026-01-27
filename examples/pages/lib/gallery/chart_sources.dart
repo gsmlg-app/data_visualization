@@ -1122,6 +1122,79 @@ class GeoMapPainter extends CustomPainter {
 //   ..center = [0, 20];
 ''';
 
+  static const geoPrebuilt = r'''
+import 'package:flutter/material.dart';
+import 'package:data_visualization/data_visualization.dart';
+
+class PrebuiltMapExample extends StatefulWidget {
+  const PrebuiltMapExample({super.key});
+
+  @override
+  State<PrebuiltMapExample> createState() => _PrebuiltMapExampleState();
+}
+
+class _PrebuiltMapExampleState extends State<PrebuiltMapExample> {
+  GeoJsonFeatureCollection? mapData;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    final data = await DvMapLoader.loadWorld(MapScale.m110);
+    setState(() => mapData = data);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (mapData == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    return CustomPaint(
+      painter: PrebuiltMapPainter(mapData!),
+      size: const Size(double.infinity, double.infinity),
+    );
+  }
+}
+
+class PrebuiltMapPainter extends CustomPainter {
+  PrebuiltMapPainter(this.mapData);
+
+  final GeoJsonFeatureCollection mapData;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Point(size.width / 2, size.height / 2);
+    final scale = size.shortestSide / 3.2;
+    final proj = geoMercator(center: (0, 0), scale: scale, translate: center);
+    final paths = GeoPath(proj).generate(mapData);
+
+    for (final points in paths) {
+      if (points.length < 3) continue;
+      final path = Path()..moveTo(points.first.x, points.first.y);
+      for (final p in points.skip(1)) {
+        path.lineTo(p.x, p.y);
+      }
+      path.close();
+
+      canvas.drawPath(path, Paint()..color = Colors.lightGreen.shade200);
+      canvas.drawPath(
+        path,
+        Paint()
+          ..color = Colors.green.shade700
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 0.6,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+''';
+
   static const geoChoropleth = r'''
 import 'dart:math' as math;
 import 'package:flutter/material.dart';

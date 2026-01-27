@@ -34,6 +34,7 @@ dependencies:
   dv_legend:
   dv_annotation:
   dv_geo:
+  dv_map:
   dv_event:
   dv_tooltip:
   dv_brush:

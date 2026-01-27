@@ -16,6 +16,7 @@ import '../examples/delaunay_voronoi_example.dart';
 import '../examples/scales_example.dart';
 import '../examples/curves_example.dart';
 import '../examples/geo_map_example.dart';
+import '../examples/geo_prebuilt_maps_example.dart';
 import '../examples/geo_choropleth_example.dart';
 import '../examples/geo_usa_example.dart';
 import '../examples/geo_globe_example.dart';
@@ -295,6 +296,17 @@ class GalleryRegistry {
       tags: ['map', 'geo', 'projection', 'world'],
       documentation: ChartDocs.geoMap,
       sourceCode: ChartSources.geoMap,
+    ),
+    GalleryItem(
+      id: 'geo-prebuilt',
+      title: 'Prebuilt Maps',
+      description: 'Natural Earth maps with selectable countries',
+      category: ChartCategory.geographic,
+      builder: () => const GeoPrebuiltMapsExample(),
+      primaryColor: Colors.lightBlue,
+      tags: ['map', 'geo', 'natural-earth', 'countries', 'selection'],
+      documentation: ChartDocs.geoPrebuilt,
+      sourceCode: ChartSources.geoPrebuilt,
     ),
     GalleryItem(
       id: 'geo-choropleth',

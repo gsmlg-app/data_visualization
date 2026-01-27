@@ -27,6 +27,7 @@ workspace:
   - packages/dv_legend
   - packages/dv_annotation
   - packages/dv_geo
+  - packages/dv_map
   - packages/dv_event
   - packages/dv_tooltip
   - packages/dv_brush

@@ -1063,6 +1063,43 @@ for (final feature in geoJson['features']) {
     relatedCharts: ['heatmap', 'scatter-chart'],
   );
 
+  static const geoPrebuilt = ChartDocumentation(
+    overview: '''
+Prebuilt Natural Earth maps provide ready-to-use country boundaries at multiple scales. They are ideal for fast prototyping, consistent geographic basemaps, and region selection workflows.
+''',
+    useCases: [
+      'Quickly displaying world or country boundaries',
+      'Building region selectors or drill-down maps',
+      'Reducing setup time for geographic demos',
+      'Ensuring consistent basemaps across visualizations',
+    ],
+    features: [
+      'Three Natural Earth scales (110m, 50m, 10m)',
+      'World or single-country FeatureCollections',
+      'ISO/name lookup with asset index',
+      'Bundled GeoJSON assets for offline use',
+    ],
+    dataFormat: '''
+GeoJSON FeatureCollection loaded from assets:
+```dart
+final world = await DvMapLoader.loadWorld(MapScale.m110);
+final usa = await DvMapLoader.loadCountry(scale: MapScale.m110, isoA3: 'USA');
+```
+''',
+    codeSnippet: '''
+// Load a country map by ISO code
+final usa = await DvMapLoader.loadCountry(
+  scale: MapScale.m50,
+  isoA3: 'USA',
+);
+
+// Render with GeoPath + projection
+final proj = geoMercator(center: (0, 0), scale: scale, translate: center);
+final paths = GeoPath(proj).generate(usa);
+''',
+    relatedCharts: ['geo-map', 'geo-choropleth', 'geo-usa'],
+  );
+
   static const geoChoropleth = ChartDocumentation(
     overview: '''
 A choropleth map uses color to represent data values for geographic regions. The intensity of color corresponds to the data value, making it easy to identify patterns and compare regions.

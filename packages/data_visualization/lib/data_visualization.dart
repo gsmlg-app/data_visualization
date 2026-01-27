@@ -32,6 +32,7 @@ export 'package:dv_annotation/dv_annotation.dart';
 
 // Geographic
 export 'package:dv_geo/dv_geo.dart';
+export 'package:dv_map/dv_map.dart';
 
 // Interactions
 export 'package:dv_event/dv_event.dart';
