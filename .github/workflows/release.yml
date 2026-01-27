@@ -67,16 +67,59 @@ jobs:
       - name: Run analysis
         run: melos run analyze
 
-      - name: Bump versions
+      - name: Calculate new version
         id: version
         run: |
-          echo "Bumping ${{ github.event.inputs.version_type }} version..."
-          melos version --yes --no-git-tag-version ${{ github.event.inputs.version_type }}
+          # Get current version from main package
+          CURRENT_VERSION=$(grep "^version:" packages/data_visualization/pubspec.yaml | sed 's/version: //')
+          echo "Current version: $CURRENT_VERSION"
 
-          # Get new version from main package
-          VERSION=$(grep "^version:" packages/data_visualization/pubspec.yaml | sed 's/version: //')
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "New version: $VERSION"
+          # Parse version components
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
+
+          # Bump version based on type
+          case "${{ github.event.inputs.version_type }}" in
+            major)
+              MAJOR=$((MAJOR + 1))
+              MINOR=0
+              PATCH=0
+              ;;
+            minor)
+              MINOR=$((MINOR + 1))
+              PATCH=0
+              ;;
+            patch)
+              PATCH=$((PATCH + 1))
+              ;;
+          esac
+
+          NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}"
+          echo "New version: $NEW_VERSION"
+          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Sync all package versions
+        run: |
+          echo "Synchronizing all packages to version ${{ steps.version.outputs.version }}..."
+          chmod +x scripts/sync_versions.dart
+          dart scripts/sync_versions.dart ${{ steps.version.outputs.version }}
+
+      - name: Verify synchronized versions
+        run: |
+          echo "Verifying all packages have the same version..."
+          EXPECTED_VERSION="${{ steps.version.outputs.version }}"
+
+          for pubspec in packages/*/pubspec.yaml; do
+            PKG_VERSION=$(grep "^version:" "$pubspec" | sed 's/version: //')
+            PKG_NAME=$(grep "^name:" "$pubspec" | sed 's/name: //')
+
+            if [ "$PKG_VERSION" != "$EXPECTED_VERSION" ]; then
+              echo "❌ ERROR: $PKG_NAME has version $PKG_VERSION, expected $EXPECTED_VERSION"
+              exit 1
+            fi
+            echo "✓ $PKG_NAME: $PKG_VERSION"
+          done
+
+          echo "✓ All packages synchronized to version $EXPECTED_VERSION"
 
       - name: Generate changelog
         id: changelog
@@ -90,8 +133,12 @@ jobs:
           # Get commits since last tag
           LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
           if [ -n "$LAST_TAG" ]; then
+            echo "Changes since $LAST_TAG:" >> RELEASE_NOTES.md
+            echo "" >> RELEASE_NOTES.md
             git log ${LAST_TAG}..HEAD --pretty=format:"* %s (%h)" >> RELEASE_NOTES.md
           else
+            echo "Initial release" >> RELEASE_NOTES.md
+            echo "" >> RELEASE_NOTES.md
             git log --pretty=format:"* %s (%h)" --max-count=50 >> RELEASE_NOTES.md
           fi
 
@@ -99,10 +146,10 @@ jobs:
 
           ## Published Packages
 
-          All packages in this monorepo have been published to pub.dev:
+          **All 36 packages published with synchronized version v${{ steps.version.outputs.version }}**
 
           - **data_visualization** - Umbrella package (includes all packages)
-          - **35+ individual packages** - Core utilities, scales, shapes, geographic, hierarchical, charts, and more
+          - **35 individual packages** - Core utilities, scales, shapes, geographic, hierarchical, charts, and more
 
           See [README.md](https://github.com/gsmlg-dev/data_visualization/blob/main/README.md) for full package list.
 
@@ -111,6 +158,15 @@ jobs:
           \`\`\`yaml
           dependencies:
             data_visualization: ^${{ steps.version.outputs.version }}
+          \`\`\`
+
+          Or install individual packages:
+
+          \`\`\`yaml
+          dependencies:
+            dv_scale: ^${{ steps.version.outputs.version }}
+            dv_curve: ^${{ steps.version.outputs.version }}
+            dv_shape: ^${{ steps.version.outputs.version }}
           \`\`\`
 
           ## Resources
@@ -126,8 +182,10 @@ jobs:
       - name: Commit version changes
         if: ${{ github.event.inputs.dry_run != 'true' }}
         run: |
-          git add .
-          git commit -m "chore(release): publish packages v${{ steps.version.outputs.version }}" || echo "No changes to commit"
+          git add packages/*/pubspec.yaml
+          git commit -m "chore(release): publish packages v${{ steps.version.outputs.version }}
+
+          All packages updated to version ${{ steps.version.outputs.version }}" || echo "No changes to commit"
           git push origin main
 
       - name: Create Git tag
@@ -146,12 +204,25 @@ jobs:
         if: ${{ github.event.inputs.dry_run == 'true' }}
         run: |
           echo "🔍 Dry run mode - checking what would be published..."
+          echo ""
+          echo "Version: ${{ steps.version.outputs.version }}"
+          echo ""
+          echo "Packages to publish:"
+          melos list --json | jq -r '.[] | "- \(.name)@${{ steps.version.outputs.version }}"'
+          echo ""
+          echo "Running publish dry-run..."
           melos publish --no-private --dry-run
 
       - name: Publish to pub.dev
         if: ${{ github.event.inputs.dry_run != 'true' }}
         run: |
-          echo "📦 Publishing packages to pub.dev..."
+          echo "📦 Publishing all packages to pub.dev..."
+          echo "Version: ${{ steps.version.outputs.version }}"
+          echo ""
+
+          # Publish all packages at once
+          # Note: pub.dev has a rate limit of 12 packages per 24h rolling window
+          # If you have more than 12 packages, you may need to split the publishing
           melos publish --no-private --no-dry-run -y
 
       - name: Create GitHub Release
@@ -179,8 +250,23 @@ jobs:
           if [ "${{ github.event.inputs.dry_run }}" == "true" ]; then
             echo "⚠️ **This was a dry run. No packages were published.**" >> $GITHUB_STEP_SUMMARY
           else
-            echo "✅ **Packages published successfully!**" >> $GITHUB_STEP_SUMMARY
+            echo "✅ **All packages published with synchronized version!**" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
-            echo "### Published Packages" >> $GITHUB_STEP_SUMMARY
-            melos list --json | jq -r '.[] | "- [\(.name)@\(.version)](https://pub.dev/packages/\(.name))"' >> $GITHUB_STEP_SUMMARY
+            echo "### Published Packages (All v${{ steps.version.outputs.version }})" >> $GITHUB_STEP_SUMMARY
+            melos list --json | jq -r '.[] | "- [\(.name)](https://pub.dev/packages/\(.name))"' >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "⚠️ **Note:** If you have 36+ packages, pub.dev rate limit (12/24h) may apply." >> $GITHUB_STEP_SUMMARY
+            echo "You may need to wait and transfer remaining packages manually." >> $GITHUB_STEP_SUMMARY
           fi
+
+      - name: Post-release instructions
+        if: ${{ github.event.inputs.dry_run != 'true' }}
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## 📋 Post-Release Checklist" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- [ ] Verify packages on [pub.dev](https://pub.dev/publishers/gsmlg.dev/packages)" >> $GITHUB_STEP_SUMMARY
+          echo "- [ ] Transfer new packages to gsmlg.dev publisher" >> $GITHUB_STEP_SUMMARY
+          echo "- [ ] Test installation: \`flutter pub add data_visualization:^${{ steps.version.outputs.version }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- [ ] Update demo site if needed" >> $GITHUB_STEP_SUMMARY
+          echo "- [ ] Announce release" >> $GITHUB_STEP_SUMMARY

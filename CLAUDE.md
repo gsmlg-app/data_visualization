@@ -103,14 +103,15 @@ dart pub publish --force
 
 ### Versioning
 
-```bash
-# Bump versions for changed packages
-melos run version:patch   # 1.0.0 -> 1.0.1
-melos run version:minor   # 1.0.0 -> 1.1.0
-melos run version:major   # 1.0.0 -> 2.0.0
-```
+**Important:** All packages use **synchronized versioning** - all packages must have the same version and be published together.
 
-Versioning is **independent** - each package has its own version number.
+```bash
+# Synchronize all packages to a specific version
+dart scripts/sync_versions.dart 1.0.1
+
+# Verify all packages have the same version
+grep -r "^version:" packages/*/pubspec.yaml
+```
 
 ## Key Architecture Patterns
 

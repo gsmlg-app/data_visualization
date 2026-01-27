@@ -54,9 +54,8 @@ melos:
     - packages/**
     - examples/**
 
-  versioning:
-    mode: independent
-    updateDependentsConstraints: true
+  # All packages must maintain the same version
+  # Versioning is handled by scripts/sync_versions.dart
 
   command:
     version:
@@ -96,17 +95,9 @@ melos:
       exec: dart format --set-exit-if-changed .
       description: Check formatting of all packages
 
-    version:patch:
-      run: melos version --yes --no-git-tag-version patch
-      description: Bump patch version for all changed packages
-
-    version:minor:
-      run: melos version --yes --no-git-tag-version minor
-      description: Bump minor version for all changed packages
-
-    version:major:
-      run: melos version --yes --no-git-tag-version major
-      description: Bump major version for all changed packages
+    version:sync:
+      run: dart scripts/sync_versions.dart
+      description: Synchronize all packages to the same version
 
     pub-publish:
       run: dart pub global run melos publish -y --no-dry-run --no-private

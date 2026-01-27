@@ -2,6 +2,17 @@
 
 This document describes how to release new versions of the data_visualization packages.
 
+## Important: Synchronized Versioning
+
+**All packages MUST be published with the same version at the same time.**
+
+This monorepo uses synchronized versioning:
+- All 36 packages share the same version number
+- When releasing, all packages are updated to the new version
+- All packages are published together in one release
+
+Example: If releasing v1.0.1, all packages (data_visualization, dv_scale, dv_curve, etc.) will be v1.0.1.
+
 ## Automated Release (Recommended)
 
 Use the GitHub Actions workflow for automated releases:
@@ -42,15 +53,21 @@ If you need to release manually:
 
 ### 1. Update versions
 
+All packages must be updated to the same version:
+
 ```bash
-# Bump patch version (1.0.0 → 1.0.1)
-melos version --yes --no-git-tag-version patch
+# Calculate new version based on current version
+CURRENT=$(grep "^version:" packages/data_visualization/pubspec.yaml | sed 's/version: //')
+echo "Current version: $CURRENT"
 
-# Bump minor version (1.0.0 → 1.1.0)
-melos version --yes --no-git-tag-version minor
+# Manually calculate new version (e.g., 1.0.0 → 1.0.1)
+NEW_VERSION="1.0.1"
 
-# Bump major version (1.0.0 → 2.0.0)
-melos version --yes --no-git-tag-version major
+# Sync all packages to the new version
+dart scripts/sync_versions.dart $NEW_VERSION
+
+# Verify all packages have the same version
+grep -r "^version:" packages/*/pubspec.yaml
 ```
 
 ### 2. Commit and tag
@@ -106,9 +123,22 @@ The workflow needs:
 
 pub.dev has a rate limit of **12 packages per 24-hour rolling window**.
 
-If you hit the limit:
-1. Wait for the rolling window to pass
-2. Resume publishing the remaining packages manually
+**Since we have 36 packages, you will need to publish across multiple days:**
+- Day 1: Publish first 12 packages
+- Day 2: Publish next 12 packages
+- Day 3: Publish final 12 packages
+
+The workflow will handle as many as possible, then you need to:
+1. Wait 24 hours for the rolling window to pass
+2. Resume publishing remaining packages manually:
+   ```bash
+   # Publish specific packages
+   cd packages/package_name
+   dart pub publish --force
+   ```
+3. Transfer newly published packages to gsmlg.dev publisher
+
+**Important:** All packages must be published with the same version, even if spread across multiple days.
 
 ### Version conflicts
 
