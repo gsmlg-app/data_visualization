@@ -247,7 +247,37 @@ Paths ignored by CI: `.md` files, `.claude/`, docs, IDE configs.
 
 All packages are published to pub.dev under the `gsmlg.dev` verified publisher.
 
-After publishing, packages need to be transferred to the publisher:
+### Automated Release (Recommended)
+
+Use the GitHub Actions **Release** workflow:
+1. Go to Actions → Release workflow
+2. Select version bump type (patch/minor/major)
+3. Enable dry run to preview changes
+4. Run workflow
+
+The workflow will:
+- Bump versions using Melos
+- Run tests and analysis
+- Commit version changes
+- Create git tag
+- Publish to pub.dev
+- Create GitHub release
+
+See `.github/RELEASE.md` for detailed instructions.
+
+### Manual Publishing
+
+```bash
+# Bump versions
+melos version --yes --no-git-tag-version patch
+
+# Publish to pub.dev (hits rate limit at 12 packages/24h)
+melos publish --no-private --no-dry-run -y
+```
+
+### After Publishing
+
+New packages need to be transferred to the publisher:
 1. Navigate to `https://pub.dev/packages/{package}/admin`
 2. Select `gsmlg.dev` from publisher dropdown
 3. Click "TRANSFER TO PUBLISHER"

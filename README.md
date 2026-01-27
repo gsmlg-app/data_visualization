@@ -281,6 +281,17 @@ melos run test
 melos run format
 ```
 
+## Release Process
+
+We use GitHub Actions for automated releases. See [.github/RELEASE.md](.github/RELEASE.md) for details.
+
+Quick release:
+1. Go to **Actions** → **Release**
+2. Select version bump type (patch/minor/major)
+3. Run workflow (enable dry run first to preview)
+
+The workflow handles version bumping, publishing to pub.dev, tagging, and creating GitHub releases.
+
 ## License
 
 MIT License - see [LICENSE](LICENSE) for details.
