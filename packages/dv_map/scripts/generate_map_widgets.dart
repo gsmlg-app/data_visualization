@@ -4,8 +4,8 @@ import 'dart:convert';
 import 'dart:io';
 
 /// Generates Dart files for each GeoJSON map asset.
-/// Each file contains gzipped binary data encoded as base64.
-/// Organized as: lib/maps/<continent>/<country>/<scale>.dart
+/// Structure: lib/maps/<continent>/<country>/<scale>.dart
+/// Variable names convert hyphens to underscores.
 void main() async {
   final assetsDir = Directory('assets');
   final mapsDir = Directory('lib/maps');
@@ -38,22 +38,44 @@ void main() async {
 
       if (parts.length == 1) {
         // Top-level files like world.110m.json or index-110m.json
-        final name = parts[0].replaceAll('.json', '');
-        outputPath = 'lib/maps/$name.dart';
-        importPath = 'package:dv_map/maps/$name.dart';
+        // Extract scale from filename: world.110m.json -> world/110m.dart
+        final fileName = parts[0].replaceAll('.json', '');
+        final fileParts = fileName.split('.');
+
+        if (fileParts.length == 2) {
+          // Has a scale part: world.110m -> world/110m.dart
+          final baseName = fileParts[0];
+          final scale = fileParts[1];
+          outputPath = 'lib/maps/$baseName/$scale.dart';
+          importPath = 'package:dv_map/maps/$baseName/$scale.dart';
+        } else {
+          // No scale part: keep flat structure for index files
+          outputPath = 'lib/maps/$fileName.dart';
+          importPath = 'package:dv_map/maps/$fileName.dart';
+        }
       } else {
-        // Continent/country files like africa/nigeria.110m.json
+        // Continent/country files: africa/nigeria.110m.json -> africa/nigeria/110m.dart
         final continent = parts[0];
         final countryFile = parts[1].replaceAll('.json', '');
-        outputPath = 'lib/maps/$continent/$countryFile.dart';
-        importPath = 'package:dv_map/maps/$continent/$countryFile.dart';
+        final countryParts = countryFile.split('.');
+
+        if (countryParts.length == 2) {
+          final country = countryParts[0];
+          final scale = countryParts[1];
+          outputPath = 'lib/maps/$continent/$country/$scale.dart';
+          importPath = 'package:dv_map/maps/$continent/$country/$scale.dart';
+        } else {
+          // Fallback for unexpected format
+          outputPath = 'lib/maps/$continent/$countryFile.dart';
+          importPath = 'package:dv_map/maps/$continent/$countryFile.dart';
+        }
       }
 
-      // Generate camelCase getter name
+      // Generate camelCase getter name with underscores instead of hyphens
       final identifier = relativePath
           .replaceAll('.json', '')
           .replaceAll('/', '_')
-          .replaceAll('-', '_')
+          .replaceAll('-', '_')  // Convert hyphens to underscores
           .replaceAll('.', '_')
           .toLowerCase();
       final getterName = _toCamelCase(identifier);
@@ -70,63 +92,20 @@ void main() async {
         getterName: getterName,
         importPath: importPath,
         assetPath: relativePath,
+        outputPath: outputPath,
       );
       print('Generated: $outputPath ($ratio% of original)');
     }
   }
 
-  // Generate index file
-  await _generateIndexFile(mapsDir, allMaps);
-
   // Generate continent index files
   await _generateContinentIndexes(mapsDir, allMaps);
 
+  // Generate top-level index file
+  await _generateMainIndexFile(mapsDir, allMaps);
+
   print('\nGenerated ${allMaps.length} map files');
   print('Index file: lib/maps/maps.dart');
-}
-
-/// Generates the main index file that exports all maps
-Future<void> _generateIndexFile(
-  Directory mapsDir,
-  Map<String, MapInfo> allMaps,
-) async {
-  final indexFile = File('${mapsDir.path}/maps.dart');
-
-  final continents = <String>{};
-  for (final info in allMaps.values) {
-    final parts = info.importPath.split('/');
-    if (parts.length > 4) {
-      continents.add(parts[3]); // Extract continent from path
-    }
-  }
-
-  final exports = StringBuffer();
-  exports.writeln('/// Generated map exports.');
-  exports.writeln('/// Import specific continents or individual maps.');
-  exports.writeln('library dv_map.maps;');
-  exports.writeln();
-
-  // Export continent indexes
-  for (final continent in continents.toList()..sort()) {
-    exports.writeln("export '$continent/$continent.dart';");
-  }
-
-  // Export top-level maps (world, index files)
-  for (final info in allMaps.values) {
-    if (!info.importPath.contains('africa') &&
-        !info.importPath.contains('asia') &&
-        !info.importPath.contains('europe') &&
-        !info.importPath.contains('north_america') &&
-        !info.importPath.contains('south_america') &&
-        !info.importPath.contains('oceania') &&
-        !info.importPath.contains('antarctica') &&
-        !info.importPath.contains('seven_seas')) {
-      final fileName = info.importPath.split('/').last;
-      exports.writeln("export '$fileName';");
-    }
-  }
-
-  await indexFile.writeAsString(exports.toString());
 }
 
 /// Generates continent-level index files
@@ -134,34 +113,129 @@ Future<void> _generateContinentIndexes(
   Directory mapsDir,
   Map<String, MapInfo> allMaps,
 ) async {
-  final continentMaps = <String, List<MapInfo>>{};
+  // Group maps by continent
+  final continentMaps = <String, Set<String>>{};
 
   for (final info in allMaps.values) {
-    final parts = info.assetPath.split('/');
-    if (parts.length > 1) {
-      final continent = parts[0];
-      continentMaps.putIfAbsent(continent, () => []).add(info);
+    final parts = info.outputPath.split('/');
+    if (parts.length >= 4 && parts[0] == 'lib' && parts[1] == 'maps') {
+      final continent = parts[2];
+      if (continent != 'world' && !continent.endsWith('.dart')) {
+        continentMaps.putIfAbsent(continent, () => {}).add(info.outputPath);
+      }
     }
   }
 
+  // Generate index file for each continent
   for (final entry in continentMaps.entries) {
     final continent = entry.key;
-    final maps = entry.value;
-
     final indexFile = File('${mapsDir.path}/$continent/$continent.dart');
+
     final exports = StringBuffer();
     exports.writeln('/// Maps for $continent.');
     exports.writeln('library dv_map.maps.$continent;');
     exports.writeln();
 
-    for (final info in maps) {
-      final fileName = info.assetPath.split('/').last.replaceAll('.json', '');
-      exports.writeln("export '$fileName.dart';");
+    // Get all unique country directories
+    final countries = <String>{};
+    for (final path in entry.value) {
+      final parts = path.split('/');
+      if (parts.length >= 5) {
+        countries.add(parts[3]); // country name
+      }
+    }
+
+    // Export each country's index
+    for (final country in countries.toList()..sort()) {
+      exports.writeln("export '$country/$country.dart';");
     }
 
     await indexFile.writeAsString(exports.toString());
     print('Generated continent index: ${indexFile.path}');
   }
+
+  // Generate country-level index files
+  await _generateCountryIndexes(mapsDir, allMaps);
+}
+
+/// Generates country-level index files
+Future<void> _generateCountryIndexes(
+  Directory mapsDir,
+  Map<String, MapInfo> allMaps,
+) async {
+  // Group maps by continent/country
+  final countryMaps = <String, List<MapInfo>>{};
+
+  for (final info in allMaps.values) {
+    final parts = info.outputPath.split('/');
+    if (parts.length >= 5 && parts[0] == 'lib' && parts[1] == 'maps') {
+      final continent = parts[2];
+      final country = parts[3];
+      final key = '$continent/$country';
+      countryMaps.putIfAbsent(key, () => []).add(info);
+    }
+  }
+
+  // Generate index file for each country
+  for (final entry in countryMaps.entries) {
+    final parts = entry.key.split('/');
+    final continent = parts[0];
+    final country = parts[1];
+    final indexFile = File('${mapsDir.path}/$continent/$country/$country.dart');
+
+    final exports = StringBuffer();
+    exports.writeln('/// Maps for $country ($continent).');
+    exports.writeln('library dv_map.maps.$continent.$country;');
+    exports.writeln();
+
+    for (final info in entry.value) {
+      final pathParts = info.outputPath.split('/');
+      final scaleFile = pathParts.last;
+      exports.writeln("export '$scaleFile';");
+    }
+
+    await indexFile.writeAsString(exports.toString());
+    print('Generated country index: ${indexFile.path}');
+  }
+}
+
+/// Generates the main index file
+Future<void> _generateMainIndexFile(
+  Directory mapsDir,
+  Map<String, MapInfo> allMaps,
+) async {
+  final indexFile = File('${mapsDir.path}/maps.dart');
+
+  // Get all continents
+  final continents = <String>{};
+  for (final info in allMaps.values) {
+    final parts = info.outputPath.split('/');
+    if (parts.length >= 4 && parts[0] == 'lib' && parts[1] == 'maps') {
+      final continent = parts[2];
+      if (continent != 'world' && !continent.endsWith('.dart')) {
+        continents.add(continent);
+      }
+    }
+  }
+
+  final exports = StringBuffer();
+  exports.writeln('/// Generated map exports.');
+  exports.writeln('/// Import specific continents, countries, or scales as needed.');
+  exports.writeln('library dv_map.maps;');
+  exports.writeln();
+
+  // Export continents
+  exports.writeln('// Continent exports');
+  for (final continent in continents.toList()..sort()) {
+    exports.writeln("export '$continent/$continent.dart';");
+  }
+
+  // Export world maps
+  exports.writeln();
+  exports.writeln('// World maps');
+  exports.writeln("export 'world/world.dart';");
+
+  await indexFile.writeAsString(exports.toString());
 }
 
 /// Converts snake_case to camelCase
@@ -231,10 +305,12 @@ class MapInfo {
   final String getterName;
   final String importPath;
   final String assetPath;
+  final String outputPath;
 
   MapInfo({
     required this.getterName,
     required this.importPath,
     required this.assetPath,
+    required this.outputPath,
   });
 }
