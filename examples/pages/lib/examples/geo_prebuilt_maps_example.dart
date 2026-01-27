@@ -1,96 +1,76 @@
 import 'package:flutter/material.dart';
 import 'package:data_visualization/data_visualization.dart';
 
+// Import prebuilt maps - only these will be bundled
+import 'package:dv_map/maps/world/110m.dart' as world_110m;
+import 'package:dv_map/maps/world/50m.dart' as world_50m;
+import 'package:dv_map/maps/africa/nigeria/110m.dart' as nigeria;
+import 'package:dv_map/maps/asia/china/110m.dart' as china;
+import 'package:dv_map/maps/asia/japan/110m.dart' as japan;
+import 'package:dv_map/maps/europe/france/110m.dart' as france;
+import 'package:dv_map/maps/north-america/united-states-of-america/110m.dart' as usa;
+import 'package:dv_map/maps/south-america/brazil/110m.dart' as brazil;
+import 'package:dv_map/maps/oceania/australia/110m.dart' as australia;
+
 class GeoPrebuiltMapsExample extends StatefulWidget {
   const GeoPrebuiltMapsExample({super.key});
 
   @override
-  State<GeoPrebuiltMapsExample> createState() => _GeoPrebuiltMapsExampleState();
+  State<GeoPrebuiltMapsExample> createState() =>
+      _GeoPrebuiltMapsExampleState();
 }
 
 class _GeoPrebuiltMapsExampleState extends State<GeoPrebuiltMapsExample> {
-  MapScale _scale = MapScale.m110;
   String _projection = 'Mercator';
   double _rotation = 0;
 
-  GeoJsonFeatureCollection? _mapData;
-  bool _loading = true;
-  String? _error;
+  final List<String> _projections = [
+    'Mercator',
+    'Equirectangular',
+    'Orthographic'
+  ];
 
-  final List<String> _projections = ['Mercator', 'Equirectangular', 'Orthographic'];
+  String _selectedMap = 'world_110m';
 
-  List<MapCountryEntry> _countries = [];
-  final Map<String, MapCountryEntry> _entryById = {};
-  String _selectionId = 'world';
-
-  @override
-  void initState() {
-    super.initState();
-    _loadIndexAndWorld();
-  }
-
-  Future<void> _loadIndexAndWorld() async {
-    setState(() {
-      _loading = true;
-      _error = null;
-      _selectionId = 'world';
-    });
-
-    try {
-      final index = await DvMapIndex.load(_scale);
-      _countries = index.countries;
-      _entryById
-        ..clear()
-        ..addEntries(
-          _countries.map((e) => MapEntry(e.asset, e)),
-        );
-
-      final world = await DvMapLoader.loadWorld(_scale);
-      setState(() {
-        _mapData = world;
-        _loading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _error = e.toString();
-        _loading = false;
-      });
-    }
-  }
-
-  Future<void> _loadSelection(String selectionId) async {
-    setState(() {
-      _loading = true;
-      _error = null;
-      _selectionId = selectionId;
-    });
-
-    try {
-      GeoJsonFeatureCollection data;
-      if (selectionId == 'world') {
-        data = await DvMapLoader.loadWorld(_scale);
-      } else {
-        final entry = _entryById[selectionId];
-        if (entry == null) {
-          throw StateError('Unknown map selection: $selectionId');
-        }
-        data = await DvMapLoader.loadCountryBySlug(
-          scale: _scale,
-          continentSlug: entry.continentSlug,
-          countrySlug: entry.countrySlug,
-        );
-      }
-      setState(() {
-        _mapData = data;
-        _loading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _error = e.toString();
-        _loading = false;
-      });
-    }
-  }
+  // Map of available prebuilt maps
+  final Map<String, MapData> _availableMaps = {
+    'world_110m': MapData(
+      'World (110m)',
+      world_110m.world110m,
+    ),
+    'world_50m': MapData(
+      'World (50m)',
+      world_50m.world50m,
+    ),
+    'nigeria': MapData(
+      'Nigeria',
+      nigeria.africaNigeria110m,
+    ),
+    'china': MapData(
+      'China',
+      china.asiaChina110m,
+    ),
+    'japan': MapData(
+      'Japan',
+      japan.asiaJapan110m,
+    ),
+    'france': MapData(
+      'France',
+      france.europeFrance110m,
+    ),
+    'usa': MapData(
+      'United States',
+      usa.northAmericaUnitedStatesOfAmerica110m,
+    ),
+    'brazil': MapData(
+      'Brazil',
+      brazil.southAmericaBrazil110m,
+    ),
+    'australia': MapData(
+      'Australia',
+      australia.oceaniaAustralia110m,
+    ),
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +84,6 @@ class _GeoPrebuiltMapsExampleState extends State<GeoPrebuiltMapsExample> {
             runSpacing: 12,
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              _buildScaleSelector(),
               _buildProjectionSelector(),
               _buildMapSelector(),
               if (_projection == 'Orthographic') _buildRotationSlider(),
@@ -124,33 +103,14 @@ class _GeoPrebuiltMapsExampleState extends State<GeoPrebuiltMapsExample> {
               ),
             ),
           ),
+          const SizedBox(height: 16),
+          Text(
+            'Note: Only imported maps are bundled (tree-shakeable). '
+            'This example imports 9 maps (~2 MB total).',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
         ],
       ),
-    );
-  }
-
-  Widget _buildScaleSelector() {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const Text('Scale:'),
-        const SizedBox(width: 8),
-        DropdownButton<MapScale>(
-          value: _scale,
-          items: const [
-            DropdownMenuItem(value: MapScale.m110, child: Text('110m')),
-            DropdownMenuItem(value: MapScale.m50, child: Text('50m')),
-            DropdownMenuItem(value: MapScale.m10, child: Text('10m')),
-          ],
-          onChanged: (value) {
-            if (value == null || value == _scale) return;
-            setState(() {
-              _scale = value;
-            });
-            _loadIndexAndWorld();
-          },
-        ),
-      ],
     );
   }
 
@@ -175,31 +135,22 @@ class _GeoPrebuiltMapsExampleState extends State<GeoPrebuiltMapsExample> {
   }
 
   Widget _buildMapSelector() {
-    final values = <String>{'world', ..._countries.map((e) => e.asset)};
-    final effectiveValue = values.contains(_selectionId) ? _selectionId : 'world';
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         const Text('Map:'),
         const SizedBox(width: 8),
         DropdownButton<String>(
-          value: effectiveValue,
-          items: [
-            const DropdownMenuItem(
-              value: 'world',
-              child: Text('World (all countries)'),
-            ),
-            ..._countries.map((entry) {
-              final label = '${entry.name} · ${entry.continent}';
-              return DropdownMenuItem(
-                value: entry.asset,
-                child: Text(label),
-              );
-            }),
-          ],
+          value: _selectedMap,
+          items: _availableMaps.entries.map((entry) {
+            return DropdownMenuItem(
+              value: entry.key,
+              child: Text(entry.value.name),
+            );
+          }).toList(),
           onChanged: (value) {
-            if (value == null || value == _selectionId) return;
-            _loadSelection(value);
+            if (value == null) return;
+            setState(() => _selectedMap = value);
           },
         ),
       ],
@@ -226,34 +177,9 @@ class _GeoPrebuiltMapsExampleState extends State<GeoPrebuiltMapsExample> {
   }
 
   Widget _buildMapContent() {
-    if (_loading) {
-      return const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircularProgressIndicator(),
-            SizedBox(height: 16),
-            Text('Loading map...'),
-          ],
-        ),
-      );
-    }
-
-    if (_error != null) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.error_outline, size: 48, color: Colors.redAccent),
-            const SizedBox(height: 16),
-            Text('Error loading map: $_error'),
-          ],
-        ),
-      );
-    }
-
-    if (_mapData == null) {
-      return const Center(child: Text('No map data loaded.'));
+    final mapData = _availableMaps[_selectedMap]?.data;
+    if (mapData == null) {
+      return const Center(child: Text('Map not found.'));
     }
 
     return LayoutBuilder(
@@ -263,12 +189,19 @@ class _GeoPrebuiltMapsExampleState extends State<GeoPrebuiltMapsExample> {
           painter: GeoMapPainter(
             projection: _projection,
             rotation: _rotation,
-            mapData: _mapData!,
+            mapData: mapData,
           ),
         );
       },
     );
   }
+}
+
+class MapData {
+  final String name;
+  final GeoJsonFeatureCollection data;
+
+  MapData(this.name, this.data);
 }
 
 class GeoMapPainter extends CustomPainter {
@@ -290,10 +223,14 @@ class GeoMapPainter extends CustomPainter {
     Projection proj;
     switch (projection) {
       case 'Equirectangular':
-        proj = geoEquirectangular(center: (0, 0), scale: scale, translate: center);
+        proj = EquirectangularProjection(
+          center: (0, 0),
+          scale: scale,
+          translate: center,
+        );
         break;
       case 'Orthographic':
-        proj = geoOrthographic(
+        proj = OrthographicProjection(
           center: (0, 0),
           scale: scale * 1.2,
           translate: center,
@@ -301,7 +238,11 @@ class GeoMapPainter extends CustomPainter {
         );
         break;
       default:
-        proj = geoMercator(center: (0, 0), scale: scale, translate: center);
+        proj = MercatorProjection(
+          center: (0, 0),
+          scale: scale,
+          translate: center,
+        );
     }
 
     if (projection == 'Orthographic') {

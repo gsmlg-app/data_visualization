@@ -1080,22 +1080,30 @@ Prebuilt Natural Earth maps provide ready-to-use country boundaries at multiple 
       'Bundled GeoJSON assets for offline use',
     ],
     dataFormat: '''
-GeoJSON FeatureCollection loaded from assets:
+GeoJSON FeatureCollection from generated code:
 ```dart
-final world = await DvMapLoader.loadWorld(MapScale.m110);
-final usa = await DvMapLoader.loadCountry(scale: MapScale.m110, isoA3: 'USA');
+import 'package:dv_map/maps/world/110m.dart';
+import 'package:dv_map/maps/north-america/united-states-of-america/110m.dart';
+
+final world = world110m;  // Synchronous, tree-shakeable
+final usa = northAmericaUnitedStatesOfAmerica110m;
 ```
 ''',
     codeSnippet: '''
-// Load a country map by ISO code
-final usa = await DvMapLoader.loadCountry(
-  scale: MapScale.m50,
-  isoA3: 'USA',
-);
+// Import the map you need
+import 'package:dv_map/maps/north-america/united-states-of-america/50m.dart';
+
+final usa = northAmericaUnitedStatesOfAmerica50m;
 
 // Render with GeoPath + projection
-final proj = geoMercator(center: (0, 0), scale: scale, translate: center);
+final proj = MercatorProjection(center: (0, 0), scale: scale, translate: center);
 final paths = GeoPath(proj).generate(usa);
+
+// Or use the generated widget
+Usa50mWidget(
+  projection: MercatorProjection(),
+  fillColor: Colors.blue,
+)
 ''',
     relatedCharts: ['geo-map', 'geo-choropleth', 'geo-usa'],
   );
