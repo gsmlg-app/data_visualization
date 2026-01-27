@@ -1,0 +1,150 @@
+// Generated from: assets/africa/eritrea.110m.json
+// ignore_for_file: lines_longer_than_80_chars
+
+import 'dart:convert';
+import 'package:dv_geo_core/dv_geo_core.dart';
+
+/// GeoJSON data for africa/eritrea.110m.json
+const String _kGeoJson = '''{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Eritrea",
+        "iso_a2": "ER",
+        "iso_a3": "ERI",
+        "continent": "Africa"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              36.42951,
+              14.42211
+            ],
+            [
+              37.59377,
+              14.2131
+            ],
+            [
+              37.90607,
+              14.95943
+            ],
+            [
+              38.51295,
+              14.50547
+            ],
+            [
+              39.0994,
+              14.74064
+            ],
+            [
+              39.34061,
+              14.53155
+            ],
+            [
+              40.02625,
+              14.51959
+            ],
+            [
+              40.8966,
+              14.11864
+            ],
+            [
+              41.1552,
+              13.77333
+            ],
+            [
+              41.59856,
+              13.45209
+            ],
+            [
+              42.00975,
+              12.86582
+            ],
+            [
+              42.35156,
+              12.54223
+            ],
+            [
+              42.7796424,
+              12.4554158
+            ],
+            [
+              43.081226,
+              12.6996386
+            ],
+            [
+              42.5895765,
+              13.0004213
+            ],
+            [
+              42.2768307,
+              13.343992
+            ],
+            [
+              41.7349516,
+              13.9210369
+            ],
+            [
+              41.1792749,
+              14.4910796
+            ],
+            [
+              39.8142937,
+              15.4356473
+            ],
+            [
+              39.2661101,
+              15.9227235
+            ],
+            [
+              38.990623,
+              16.8406261
+            ],
+            [
+              38.41009,
+              17.9983074
+            ],
+            [
+              37.904,
+              17.42754
+            ],
+            [
+              37.16747,
+              17.26314
+            ],
+            [
+              36.85253,
+              16.95655
+            ],
+            [
+              36.75389,
+              16.29186
+            ],
+            [
+              36.32322,
+              14.82249
+            ],
+            [
+              36.42951,
+              14.42211
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}
+''';
+
+/// Parses the GeoJSON for africa/eritrea.110m.json
+GeoJsonFeatureCollection get africaEritrea110m {
+  final data = parseGeoJson(
+    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+  );
+  if (data is GeoJsonFeatureCollection) return data;
+  throw StateError('Invalid GeoJSON format');
+}

@@ -14,10 +14,6 @@ dependencies:
     sdk: flutter
   dv_geo_core:
 
-flutter:
-  assets:
-    - assets/
-
 dev_dependencies:
   flutter_test:
     sdk: flutter

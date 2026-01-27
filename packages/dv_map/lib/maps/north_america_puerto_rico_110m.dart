@@ -1,0 +1,74 @@
+// Generated from: assets/north-america/puerto-rico.110m.json
+// ignore_for_file: lines_longer_than_80_chars
+
+import 'dart:convert';
+import 'package:dv_geo_core/dv_geo_core.dart';
+
+/// GeoJSON data for north-america/puerto-rico.110m.json
+const String _kGeoJson = '''{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Puerto Rico",
+        "iso_a2": "PR",
+        "iso_a3": "PRI",
+        "continent": "North America"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -66.2824345,
+              18.5147617
+            ],
+            [
+              -67.1006791,
+              18.5206011
+            ],
+            [
+              -67.2424275,
+              18.3744602
+            ],
+            [
+              -67.1841624,
+              17.9465535
+            ],
+            [
+              -66.5999345,
+              17.9818226
+            ],
+            [
+              -65.8471639,
+              17.9759057
+            ],
+            [
+              -65.5910038,
+              18.228035
+            ],
+            [
+              -65.7713029,
+              18.4266792
+            ],
+            [
+              -66.2824345,
+              18.5147617
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}
+''';
+
+/// Parses the GeoJSON for north-america/puerto-rico.110m.json
+GeoJsonFeatureCollection get northAmericaPuertoRico110m {
+  final data = parseGeoJson(
+    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+  );
+  if (data is GeoJsonFeatureCollection) return data;
+  throw StateError('Invalid GeoJSON format');
+}
