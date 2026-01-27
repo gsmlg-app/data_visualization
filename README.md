@@ -2,7 +2,7 @@
 
 A comprehensive data visualization library for Flutter, inspired by D3.js.
 
-[![CI](https://github.com/gsmlg-dev/data_visualization/actions/workflows/ci.yml/badge.svg)](https://github.com/gsmlg-dev/data_visualization/actions/workflows/ci.yml)
+[![CI](https://github.com/gsmlg-app/data_visualization/actions/workflows/ci.yml/badge.svg)](https://github.com/gsmlg-app/data_visualization/actions/workflows/ci.yml)
 [![pub package](https://img.shields.io/pub/v/data_visualization.svg)](https://pub.dev/packages/data_visualization)
 [![publisher](https://img.shields.io/pub/publisher/data_visualization.svg)](https://pub.dev/publishers/gsmlg.dev)
 

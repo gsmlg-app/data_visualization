@@ -1,7 +1,7 @@
 name: dv_vendor
 description: Core utility functions for data visualization - array operations and interpolation.
-repository: https://github.com/gsmlg-dev/data_visualization/tree/main/packages/dv_vendor
-homepage: https://github.com/gsmlg-dev/data_visualization
+repository: https://github.com/gsmlg-app/data_visualization/tree/main/packages/dv_vendor
+homepage: https://github.com/gsmlg-app/data_visualization
 version: 1.0.0
 resolution: workspace
 

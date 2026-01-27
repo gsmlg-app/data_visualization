@@ -151,7 +151,7 @@ jobs:
           - **data_visualization** - Umbrella package (includes all packages)
           - **35 individual packages** - Core utilities, scales, shapes, geographic, hierarchical, charts, and more
 
-          See [README.md](https://github.com/gsmlg-dev/data_visualization/blob/main/README.md) for full package list.
+          See [README.md](https://github.com/gsmlg-app/data_visualization/blob/main/README.md) for full package list.
 
           ## Installation
 
@@ -173,7 +173,7 @@ jobs:
 
           - 📊 [Live Demo](https://gsmlg-app.github.io/data_visualization/)
           - 📖 [Documentation](https://pub.dev/packages/data_visualization)
-          - 💻 [GitHub](https://github.com/gsmlg-dev/data_visualization)
+          - 💻 [GitHub](https://github.com/gsmlg-app/data_visualization)
           EOF
 
           echo "Release notes generated:"

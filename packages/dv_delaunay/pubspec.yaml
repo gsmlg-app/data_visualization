@@ -1,7 +1,7 @@
 name: dv_delaunay
 description: Delaunay triangulation for point sets.
-repository: https://github.com/gsmlg-dev/data_visualization/tree/main/packages/dv_delaunay
-homepage: https://github.com/gsmlg-dev/data_visualization
+repository: https://github.com/gsmlg-app/data_visualization/tree/main/packages/dv_delaunay
+homepage: https://github.com/gsmlg-app/data_visualization
 version: 1.0.0
 resolution: workspace
 

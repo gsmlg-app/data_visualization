@@ -315,5 +315,5 @@ class GeoMapPainter extends CustomPainter {
 ## Resources
 
 - **Live Demo**: https://gsmlg-app.github.io/data_visualization/
-- **GitHub**: https://github.com/gsmlg-dev/data_visualization
+- **GitHub**: https://github.com/gsmlg-app/data_visualization
 - **pub.dev**: https://pub.dev/packages/data_visualization

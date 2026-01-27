@@ -1,7 +1,7 @@
 name: dv_gradient
 description: Gradient definitions for chart styling.
-repository: https://github.com/gsmlg-dev/data_visualization/tree/main/packages/dv_gradient
-homepage: https://github.com/gsmlg-dev/data_visualization
+repository: https://github.com/gsmlg-app/data_visualization/tree/main/packages/dv_gradient
+homepage: https://github.com/gsmlg-app/data_visualization
 version: 1.0.0
 resolution: workspace
 

@@ -97,7 +97,7 @@ melos publish --no-private --no-dry-run -y
 
 ### 4. Create GitHub release
 
-Go to [Releases](https://github.com/gsmlg-dev/data_visualization/releases) and create a new release:
+Go to [Releases](https://github.com/gsmlg-app/data_visualization/releases) and create a new release:
 - Tag: `v${VERSION}`
 - Title: `Release v${VERSION}`
 - Description: Copy from CHANGELOG.md or write release notes

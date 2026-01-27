@@ -49,7 +49,7 @@ dev_dependencies:
 
 melos:
   name: data_visualization
-  repository: https://github.com/gsmlg-dev/data_visualization
+  repository: https://github.com/gsmlg-app/data_visualization
   packages:
     - packages/**
     - examples/**

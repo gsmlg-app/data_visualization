@@ -1,7 +1,7 @@
 name: dv_clip_path
 description: Clip path definitions for chart areas.
-repository: https://github.com/gsmlg-dev/data_visualization/tree/main/packages/dv_clip_path
-homepage: https://github.com/gsmlg-dev/data_visualization
+repository: https://github.com/gsmlg-app/data_visualization/tree/main/packages/dv_clip_path
+homepage: https://github.com/gsmlg-app/data_visualization
 version: 1.0.0
 resolution: workspace
 
