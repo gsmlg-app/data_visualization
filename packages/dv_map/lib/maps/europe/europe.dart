@@ -16,7 +16,6 @@ export 'faroe-islands/faroe-islands.dart';
 export 'finland/finland.dart';
 export 'france/france.dart';
 export 'germany/germany.dart';
-export 'gibraltar/gibraltar.dart';
 export 'greece/greece.dart';
 export 'guernsey/guernsey.dart';
 export 'hungary/hungary.dart';

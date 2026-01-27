@@ -4,7 +4,6 @@ export 'american-samoa/american-samoa.dart';
 export 'ashmore-and-cartier-islands/ashmore-and-cartier-islands.dart';
 export 'australia/australia.dart';
 export 'cook-islands/cook-islands.dart';
-export 'coral-sea-islands/coral-sea-islands.dart';
 export 'federated-states-of-micronesia/federated-states-of-micronesia.dart';
 export 'fiji/fiji.dart';
 export 'french-polynesia/french-polynesia.dart';

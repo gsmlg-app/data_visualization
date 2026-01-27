@@ -17,9 +17,14 @@ void main() async {
 
   final allMaps = <String, MapInfo>{};
 
-  // Process all JSON files
+  // Process all JSON files (skip 10m resolution to keep package size under 100MB limit)
   await for (final entity in assetsDir.list(recursive: true)) {
     if (entity is File && entity.path.endsWith('.json')) {
+      // Skip 10m resolution maps (too large for pub.dev)
+      if (entity.path.contains('10m.json')) {
+        continue;
+      }
+
       final relativePath = entity.path.replaceFirst('assets/', '');
       final jsonContent = await entity.readAsString();
 

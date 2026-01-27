@@ -8,7 +8,7 @@ Prebuilt Natural Earth Admin 0 GeoJSON maps packaged for Flutter with **tree sha
 - ✅ **Tree shaking** - Only imports the maps you use
 - ✅ **No asset bundling** - Maps are embedded as Dart constants
 - ✅ **Type safe** - Each map is a named getter
-- ✅ **680+ maps** - World maps and individual countries at 3 resolutions
+- ✅ **450+ maps** - World maps and individual countries at 2 resolutions (110m, 50m)
 - ✅ **Interactive** - Tap detection and event handling
 - ✅ **Customizable** - Full control over styling and projections
 
@@ -161,7 +161,6 @@ lib/maps/
 |------|-------------|--------------|------|
 | `maps/world/110m.dart` | `world110m` | `World110mWidget` | ~171 KB |
 | `maps/world/50m.dart` | `world50m` | `World50mWidget` | ~1.3 MB |
-| `maps/world/10m.dart` | `world10m` | `World10mWidget` | ~7.3 MB |
 
 **Country maps examples:**
 
@@ -169,7 +168,6 @@ lib/maps/
 |------|-------------|--------------|
 | `maps/africa/nigeria/110m.dart` | `africaNigeria110m` | `Nigeria110mWidget` |
 | `maps/asia/japan/50m.dart` | `asiaJapan50m` | `Japan50mWidget` |
-| `maps/europe/france/10m.dart` | `europeFrance10m` | `France10mWidget` |
 | `maps/asia/china/110m.dart` | `asiaChina110m` | `China110mWidget` |
 | `maps/asia/afghanistan/110m.dart` | `asiaAfghanistan110m` | `Afghanistan110mWidget` |
 | `maps/africa/south-sudan/50m.dart` | `africaSouthSudan50m` | `SouthSudan50mWidget` |
@@ -184,7 +182,7 @@ lib/maps/
 **Bundle size** - Only imported maps are included:
 - `world.110m` only: ~171 KB
 - `world.50m` only: ~1.3 MB
-- `world.110m` + 5 countries: ~350 KB
+- `world.110m` + 5 countries (110m): ~350 KB
 - Import what you need!
 
 **Size comparison:**
@@ -193,7 +191,6 @@ lib/maps/
 |-----|----------|-----------------|---------|
 | world.110m | 921 KB | 171 KB | 81% |
 | world.50m | 8.4 MB | 1.3 MB | 84% |
-| world.10m | 46 MB | 7.3 MB | 84% |
 | Country (avg) | ~100 KB | ~15 KB | 85% |
 
 Maps are stored as gzipped binary (base64 encoded) for maximum compression.

@@ -1,7 +1,6 @@
 /// Maps for seven-seas-open-ocean.
 
 export 'british-indian-ocean-territory/british-indian-ocean-territory.dart';
-export 'clipperton-island/clipperton-island.dart';
 export 'french-southern-and-antarctic-lands/french-southern-and-antarctic-lands.dart';
 export 'heard-island-and-mcdonald-islands/heard-island-and-mcdonald-islands.dart';
 export 'maldives/maldives.dart';

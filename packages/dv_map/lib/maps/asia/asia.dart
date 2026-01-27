@@ -1,19 +1,15 @@
 /// Maps for asia.
 
 export 'afghanistan/afghanistan.dart';
-export 'akrotiri-sovereign-base-area/akrotiri-sovereign-base-area.dart';
 export 'armenia/armenia.dart';
 export 'azerbaijan/azerbaijan.dart';
 export 'bahrain/bahrain.dart';
 export 'bangladesh/bangladesh.dart';
-export 'baykonur-cosmodrome/baykonur-cosmodrome.dart';
 export 'bhutan/bhutan.dart';
 export 'brunei/brunei.dart';
 export 'cambodia/cambodia.dart';
 export 'china/china.dart';
 export 'cyprus/cyprus.dart';
-export 'cyprus-no-mans-area/cyprus-no-mans-area.dart';
-export 'dhekelia-sovereign-base-area/dhekelia-sovereign-base-area.dart';
 export 'east-timor/east-timor.dart';
 export 'georgia/georgia.dart';
 export 'hong-kong-s-a-r/hong-kong-s-a-r.dart';
@@ -43,11 +39,9 @@ export 'palestine/palestine.dart';
 export 'philippines/philippines.dart';
 export 'qatar/qatar.dart';
 export 'saudi-arabia/saudi-arabia.dart';
-export 'scarborough-reef/scarborough-reef.dart';
 export 'siachen-glacier/siachen-glacier.dart';
 export 'singapore/singapore.dart';
 export 'south-korea/south-korea.dart';
-export 'spratly-islands/spratly-islands.dart';
 export 'sri-lanka/sri-lanka.dart';
 export 'syria/syria.dart';
 export 'taiwan/taiwan.dart';

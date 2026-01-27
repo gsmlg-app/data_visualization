@@ -3,7 +3,6 @@
 export 'algeria/algeria.dart';
 export 'angola/angola.dart';
 export 'benin/benin.dart';
-export 'bir-tawil/bir-tawil.dart';
 export 'botswana/botswana.dart';
 export 'burkina-faso/burkina-faso.dart';
 export 'burundi/burundi.dart';
