@@ -4,10 +4,13 @@ Prebuilt Natural Earth Admin 0 GeoJSON maps packaged for Flutter with **tree sha
 
 ## Features
 
+- ✅ **Flutter widgets** - Ready-to-use widgets for rendering maps
 - ✅ **Tree shaking** - Only imports the maps you use
 - ✅ **No asset bundling** - Maps are embedded as Dart constants
 - ✅ **Type safe** - Each map is a named getter
 - ✅ **680+ maps** - World maps and individual countries at 3 resolutions
+- ✅ **Interactive** - Tap detection and event handling
+- ✅ **Customizable** - Full control over styling and projections
 
 ## Data source
 
@@ -21,7 +24,50 @@ The maps are Natural Earth country boundaries converted to GeoJSON at scales 110
 
 ## Usage
 
-Two APIs are available depending on your use case:
+### Map Widgets (Recommended)
+
+Use the provided widgets to render maps in your Flutter app:
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:dv_map/dv_map.dart';
+import 'package:dv_geo_core/dv_geo_core.dart';
+import 'package:dv_map/maps/world/110m.dart';
+
+class MyMapApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: WorldMapWidget(
+        geoJson: world110m,
+        projection: MercatorProjection(),
+        fillColor: Colors.grey.shade300,
+        strokeColor: Colors.grey.shade700,
+        onCountryTap: (country, position) {
+          print('Tapped: ${country.properties!['name']}');
+        },
+      ),
+    );
+  }
+}
+```
+
+**Available widgets:**
+- `MapWidget` - Base widget for rendering any GeoJSON data
+- `WorldMapWidget` - Specialized for world maps with default styling
+- `CountryMapWidget` - Specialized for country maps with default styling
+
+All widgets support:
+- Custom projections (Mercator, Orthographic, Albers, etc.)
+- Custom fill and stroke colors
+- Interactive tap detection
+- Full customization via parameters
+
+### Raw Data Access
+
+Two APIs are available for accessing the raw map data:
+
+
 
 ### 1. Tree-shakeable imports (recommended)
 
