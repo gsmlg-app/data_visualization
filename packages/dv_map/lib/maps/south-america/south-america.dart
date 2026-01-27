@@ -1,5 +1,4 @@
 /// Maps for south-america.
-library dv_map.maps.south-america;
 
 export 'argentina/argentina.dart';
 export 'bolivia/bolivia.dart';

@@ -1,5 +1,4 @@
 /// Maps for seven-seas-open-ocean.
-library dv_map.maps.seven-seas-open-ocean;
 
 export 'british-indian-ocean-territory/british-indian-ocean-territory.dart';
 export 'clipperton-island/clipperton-island.dart';

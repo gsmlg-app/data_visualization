@@ -1,5 +1,4 @@
 /// Maps for north-america.
-library dv_map.maps.north-america;
 
 export 'anguilla/anguilla.dart';
 export 'antigua-and-barbuda/antigua-and-barbuda.dart';

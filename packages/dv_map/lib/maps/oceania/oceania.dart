@@ -1,5 +1,4 @@
 /// Maps for oceania.
-library dv_map.maps.oceania;
 
 export 'american-samoa/american-samoa.dart';
 export 'ashmore-and-cartier-islands/ashmore-and-cartier-islands.dart';

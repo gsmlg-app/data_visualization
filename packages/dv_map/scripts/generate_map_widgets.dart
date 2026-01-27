@@ -101,6 +101,9 @@ void main() async {
   // Generate continent index files
   await _generateContinentIndexes(mapsDir, allMaps);
 
+  // Generate world index file
+  await _generateWorldIndex(mapsDir, allMaps);
+
   // Generate top-level index file
   await _generateMainIndexFile(mapsDir, allMaps);
 
@@ -133,7 +136,6 @@ Future<void> _generateContinentIndexes(
 
     final exports = StringBuffer();
     exports.writeln('/// Maps for $continent.');
-    exports.writeln('library dv_map.maps.$continent;');
     exports.writeln();
 
     // Get all unique country directories
@@ -185,7 +187,6 @@ Future<void> _generateCountryIndexes(
 
     final exports = StringBuffer();
     exports.writeln('/// Maps for $country ($continent).');
-    exports.writeln('library dv_map.maps.$continent.$country;');
     exports.writeln();
 
     for (final info in entry.value) {
@@ -197,6 +198,37 @@ Future<void> _generateCountryIndexes(
     await indexFile.writeAsString(exports.toString());
     print('Generated country index: ${indexFile.path}');
   }
+}
+
+/// Generates world-level index file
+Future<void> _generateWorldIndex(
+  Directory mapsDir,
+  Map<String, MapInfo> allMaps,
+) async {
+  final worldMaps = <MapInfo>[];
+
+  for (final info in allMaps.values) {
+    final parts = info.outputPath.split('/');
+    if (parts.length >= 4 && parts[0] == 'lib' && parts[1] == 'maps' && parts[2] == 'world') {
+      worldMaps.add(info);
+    }
+  }
+
+  if (worldMaps.isEmpty) return;
+
+  final indexFile = File('${mapsDir.path}/world/world.dart');
+  final exports = StringBuffer();
+  exports.writeln('/// World maps at different scales.');
+  exports.writeln();
+
+  for (final info in worldMaps) {
+    final pathParts = info.outputPath.split('/');
+    final scaleFile = pathParts.last;
+    exports.writeln("export '$scaleFile';");
+  }
+
+  await indexFile.writeAsString(exports.toString());
+  print('Generated world index: ${indexFile.path}');
 }
 
 /// Generates the main index file
@@ -221,7 +253,6 @@ Future<void> _generateMainIndexFile(
   final exports = StringBuffer();
   exports.writeln('/// Generated map exports.');
   exports.writeln('/// Import specific continents, countries, or scales as needed.');
-  exports.writeln('library dv_map.maps;');
   exports.writeln();
 
   // Export continents

@@ -1,6 +1,5 @@
 /// Generated map exports.
 /// Import specific continents, countries, or scales as needed.
-library dv_map.maps;
 
 // Continent exports
 export 'africa/africa.dart';

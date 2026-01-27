@@ -1,5 +1,4 @@
 /// Maps for asia.
-library dv_map.maps.asia;
 
 export 'afghanistan/afghanistan.dart';
 export 'akrotiri-sovereign-base-area/akrotiri-sovereign-base-area.dart';

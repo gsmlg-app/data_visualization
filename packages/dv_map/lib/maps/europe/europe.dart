@@ -1,5 +1,4 @@
 /// Maps for europe.
-library dv_map.maps.europe;
 
 export 'aland/aland.dart';
 export 'albania/albania.dart';

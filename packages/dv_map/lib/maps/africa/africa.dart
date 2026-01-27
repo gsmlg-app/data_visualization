@@ -1,5 +1,4 @@
 /// Maps for africa.
-library dv_map.maps.africa;
 
 export 'algeria/algeria.dart';
 export 'angola/angola.dart';
