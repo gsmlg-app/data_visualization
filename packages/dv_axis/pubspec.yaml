@@ -2,7 +2,7 @@ name: dv_axis
 description: Axis components for charts - x-axis, y-axis with ticks and labels.
 repository: https://github.com/gsmlg-app/data_visualization/tree/main/packages/dv_axis
 homepage: https://gsmlg-app.github.io/data_visualization/
-version: 1.0.0
+version: 1.1.0
 resolution: workspace
 
 environment:

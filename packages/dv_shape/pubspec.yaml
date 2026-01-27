@@ -2,7 +2,7 @@ name: dv_shape
 description: Shape primitives for data visualization - lines, areas, arcs, pies.
 repository: https://github.com/gsmlg-app/data_visualization/tree/main/packages/dv_shape
 homepage: https://gsmlg-app.github.io/data_visualization/
-version: 1.0.0
+version: 1.1.0
 resolution: workspace
 
 environment:

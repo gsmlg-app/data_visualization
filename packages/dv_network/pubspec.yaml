@@ -2,7 +2,7 @@ name: dv_network
 description: Network and graph visualization components.
 repository: https://github.com/gsmlg-app/data_visualization/tree/main/packages/dv_network
 homepage: https://gsmlg-app.github.io/data_visualization/
-version: 1.0.0
+version: 1.1.0
 resolution: workspace
 
 environment:
