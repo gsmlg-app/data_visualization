@@ -2,245 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for north-america/nicaragua.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Nicaragua",
-        "iso_a2": "NI",
-        "iso_a3": "NIC",
-        "continent": "North America"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -83.6556117,
-              10.9387641
-            ],
-            [
-              -83.8089357,
-              11.1030435
-            ],
-            [
-              -83.8554703,
-              11.3733113
-            ],
-            [
-              -83.6508575,
-              11.6290321
-            ],
-            [
-              -83.719613,
-              11.8931245
-            ],
-            [
-              -83.6261045,
-              12.3208503
-            ],
-            [
-              -83.4733231,
-              12.4190872
-            ],
-            [
-              -83.4985154,
-              12.8692923
-            ],
-            [
-              -83.5522072,
-              13.1270543
-            ],
-            [
-              -83.5198319,
-              13.5676993
-            ],
-            [
-              -83.4125,
-              13.9700778
-            ],
-            [
-              -83.1821264,
-              14.310703
-            ],
-            [
-              -83.2841615,
-              14.6766238
-            ],
-            [
-              -83.2332344,
-              14.899866
-            ],
-            [
-              -83.147219,
-              14.9958292
-            ],
-            [
-              -83.4899888,
-              15.0162672
-            ],
-            [
-              -83.628585,
-              14.880074
-            ],
-            [
-              -83.9757214,
-              14.7494359
-            ],
-            [
-              -84.2283416,
-              14.7487641
-            ],
-            [
-              -84.4493359,
-              14.6216143
-            ],
-            [
-              -84.6495821,
-              14.6668053
-            ],
-            [
-              -84.8200368,
-              14.8195867
-            ],
-            [
-              -84.9245007,
-              14.7904929
-            ],
-            [
-              -85.0527874,
-              14.551541
-            ],
-            [
-              -85.1487506,
-              14.5601968
-            ],
-            [
-              -85.1653645,
-              14.3543696
-            ],
-            [
-              -85.514413,
-              14.0790117
-            ],
-            [
-              -85.6986653,
-              13.9600784
-            ],
-            [
-              -85.8012947,
-              13.836055
-            ],
-            [
-              -86.0962638,
-              14.0381874
-            ],
-            [
-              -86.3121421,
-              13.7713561
-            ],
-            [
-              -86.5207082,
-              13.7784875
-            ],
-            [
-              -86.7550866,
-              13.7548455
-            ],
-            [
-              -86.7338218,
-              13.2630926
-            ],
-            [
-              -86.880557,
-              13.2542042
-            ],
-            [
-              -87.005769,
-              13.0257944
-            ],
-            [
-              -87.3166544,
-              12.9846858
-            ],
-            [
-              -87.3923862,
-              12.9140183
-            ],
-            [
-              -87.5574666,
-              13.0645517
-            ],
-            [
-              -87.6684934,
-              12.90991
-            ],
-            [
-              -87.1675162,
-              12.458258
-            ],
-            [
-              -86.7459916,
-              12.1439619
-            ],
-            [
-              -86.52585,
-              11.8068765
-            ],
-            [
-              -86.0584883,
-              11.4034386
-            ],
-            [
-              -85.7125405,
-              11.0884449
-            ],
-            [
-              -85.561852,
-              11.2171192
-            ],
-            [
-              -84.9030033,
-              10.9523034
-            ],
-            [
-              -84.673069,
-              11.0826572
-            ],
-            [
-              -84.3559308,
-              10.9992256
-            ],
-            [
-              -84.1901786,
-              10.79345
-            ],
-            [
-              -83.8950545,
-              10.7268391
-            ],
-            [
-              -83.6556117,
-              10.9387641
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for north-america/nicaragua.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE51YS2sjRxC+61cMOjtFvR97CwuBXELuYQnCURyBLRmt9mAW//cw8tp4txtCRYehp6v7o6q+eo2+bpZle3l63G8/LNtf9rvLl/P+4+n+fn97OZyO25tV/PfL9ufth+WPzbIsy9frc7x4PX4VPJ5Pj/vz5XC99Hp8WbbH3cP1wm+H2915d/dl93ZlWbaHz6c/d3wV/zrsy8v+x/eC29Pxcjjuj5er7HS+/LP8/LA/H25322+Hnt80utufHvaX89P3+rwa8Pvp/unum71v4KfzX4fj7vLO8Jff+/WPb8vyUwq4mRPFzQ8iQijJcKXvBJ9u/hMwMUtsBCQgFFSxNqCZBsoEUEKESLqAbpgWNgF0LhRumxxUTjMFs4RY2xY7O6GOCjIIYxq2LdYQYaEJoFJhBrcBK41MJ4DpxcVtDc2YMXgAFCAONO0DUqVQTQDNw6v6PiQeGRGoQIzILholE/voQAUhjD7DnEpOo4IKHu4sbQV5jRidKZhV6d42WIMndChUWXL1I3BVI3MANEBy9n5IO6flzIGZiKFduAoLppn/QkvFqgeowJyi5FPA/1GoFVRLxGaUOJNTN+UUXFcqxyqj4O6J1gZMRhQfOVZIKkuPLmCxGuLYmxSiUIubpBigcWTMWLa1PjY5MSDNMJyRbI5U3kxjA3ITn7QSBTEVr2YeGxipTnqdAkYhUZMSA1+LiY2AAuWIkc3EM0gkLh05FkhxtGYzdsBydpkFIUpSdiuDgxCTTtJEIILEvBk0DsYYmLPeGZFrQHUBwwzTxygUCNPUvg9DJJlGHwqwCxY3o9DXmmyTGVOATRm1WfwDEC18NiwgW5Q2OQ4QcrdJ92SoVE9r5nGAFEv6yDFDkSJls7YGmIX6lGN0NesmcoB7asnUZKxqBnUAeRhNDVZL7jrQIdSqJu2TgVTKqVn616ybjQsEiZ7h/TJjqZmzjwhFUcl2oQ5iU5xpiJmq2u515pQ2EkLAFETdCU6hUBBltBihjAWlmXTrpCs4SeLVYHbrToRrh7QSHKsWQlUxW5MSBSqkyDEGEaKk/5mYZWiT3o4Q7CndnGv/F7CZrV9Xz5vX56fN8+ZfChU2KLwRAAA=';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for north-america/nicaragua.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get northAmericaNicaragua110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

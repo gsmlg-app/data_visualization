@@ -2,113 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/south-korea.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "South Korea",
-        "iso_a2": "KR",
-        "iso_a3": "KOR",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              126.1747587,
-              37.7496858
-            ],
-            [
-              126.8601433,
-              36.8939241
-            ],
-            [
-              126.1173979,
-              36.7254847
-            ],
-            [
-              126.5592314,
-              35.6845405
-            ],
-            [
-              126.3739197,
-              34.9345605
-            ],
-            [
-              126.4857475,
-              34.3900459
-            ],
-            [
-              127.3865194,
-              34.4756737
-            ],
-            [
-              128.1858505,
-              34.8903771
-            ],
-            [
-              129.0913766,
-              35.0824842
-            ],
-            [
-              129.4683045,
-              35.6321406
-            ],
-            [
-              129.4604497,
-              36.7841892
-            ],
-            [
-              129.2129195,
-              37.4323925
-            ],
-            [
-              128.3497164,
-              38.6122429
-            ],
-            [
-              128.2057459,
-              38.3703972
-            ],
-            [
-              127.7800354,
-              38.3045356
-            ],
-            [
-              127.0733085,
-              38.2561148
-            ],
-            [
-              126.6837199,
-              37.8047729
-            ],
-            [
-              126.2373389,
-              37.8403779
-            ],
-            [
-              126.1747587,
-              37.7496858
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/south-korea.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WUwWrcMBCG734K4fMySJoZzUxupdBLDi3tsYRiUjc1bKzF6xyWsO9e7GSXJDIU+SBk/ZqPf2YkPTfOtfPp0Lc3rv3Sd/PT1H/O+31/Pw95bHeL/Odl+djeuJ+Nc849r2MZuG5fhcOUD/00D2vQZbtz7dg9rgE/8tP8193mqe+uQc61wzH/6uKy4fZ7sY7r+td3wn0e52Hsx3nRPh2Hrn3VzlcrD31+7Ofp9N7Ixfm3vD89vCZ6Zebp9zB285uMX763849/zoWYIAgJq+w+SCggZElZ3wl3u/8CNflAiAUwgRpapFALDEHQxDaAEpmUpBbIbBEDFUCGpMTkuRaIghasrCGBIXGqB5Ly0pYNIJr3xFYHFEBNHKxMmYCEk2BlDRWCsrLfcqjmUaSyywbeAkpKG03xGkkp1gIpKXoqHTIkjIF8qgd6oo0uJxCloFbtMIZowUqHAoQRLVYeGwUkk5DKLiukECPFymOjED0LcXn1FFA8mlSmLCDqPfKWw6VXyJVNEfCC6LWsoULkFAJVP19JUYKVKQuoJ5HaGiaIKIi6CaTlplQDK1/sZmt+mZ2by3jXnJt/vwhTg1sHAAA=';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/south-korea.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaSouthKorea110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

@@ -2,269 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for europe/germany.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Germany",
-        "iso_a2": "DE",
-        "iso_a3": "DEU",
-        "continent": "Europe"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              14.1196863,
-              53.7570291
-            ],
-            [
-              13.6474671,
-              54.075511
-            ],
-            [
-              12.5184404,
-              54.4703706
-            ],
-            [
-              11.9562525,
-              54.1964855
-            ],
-            [
-              10.939467,
-              54.0086933
-            ],
-            [
-              10.9501123,
-              54.3636071
-            ],
-            [
-              9.9395797,
-              54.596642
-            ],
-            [
-              9.9219064,
-              54.9831042
-            ],
-            [
-              9.2820488,
-              54.8308654
-            ],
-            [
-              8.5262293,
-              54.9627436
-            ],
-            [
-              8.572118,
-              54.3956465
-            ],
-            [
-              8.8007345,
-              54.0207856
-            ],
-            [
-              8.1217062,
-              53.5277925
-            ],
-            [
-              7.9362395,
-              53.7482958
-            ],
-            [
-              7.1004248,
-              53.6939322
-            ],
-            [
-              6.9051396,
-              53.4821622
-            ],
-            [
-              7.0920533,
-              53.1440433
-            ],
-            [
-              6.8428695,
-              52.2284403
-            ],
-            [
-              6.5893966,
-              51.8520291
-            ],
-            [
-              5.9886581,
-              51.8516157
-            ],
-            [
-              6.1566582,
-              50.803721
-            ],
-            [
-              6.0430734,
-              50.1280517
-            ],
-            [
-              6.2427511,
-              49.9022257
-            ],
-            [
-              6.1863204,
-              49.4638028
-            ],
-            [
-              6.6582296,
-              49.2019583
-            ],
-            [
-              8.0992786,
-              49.0177835
-            ],
-            [
-              7.5936764,
-              48.3330191
-            ],
-            [
-              7.4667591,
-              47.620582
-            ],
-            [
-              8.3173015,
-              47.6135798
-            ],
-            [
-              8.5226119,
-              47.8308275
-            ],
-            [
-              9.5942261,
-              47.5250581
-            ],
-            [
-              9.8960681,
-              47.5801968
-            ],
-            [
-              10.4020838,
-              47.3024877
-            ],
-            [
-              10.544504,
-              47.5663992
-            ],
-            [
-              11.426414,
-              47.5237662
-            ],
-            [
-              12.1413575,
-              47.7030834
-            ],
-            [
-              12.6207597,
-              47.6723876
-            ],
-            [
-              12.932627,
-              47.4676456
-            ],
-            [
-              13.0258513,
-              47.6375835
-            ],
-            [
-              12.8841028,
-              48.2891458
-            ],
-            [
-              13.2433574,
-              48.4161148
-            ],
-            [
-              13.5959457,
-              48.8771719
-            ],
-            [
-              13.031329,
-              49.3070682
-            ],
-            [
-              12.5210242,
-              49.5474153
-            ],
-            [
-              12.4151909,
-              49.9691208
-            ],
-            [
-              12.2401111,
-              50.2663378
-            ],
-            [
-              12.9668368,
-              50.4840764
-            ],
-            [
-              13.338132,
-              50.7332344
-            ],
-            [
-              14.0562277,
-              50.9269176
-            ],
-            [
-              14.3070134,
-              51.1172678
-            ],
-            [
-              14.5707182,
-              51.0023394
-            ],
-            [
-              15.0169959,
-              51.1066741
-            ],
-            [
-              14.6070984,
-              51.7451881
-            ],
-            [
-              14.6850265,
-              52.0899474
-            ],
-            [
-              14.4375997,
-              52.6248502
-            ],
-            [
-              14.0745211,
-              52.9812625
-            ],
-            [
-              14.3533155,
-              53.2481713
-            ],
-            [
-              14.1196863,
-              53.7570291
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for europe/germany.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WYS28bNxDH7/oUC52NwbwfubZpr730VASFkaqBAVsyFOVgBP7uBeU4cEKiwOiwWC3F3w6H/3lQX3fbtr88PR7277b9b4fby5fz4ZfT/f3h4+XudNzfjOF/Xx5/3r/b/tpt27Z9vV7nidefXwcez6fHw/lyd530+vNt2x9vH64Tfj+cH26PT98nbNv+7vPp71seg7++n57Ly/M/3w58PB0vd8fD8TLG3n8Zb9x/G33+bsinw+nhcDk//WjGq91/nO6fPn1b5nfq6fzP3fH28ma9L5+39z9/2zZSICpPl5ufRkwgLJCLfhj4cPP/PAHXUA+aeAoYZtTDMRilKuoCp4ES6C0eQZmzsS14VK5p1uIhlJR6rFaL6SXSxRkS8bwbCuLiGC331bDOolbmWbkrN2lMhb7ai0oh7OI4GTVzgUvBdNMOLsHYmWvlunIOlZZSEiyYaGWclLl6SycJiRiiK9khY6Q1jSOmQOdF0BpHFLesCyhxlpqtEwhNLssejhCVdfadgJeUcEsnDoVGUr7AaTJ5DxeAxWiySng0Mk0vZB1SOX3hOwbmkbqaOMuS8nmxBGncTccGlemWczYeOHKy6FlH5m456w4hUYJbxjmgyoiKBY040ahpHCuH0bRWLShk5vZa04XnyqMF6pLIraBwGH7jWcVawEhl2dJJAlZx5AqHFJHSzABW4jGndk0QEaSe7ALUPazmrQhwRstWxCYIhSBNITZoJBbV2olRKNiJaoEbdYej5boCKx3ABc7Y0LJZsrMcfY7YgUscvVqzo1BkTJmSsQYIsma0ooIQTNUWURFg7lLV2loiUHalJY4l3Hs4BtKhiJVUAgVTWj0F8ZBr2NxADekFS0av/WQoYecVTkf49doAEkC2NJpq2TBPwppZgBgylZBnsSRwFmmvESABVhGLVVpRciLt8qys1Gb/JWQEBVXXf0LCcyYoEAz0Xp4ahxUmZJ3KoxaYhpL1TgMMSkaFK/vKixh77mNgRaK5QhoCu4tEl1fuKT43egiaiuG9aBMQSZJVdxEiLNrDKaA5c8ynH4RiL2oGr15FQYt+hYAo2JvuU7DAoEU3RYDIItVbrwGSV9kkl2Efuof2zt4KjoGVq/WGGmWvsg1eGrKvWmXMKo3u/qqE1eJ0O9K2jnd19RJqvAgPhkpi752qhl5MhGx1rGJNCuqlg/ZfNbvV/evd8+71+mH3vPsPnH/OtlETAAA=';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for europe/germany.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get europeGermany110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

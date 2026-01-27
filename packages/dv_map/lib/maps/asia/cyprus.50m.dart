@@ -2,261 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/cyprus.50m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Cyprus",
-        "iso_a2": "CY",
-        "iso_a3": "CYP",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              32.7126953,
-              35.1710449
-            ],
-            [
-              32.6523438,
-              35.182666
-            ],
-            [
-              32.555957,
-              35.1557617
-            ],
-            [
-              32.475,
-              35.0899902
-            ],
-            [
-              32.390918,
-              35.0498047
-            ],
-            [
-              32.3009766,
-              35.082959
-            ],
-            [
-              32.3171875,
-              34.9533203
-            ],
-            [
-              32.4137695,
-              34.7780273
-            ],
-            [
-              32.4490234,
-              34.7294434
-            ],
-            [
-              32.5055664,
-              34.70625
-            ],
-            [
-              32.6929688,
-              34.6493652
-            ],
-            [
-              32.7500977,
-              34.6478027
-            ],
-            [
-              32.8671875,
-              34.6611328
-            ],
-            [
-              32.9142578,
-              34.635498
-            ],
-            [
-              32.9417969,
-              34.5758789
-            ],
-            [
-              33.0079102,
-              34.5695801
-            ],
-            [
-              33.0239258,
-              34.6
-            ],
-            [
-              33.0249023,
-              34.6369141
-            ],
-            [
-              33.0623047,
-              34.6748047
-            ],
-            [
-              33.1155273,
-              34.6955566
-            ],
-            [
-              33.1760742,
-              34.6980469
-            ],
-            [
-              33.296582,
-              34.7177246
-            ],
-            [
-              33.4149414,
-              34.7508789
-            ],
-            [
-              33.5144531,
-              34.8064453
-            ],
-            [
-              33.6994141,
-              34.969873
-            ],
-            [
-              33.7589844,
-              34.9732422
-            ],
-            [
-              33.8224609,
-              34.965918
-            ],
-            [
-              33.9365234,
-              34.9714844
-            ],
-            [
-              34.0501953,
-              34.9883789
-            ],
-            [
-              34.0236328,
-              35.0455566
-            ],
-            [
-              34.0044922,
-              35.0652344
-            ],
-            [
-              33.9657227,
-              35.0567871
-            ],
-            [
-              33.9033203,
-              35.0854492
-            ],
-            [
-              33.8664063,
-              35.0936035
-            ],
-            [
-              33.8320312,
-              35.0671875
-            ],
-            [
-              33.7922852,
-              35.0481934
-            ],
-            [
-              33.7569336,
-              35.0397461
-            ],
-            [
-              33.7257813,
-              35.0373047
-            ],
-            [
-              33.6753906,
-              35.0178711
-            ],
-            [
-              33.6144531,
-              35.0227539
-            ],
-            [
-              33.5256836,
-              35.0386719
-            ],
-            [
-              33.4757813,
-              35.0003418
-            ],
-            [
-              33.4638672,
-              35.0049316
-            ],
-            [
-              33.455957,
-              35.101416
-            ],
-            [
-              33.4242188,
-              35.140918
-            ],
-            [
-              33.3837891,
-              35.1626953
-            ],
-            [
-              33.3255859,
-              35.1536133
-            ],
-            [
-              33.2483398,
-              35.1569336
-            ],
-            [
-              33.1910156,
-              35.1731445
-            ],
-            [
-              33.0775391,
-              35.1461914
-            ],
-            [
-              32.9859375,
-              35.1164062
-            ],
-            [
-              32.9195313,
-              35.0878418
-            ],
-            [
-              32.8694336,
-              35.0894043
-            ],
-            [
-              32.784082,
-              35.1157715
-            ],
-            [
-              32.7202148,
-              35.1453613
-            ],
-            [
-              32.7126953,
-              35.1710449
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/cyprus.50m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE51YTWsTYRC+51csOZdlvj+8ieC5VxGRoFECNSlpPJTS/y7v1pZqJsiYw7LZ2ffJfD4zk4fVNK1P97fb9Ztp/X67Of08bt8dbm62X067w359NcTfnh7frd9MH1fTNE0Py/X84PL6Irg9Hm63x9NuOfT8+jSt95sfy4F397fHn3cv70/Tend3+LyhRfbh7Dk/Pb9+Lfhy2J92++3+NGRv73ab9W/Z44sW37eHH9vT8f5PHZ6Vvj7c3H//beML5uH4dbffnF4Z+/R5ff/3t2limh3JUvnqb4nO6Agi+Yfg09W/8EyJhaPCCzKzJpyqpnqFpuqG3oQT1wILIjOBmlickFgZCpIB0lWNAdLNSvUotRsHRscorJU5lZmAu55DdssKzz2AvI0nCcRS4VGKsHQTBVTNSjww0m4WJ6XFeXBlNkk27eaK64jueR4PvMV9TbywS9E1Q2SKJl6ikHppL6tkG07Q07KAU9fw6CUzzwCeCFThWWoAdvGIk7Q0t4205HHpOEuUtmZGDFImikubVXhGVCUv9UsdFdPFcwOXKhI2SM+6kaU0jQrO0Z2kq56gpGDJAgr/kXiKIspY4AXYEDXxLId6FV5aRpNEeXaNDKnMTWcS6tEUz0EkBlXdpmlijwZ4Xpiy5Ph0lJAex8sMCljNKjJnBHejK4MGjKlu4f3ikBnGvETn2awzLI7o2cvD6U5UTT+g5uFdcklYOn85YuhQvZsuZgJW4iUbcK/r8hxDO6z9t/S7bnkkUWiJJ4HZnDFGuVkylyMap4t14+Gj52LpP3buk725ckKpH4506epnF9hPZyAav9VlU1KLC/4bE00XT/yi/wBY2nwlNtQo8wUkGdvd6OLyAih9NBLCYibVGQX65MwLY1bBRVtWwi4eqYae946xqrEhd/FIgjlLc5/KsDu5JAJqlXzoPBK9O6n5qIDSf2KY2F1gMjS5XE8RB812V44crbIujvDoFsdYOVIukF+kgHQXQA+BYvIb5qo7djc2JyCUujqW/Ovi9f4XWVX3z3ePq+frp9Xj6hf3cx5HuxIAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/cyprus.50m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaCyprus50m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

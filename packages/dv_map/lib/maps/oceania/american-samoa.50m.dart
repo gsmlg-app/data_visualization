@@ -2,69 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for oceania/american-samoa.50m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "American Samoa",
-        "iso_a2": "AS",
-        "iso_a3": "ASM",
-        "continent": "Oceania"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -170.7262695,
-              -14.3511719
-            ],
-            [
-              -170.6404785,
-              -14.2822266
-            ],
-            [
-              -170.5681152,
-              -14.2667969
-            ],
-            [
-              -170.6891602,
-              -14.2574219
-            ],
-            [
-              -170.7208496,
-              -14.2759766
-            ],
-            [
-              -170.8205078,
-              -14.3121094
-            ],
-            [
-              -170.7692383,
-              -14.3597656
-            ],
-            [
-              -170.7262695,
-              -14.3511719
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for oceania/american-samoa.50m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE51SwWoCMRC971cMOVtJZjeTxFsp9FZa8FikhG2UgJvImh5E9t+Lu65oDZQ1h2Eyb97jPZJjAcDSYefYAtirs+mndS9xu3V18jGw2QleD+M9W8BnAQBw7Os9sV/vgV0bd65NvieN6wAs2KYnPDeu9bUNsLRNtBceAPP7+GWx31nezcth/nYN1DEkH1xIJ+y9djZ4y85wdzG0cbFxqT3c2hn9f8TtYXOOe5GN7bcPNl3lHs51//cG8CQUnyskJCNnd1g1L6UQSpgbZDX7X5IqXimdlUSNiESTJSVpISRmJYmUoQdcaiOI5yWlqvCB4Aq5rgxlJZU06oHgGrnkSmefR6DgpprukgyWusy/uFEkp7uc+omKXD92XTHWVdEVvw7ngvr2AwAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for oceania/american-samoa.50m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get oceaniaAmericanSamoa50m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

@@ -2,267 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/brunei.50m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Brunei",
-        "iso_a2": "BN",
-        "iso_a3": "BRN",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [
-                115.1400391,
-                4.8997559
-              ],
-              [
-                115.0267578,
-                4.899707
-              ],
-              [
-                115.0288086,
-                4.8211426
-              ],
-              [
-                115.0267578,
-                4.6913574
-              ],
-              [
-                115.0515625,
-                4.582666
-              ],
-              [
-                115.1070313,
-                4.3904297
-              ],
-              [
-                115.1706055,
-                4.364209
-              ],
-              [
-                115.2466797,
-                4.3472168
-              ],
-              [
-                115.290625,
-                4.3525879
-              ],
-              [
-                115.3192383,
-                4.3652832
-              ],
-              [
-                115.3267578,
-                4.3807617
-              ],
-              [
-                115.2792969,
-                4.4563477
-              ],
-              [
-                115.2666992,
-                4.6339844
-              ],
-              [
-                115.2279297,
-                4.7505859
-              ],
-              [
-                115.168457,
-                4.8666992
-              ],
-              [
-                115.1400391,
-                4.8997559
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                115.0267578,
-                4.899707
-              ],
-              [
-                115.0470703,
-                4.9624512
-              ],
-              [
-                115.0476562,
-                5.0163574
-              ],
-              [
-                114.9954102,
-                5.0223633
-              ],
-              [
-                114.840625,
-                4.9463867
-              ],
-              [
-                114.7408203,
-                4.8810059
-              ],
-              [
-                114.6458984,
-                4.7981445
-              ],
-              [
-                114.5447266,
-                4.7245605
-              ],
-              [
-                114.4244141,
-                4.6604004
-              ],
-              [
-                114.2994141,
-                4.6071777
-              ],
-              [
-                114.1779297,
-                4.5909668
-              ],
-              [
-                114.0638672,
-                4.5926758
-              ],
-              [
-                114.0951172,
-                4.5652344
-              ],
-              [
-                114.1688477,
-                4.5269531
-              ],
-              [
-                114.2241211,
-                4.4778809
-              ],
-              [
-                114.2610352,
-                4.4142578
-              ],
-              [
-                114.2875977,
-                4.3547363
-              ],
-              [
-                114.2896484,
-                4.3041992
-              ],
-              [
-                114.3229492,
-                4.262793
-              ],
-              [
-                114.4166016,
-                4.2558594
-              ],
-              [
-                114.4470703,
-                4.2035645
-              ],
-              [
-                114.512207,
-                4.1135742
-              ],
-              [
-                114.5717773,
-                4.0490723
-              ],
-              [
-                114.6083008,
-                4.0239746
-              ],
-              [
-                114.6541016,
-                4.0376465
-              ],
-              [
-                114.725,
-                4.0965332
-              ],
-              [
-                114.7761719,
-                4.1687988
-              ],
-              [
-                114.8104492,
-                4.2665039
-              ],
-              [
-                114.7834961,
-                4.2807617
-              ],
-              [
-                114.8310547,
-                4.3544922
-              ],
-              [
-                114.8402344,
-                4.3932129
-              ],
-              [
-                114.8182617,
-                4.4287598
-              ],
-              [
-                114.7901367,
-                4.463916
-              ],
-              [
-                114.7792969,
-                4.5530273
-              ],
-              [
-                114.7599609,
-                4.6665039
-              ],
-              [
-                114.7466797,
-                4.7180664
-              ],
-              [
-                114.7841797,
-                4.754834
-              ],
-              [
-                114.8645508,
-                4.8017578
-              ],
-              [
-                114.9447266,
-                4.85625
-              ],
-              [
-                115.0267578,
-                4.899707
-              ]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/brunei.50m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE7VYTW/bRhC961cQOgfEfH/k1hborUWRaxAUQsoGAhzJkOmDEfi/F6RjN7aHh0xTHQguZ/dp+HbmzSy/7IZhP99dT/u3w/7X6TDfXqZfzldX08f5eD7t3yzmvx8e3+zfDu93wzAMX9br64Xr9NVwfTlfT5f5uC56nD4M+9Ph87rg58vtaTo+zR+G/fHm/OeBVtvvr57z+vzdM8PH82k+nqbTvNh+ujke9l9t909efJrOn6f5cvfch0enf7u9mo9/nK/uPn190Sfg8+Wv4+kwf/PGD79v71+OXo+HAVFHFABOfPPKKGNkumq+sHx4ObXGBTJXjy1c8C5sBISVsIQoZD/cXUtkdWniKqqRVrgaZNZ0F8GBkStYThDKJr3oYKClu2xC0AwGEjNPL2HFCS2auAkb5LKShjfdZUziqNk1pWBq4m4HGQe4YXPXyJPSssIVNRbv4ppZJpVJwZwhzaSg1eEyHFxBo6s5aCFawsbDmzRhv1sid1ujZ//Ykev/S1bFF0WpYNNIFJvUgbipFRGkI6B1ZVXGTBWEGpeIjbmHG7IlKCnGYS16ZXSBoJreCAToBbyMJhoZUiZSBopoD1dFnKyssk6iBk1cIRGUMpPMQACa4UCZm7jg6D0BlBF9U6g0Ia1Xt2SENZZKYdVcMryLm4q4gWtK3BNsWYQ1xGseyFIZm/tGgoTlvol7RK/fkJEMgbXkQVBIvckvhWvWPLCKszVlhyJN6jxmEGxWLhmZKKUu4GTk2XRX0AywlAfSpXw3w0y2qxABq7XlDImg3DVcW/smu7oqS+kuSIJTk16DYICyxgNxurQODTLaUjPrbQN2E2vS63XFhDTlXqssoy/dMJYtLVp4RjODA0E2M8IUuKk4HixppZJRv7WXMRhBZUtxJKnJbwgs5aA+QDIhNXkIDDIs/ZVVPZv75gnIVuMaJzZTwrdPTqoM5M0Uds00KHHtP4XZ9kHaMcCsqbweglu4KsFN2DBRrZUsAL1dh3O7P43lc0sHtXG22m2N/r1/vLvfPV4/7O53/wCXCY8x1hQAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/brunei.50m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaBrunei50m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

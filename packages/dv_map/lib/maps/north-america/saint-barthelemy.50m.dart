@@ -2,81 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for north-america/saint-barthelemy.50m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Saint Barthelemy",
-        "iso_a2": "BL",
-        "iso_a3": "BLM",
-        "continent": "North America"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -62.8319336,
-              17.8764648
-            ],
-            [
-              -62.8181641,
-              17.8854492
-            ],
-            [
-              -62.8070312,
-              17.8976562
-            ],
-            [
-              -62.799707,
-              17.9086914
-            ],
-            [
-              -62.8654297,
-              17.9182617
-            ],
-            [
-              -62.8742187,
-              17.9222656
-            ],
-            [
-              -62.8754395,
-              17.9135742
-            ],
-            [
-              -62.8693848,
-              17.898584
-            ],
-            [
-              -62.8589355,
-              17.8836426
-            ],
-            [
-              -62.8469238,
-              17.8751953
-            ],
-            [
-              -62.8319336,
-              17.8764648
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for north-america/saint-barthelemy.50m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WTTWvDMAyG7/kVwueuxF+y3Ns62Gkbgx1HGaHz2kASF9c7hNL/Ppo2pR+GYR+MrFd6eGXjXQHAYr9xbAbs2VXxN7gn3zRuGWvfsclB/jmmt2wGnwUAwG7Y7xuH8kHYBL9xIdZD01gOwLqqHRo+qrqLMK9CXLvGtf25E4DVW/9ViUPV/OUuL4/510th6btYd66LB+3Nh7iGx9aFelmxU9H+bGzlfOti6K9tjXO8+6ZfncY+w334rrsqXsx/XJfx7QngAcWUJLdS4uRG4mZKBhUquhIWk/+BnDgqngKSVsqKbGBpSslFCmgNaswGGmtNaRI8WxJarrINolbCJoGcBHKTDTRKcEoChRCoMR+olbQ66VBqo/LfBK0kRck3IU35V6jJSp0ySCRRifyJFVohkwaN5lbLbGDePylS8Rjti3FfFPviD4483CDfBAAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for north-america/saint-barthelemy.50m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get northAmericaSaintBarthelemy50m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

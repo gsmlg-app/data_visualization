@@ -2,157 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/iraq.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Iraq",
-        "iso_a2": "IQ",
-        "iso_a3": "IRQ",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              39.1954684,
-              32.1610088
-            ],
-            [
-              40.3999943,
-              31.8899918
-            ],
-            [
-              41.8899809,
-              31.1900087
-            ],
-            [
-              44.7094987,
-              29.1788911
-            ],
-            [
-              46.5687134,
-              29.0990252
-            ],
-            [
-              47.3026221,
-              30.0590699
-            ],
-            [
-              47.9745191,
-              29.9758192
-            ],
-            [
-              48.5679712,
-              29.9267783
-            ],
-            [
-              48.0145683,
-              30.4524568
-            ],
-            [
-              48.0046981,
-              30.9851374
-            ],
-            [
-              47.6852861,
-              30.9848532
-            ],
-            [
-              47.8492037,
-              31.7091759
-            ],
-            [
-              47.3346615,
-              32.4691554
-            ],
-            [
-              46.1093616,
-              33.0172873
-            ],
-            [
-              45.4166907,
-              33.9677978
-            ],
-            [
-              45.6484595,
-              34.7481377
-            ],
-            [
-              46.151788,
-              35.0932588
-            ],
-            [
-              46.0763404,
-              35.6773833
-            ],
-            [
-              45.4206181,
-              35.9775459
-            ],
-            [
-              44.7726771,
-              37.1704369
-            ],
-            [
-              44.2934518,
-              37.0015144
-            ],
-            [
-              43.9422587,
-              37.2562275
-            ],
-            [
-              42.7791256,
-              37.3852636
-            ],
-            [
-              42.3495911,
-              37.2298725
-            ],
-            [
-              41.8370642,
-              36.6058538
-            ],
-            [
-              41.2897075,
-              36.3588146
-            ],
-            [
-              41.3839653,
-              35.6283166
-            ],
-            [
-              41.0061589,
-              34.4193723
-            ],
-            [
-              38.7923405,
-              33.3786864
-            ],
-            [
-              39.1954684,
-              32.1610088
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/iraq.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WWS2vcQAzH7/spjM9B6P3IrRQKvbW9llCW1g0LyTrduIcQ8t3Lbh4kGVMYH8x4/jM/JI2k8f1mGMbl7mYaz4fx07Rd/h6mj/PV1fRz2c378ewo/36cvh3Ph++bYRiG+9O73XhafhJuDvPNdFh2p03Py4dh3G+vTxs+H7Z/XlYPw7i7nX9s+aR8beblNP/tjfBz3i+7/bRfjtqH2912fNIeXmy4nObraTncvbXg2eQv89Xd5ZOHL8z58Gu33y6vXH18Xo/ffw2DFFCZeurZe4WBnBAz3wgXZ//lKYJUVak0PILMqqI+3uOuxFrhUSFiRhdPIbC0Mt7zuIAis4i6eA7mGSRN/LgAq5CNu3gBguzM1PiLgFboVZ28CjWqhscFFZZUffYlmEcF8RqPPSKlk4ek5tnmC4IaH6VeHqpXrsWv0khCO+PnaZy+ztM06T3f1GKUJv+EjplJYb3nK6LuZCv1q15k1uevA2GJkzc8AaTgjL7zNVByL2z9FSiPqOg7XwPXVKvWX4XQJIm+fuBAdqz7BmeAJWyd7c8Bw0WxbacGHiEp3eFjdFpJZ4OKMO1MF4WIY5W2vAAKVPFeHpeoURu/AEQy0r70EyhltrY9SwCbM4d18RgiitjadA6QNHbxTp5oWdFa/Jgrg/vsI0gJdG3aqTg4Wpr0XpecFRhteTiIZZL2+UsgKeXWtmcD5xTyXh6ik2V7nSsolQR31YckRLEotv4KSKSnd+Vf/+/QZm38PHrYPL8vNg+bf2O6OT6wCgAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/iraq.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaIraq110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

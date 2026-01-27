@@ -2,299 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for oceania/american-samoa.10m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "American Samoa",
-        "iso_a2": "AS",
-        "iso_a3": "ASM",
-        "continent": "Oceania"
-      },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [
-                -170.5910131,
-                -14.2648251
-              ],
-              [
-                -170.6200659,
-                -14.2545712
-              ],
-              [
-                -170.6614477,
-                -14.252374
-              ],
-              [
-                -170.6984757,
-                -14.260512
-              ],
-              [
-                -170.7215063,
-                -14.2892392
-              ],
-              [
-                -170.7378637,
-                -14.2920875
-              ],
-              [
-                -170.7725724,
-                -14.2914365
-              ],
-              [
-                -170.788645,
-                -14.2945289
-              ],
-              [
-                -170.8312475,
-                -14.3194312
-              ],
-              [
-                -170.8228247,
-                -14.3267555
-              ],
-              [
-                -170.7964575,
-                -14.3399391
-              ],
-              [
-                -170.7554826,
-                -14.36712
-              ],
-              [
-                -170.7486466,
-                -14.3746884
-              ],
-              [
-                -170.7217911,
-                -14.3534482
-              ],
-              [
-                -170.6835831,
-                -14.3028297
-              ],
-              [
-                -170.6592911,
-                -14.2852516
-              ],
-              [
-                -170.6423234,
-                -14.2806943
-              ],
-              [
-                -170.5841772,
-                -14.2777646
-              ],
-              [
-                -170.5684708,
-                -14.2709286
-              ],
-              [
-                -170.5672501,
-                -14.2585589
-              ],
-              [
-                -170.5762426,
-                -14.2525367
-              ],
-              [
-                -170.5910131,
-                -14.2648251
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                -169.4638566,
-                -14.2232398
-              ],
-              [
-                -169.5064591,
-                -14.2222633
-              ],
-              [
-                -169.5275366,
-                -14.2260068
-              ],
-              [
-                -169.5426733,
-                -14.236749
-              ],
-              [
-                -169.5347794,
-                -14.2411435
-              ],
-              [
-                -169.5292863,
-                -14.2487932
-              ],
-              [
-                -169.5255021,
-                -14.2589658
-              ],
-              [
-                -169.5228165,
-                -14.2709286
-              ],
-              [
-                -169.5125219,
-                -14.2717424
-              ],
-              [
-                -169.5042618,
-                -14.2706031
-              ],
-              [
-                -169.4983618,
-                -14.2660458
-              ],
-              [
-                -169.4948624,
-                -14.2572568
-              ],
-              [
-                -169.4849747,
-                -14.2619768
-              ],
-              [
-                -169.4761857,
-                -14.2623837
-              ],
-              [
-                -169.4680883,
-                -14.2587216
-              ],
-              [
-                -169.4601538,
-                -14.2504208
-              ],
-              [
-                -169.4471329,
-                -14.2556292
-              ],
-              [
-                -169.4401342,
-                -14.2452939
-              ],
-              [
-                -169.4440405,
-                -14.2306454
-              ],
-              [
-                -169.4638566,
-                -14.2232398
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                -168.1615698,
-                -14.5328915
-              ],
-              [
-                -168.1604712,
-                -14.5209286
-              ],
-              [
-                -168.1635229,
-                -14.5197893
-              ],
-              [
-                -168.1730851,
-                -14.5236956
-              ],
-              [
-                -168.1615698,
-                -14.5328915
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                -169.6762182,
-                -14.1749
-              ],
-              [
-                -169.6697485,
-                -14.1879208
-              ],
-              [
-                -169.6601456,
-                -14.1891415
-              ],
-              [
-                -169.6356095,
-                -14.1770159
-              ],
-              [
-                -169.6471655,
-                -14.1721331
-              ],
-              [
-                -169.6581925,
-                -14.1688779
-              ],
-              [
-                -169.6681616,
-                -14.169122
-              ],
-              [
-                -169.6762182,
-                -14.1749
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                -171.0728247,
-                -11.0525042
-              ],
-              [
-                -171.0856421,
-                -11.0513648
-              ],
-              [
-                -171.0865372,
-                -11.0603167
-              ],
-              [
-                -171.0815324,
-                -11.0660947
-              ],
-              [
-                -171.0734757,
-                -11.062107
-              ],
-              [
-                -171.0728247,
-                -11.0525042
-              ]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for oceania/american-samoa.10m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE7WYTWvcQAyG7/srzJ5bM/qWeiuF3koLPZZSTOqWhWQdtu4hlPz3Mk4T0iQ6RJA9GNvjeVaj0SvJ/rMbhv16dTnv3wz79/O0/j7N75bz8/lsPSzH/as+/OPm9q/9m+HLbhiG4c92fDxxe3wbuDwtl/NpPWyTbh8fhv1xutgmvL2YT4ez6Th8ni6W6W7eMOwPv5ZvE27PfH50n27uf7g/cLYc18NxPq597OPZPB0P0/7f8PWdQT/n5WJeT1f/m3Nr/4ff5+vh03J+9fPfmu/Yy+n74Tit9xZ/87t//vDq8fUwvAZrowQ0IHj1xCiPqOwo8GDs68OHE7RiayqRoIXFAKtoBWazDI1kXCWHs0lG1iZlmw1BmlJC9kCKMprMlTKjA5ubVNGGYsgZGpi0jHZXlozMgh5FshMgW4ImCKbyLjqiIyeuJlQTKfsjlCW1miIoqlI0EXbUBK11IRq7smZgY3WvKtEQLCDJTCTE7OX04SSeJT1q6BhWRUtgajW6oIBW0YyElEnRmwZTES3OYIYJ2syUq1aLOlvzDN0CvY42lJb5WlyknEHEFDkTDAoKaTVCKhV3l13996fPbwA0RlZyyRSMPeLCKyvVGKUpS2QrRUSlUsB2NJpQbrW2pmWrGdUoq9OkxqWg6mRis8gEzABMpdqx+aPrKDOa3YJKyXJDizTMVRYqZVcjOmjWAtRzQ0cDCkLWfBoYY6kwbWHNqJBnNG1UqtNdjOGUo1Ubl33Nwa5pIyeGUlYMO4dlPREqhNXRpuB5O47kVMrDW+Lz5p5JRtywVqk3dAOhbBt7/LSyQ9iAMH2pEsXaW8SGbkCcNQEsGFTNfMzcuGVCp14nqmqs1K8XK6c+goJoJFsvhB5Qy/Ed3dgg2R/BerbsaBLMokogzKNWqX0Eo+aSlA9B0pC61c/39Qt2UmqK4Mn+QL1tUA1jT8QDblHPJqoNWBLxgAdwMVpjVBJtkVlt1kDKDmEDlRSNQOUCrOIQmKHV3ay+jQ4Kma81AKuJ+9mB91IiMBibpd9HYGyyFb/KMjvaRfnpRrSjgZRLOtjQKvT0+y+MW0NXfN3raBB6uu/qaG3BZbRR9q2yoxFanfz8XcyDavfw7Hp3e/y6u979BfGV1tvwFwAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for oceania/american-samoa.10m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get oceaniaAmericanSamoa10m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

@@ -2,241 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for europe/andorra.10m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Andorra",
-        "iso_a2": "AD",
-        "iso_a3": "AND",
-        "continent": "Europe"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              1.7070065,
-              42.5027815
-            ],
-            [
-              1.7106238,
-              42.5277412
-            ],
-            [
-              1.7216826,
-              42.5485151
-            ],
-            [
-              1.739976,
-              42.5616409
-            ],
-            [
-              1.7650908,
-              42.5633721
-            ],
-            [
-              1.7611071,
-              42.5676462
-            ],
-            [
-              1.7526884,
-              42.5766788
-            ],
-            [
-              1.729434,
-              42.5820014
-            ],
-            [
-              1.713311,
-              42.5895462
-            ],
-            [
-              1.7219926,
-              42.609855
-            ],
-            [
-              1.6083045,
-              42.6181233
-            ],
-            [
-              1.5973491,
-              42.6219215
-            ],
-            [
-              1.5430888,
-              42.6493617
-            ],
-            [
-              1.5277926,
-              42.6485349
-            ],
-            [
-              1.4984404,
-              42.6402408
-            ],
-            [
-              1.4668144,
-              42.6414552
-            ],
-            [
-              1.4514148,
-              42.6020519
-            ],
-            [
-              1.4292973,
-              42.5953856
-            ],
-            [
-              1.4248532,
-              42.5893653
-            ],
-            [
-              1.4192721,
-              42.5792626
-            ],
-            [
-              1.4180319,
-              42.5698316
-            ],
-            [
-              1.4264034,
-              42.5656459
-            ],
-            [
-              1.4263001,
-              42.561796
-            ],
-            [
-              1.4097636,
-              42.5406086
-            ],
-            [
-              1.4064563,
-              42.5292398
-            ],
-            [
-              1.4289873,
-              42.5314619
-            ],
-            [
-              1.4465573,
-              42.5198864
-            ],
-            [
-              1.4499679,
-              42.5040734
-            ],
-            [
-              1.4302275,
-              42.4935572
-            ],
-            [
-              1.4245431,
-              42.492472
-            ],
-            [
-              1.4075932,
-              42.4867618
-            ],
-            [
-              1.4364287,
-              42.4534822
-            ],
-            [
-              1.4364287,
-              42.4409506
-            ],
-            [
-              1.4479008,
-              42.4346461
-            ],
-            [
-              1.5084656,
-              42.4286775
-            ],
-            [
-              1.5166305,
-              42.4295043
-            ],
-            [
-              1.528206,
-              42.4342327
-            ],
-            [
-              1.5345105,
-              42.4399171
-            ],
-            [
-              1.5388514,
-              42.4456532
-            ],
-            [
-              1.5444324,
-              42.4503557
-            ],
-            [
-              1.6074777,
-              42.4564277
-            ],
-            [
-              1.639517,
-              42.4664271
-            ],
-            [
-              1.6503691,
-              42.4934022
-            ],
-            [
-              1.6539865,
-              42.4965286
-            ],
-            [
-              1.6569837,
-              42.4976397
-            ],
-            [
-              1.6597742,
-              42.4968128
-            ],
-            [
-              1.662358,
-              42.4937123
-            ],
-            [
-              1.6742436,
-              42.4905083
-            ],
-            [
-              1.6863359,
-              42.4906117
-            ],
-            [
-              1.697498,
-              42.4944616
-            ],
-            [
-              1.7070065,
-              42.5027815
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for europe/andorra.10m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WXy44TWQyG93mKUtYt5MvvG7vRXJYj9gihCDIoUpNqhbBooX53lEC3aDAaOYtSpZzzxfb5bZ/6slmW7fn+br99uWz/2e/On0/7P9fb2/2782E9bm8u5v++Pf60fbm83izLsny5Xn9deP351XB3Wu/2p/Phuujx58uyPe4+Xhf8cXy/nk67pwXLsj18Wt/u5Gr865fnen3+7zPDu/V4Phz3x/PF9vfnyz9uv1sfnhz5sF8/7s+n++duPPr9ar29//A9zCfqenp/OO7OP8T77fPj/c/floVfBAWR281PBsgLI4lke2Z4c/N/OCYXzQ4nEWAZ4oQ9xTsc0th4iNOqaGnODqohzY2K2lhdNWTqnDNTcIsLh09TZ+KZ6HDhHpnTnShoS0shYkxlosptqFk2D1W4qlWJU6UNJeyUSugqwjlZVGc4q1BUF6sLl0wLzKCU2YnOUeocQ5xE/CZ1SFMMSwKVAHUycZCAhqKDezJ6HMNsqBMYg9HmjoSMp8FKSYV2Ki7TNJ/iLhmXvijUbag7cElIW2OXHZepd5ykXG13qlQeB+ugvp+4OWy8Fa5Efe/kqKlzVOHaTx1yyjHOYd7qREq0pkUhWdnLThk+VjHcrMdxZfqwswNVHq1OCBQ6xSmJRNeMUWoW0w4gMGinE5RgTKOwaisW6eE83Vh1SEaHM0XK1Lvf40BlNFUxoqg97UDh8OFpxyjh1tUYJD1iOhbZXanViZQRpkNbUqh1TiEq0yGrMO6d0yqOaeo007jrnYC56VAnBkClxRldamx6fApE9Cp2SExxWsYtzS+0YercSL09jKEUNC0xN61sX55QbjIdFH4dpW2wl4FU09RZRaBtT+XJMmxP7qLW1n9psAwrzAOCdsaiyCinuHRV68YOipynx2KvQPWxAj497AzfsTfd/ePdw+bx+mbzsPkKRtjk9AkRAAA=';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for europe/andorra.10m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get europeAndorra10m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

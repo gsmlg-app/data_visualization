@@ -2,131 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for seven-seas-open-ocean/maldives.50m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Maldives",
-        "iso_a2": "MV",
-        "iso_a3": "MDV",
-        "continent": "Seven seas (open ocean)"
-      },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [
-                73.4166016,
-                3.23125
-              ],
-              [
-                73.4349609,
-                3.2501465
-              ],
-              [
-                73.4427734,
-                3.2743164
-              ],
-              [
-                73.4277344,
-                3.2898437
-              ],
-              [
-                73.4015625,
-                3.2887695
-              ],
-              [
-                73.3849609,
-                3.2713867
-              ],
-              [
-                73.3820313,
-                3.2464844
-              ],
-              [
-                73.3953125,
-                3.2293945
-              ],
-              [
-                73.4166016,
-                3.23125
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                73.512207,
-                4.1645508
-              ],
-              [
-                73.519043,
-                4.1868652
-              ],
-              [
-                73.522168,
-                4.2110352
-              ],
-              [
-                73.5271484,
-                4.2296875
-              ],
-              [
-                73.5283203,
-                4.2433105
-              ],
-              [
-                73.5177734,
-                4.2476562
-              ],
-              [
-                73.5041016,
-                4.2346191
-              ],
-              [
-                73.4947266,
-                4.2104492
-              ],
-              [
-                73.4811523,
-                4.1881348
-              ],
-              [
-                73.4730469,
-                4.1707031
-              ],
-              [
-                73.4786133,
-                4.1589355
-              ],
-              [
-                73.4948242,
-                4.1551758
-              ],
-              [
-                73.512207,
-                4.1645508
-              ]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for seven-seas-open-ocean/maldives.50m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE52US2vcMBCA7/4VwqcWgtE8NJJybektUCj0UkIxGzUYHGuxncAS9r+XdbJLdq09ZHQQ0jw+jUajea2MqefdNtW3pv6R2vl5TN9y36fN3OWhvjmo/72Jp/rW/KmMMeZ1mdeOi/mi2I55m8a5W5yO5sbUQ/u0ONy1/UP3kqaThzF1N+W/LS7a3ys5LfLvZ4pNHuZuSMN80P1KL2kwU2on8yVv02DyJrXD1/rdfH8K7THlpzSPu/PAjje5e+7n7mfud4/vtz+dlceHbmjnD2l4Gx/Xl7v13hhPDYOIBblZ6ahBAnQX8vtLwzKUOIqNRaizwKLEMnpPXMR6JhDWYRdqGRtiYPI6rAUn6MrY4CXqkkDhem49UBBdtBTQElARy8KBdbml6A5VVMRipMjKSvhk1VbXdmfHKb6PA0Tr13FwA8LO2aC6noNoufAW3ECQIA51VESQUKIigCU11QOHwu/hwwtL8LoXdhgIbTEHyERglVjw5RZywHpxokyCZSjWIzdILBBBV+aRPUoZC5Y56qLlAODwSn0FINZVLXuyLIXOxA146y0pk+CDAJWjdSGSU7aQyAEZy1gH3mm/7icbwvXWVF2u9tVxvq/21X8EJVLQLwkAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for seven-seas-open-ocean/maldives.50m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get sevenSeasOpenOceanMaldives50m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

@@ -2,251 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for oceania/federated-states-of-micronesia.50m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Federated States of Micronesia",
-        "iso_a2": "FM",
-        "iso_a3": "FSM",
-        "continent": "Oceania"
-      },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [
-                162.9832031,
-                5.3257324
-              ],
-              [
-                162.9582031,
-                5.3350098
-              ],
-              [
-                162.9210938,
-                5.3179199
-              ],
-              [
-                162.9298828,
-                5.3007812
-              ],
-              [
-                162.993457,
-                5.2772461
-              ],
-              [
-                162.9832031,
-                5.3257324
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                138.1426758,
-                9.5006836
-              ],
-              [
-                138.1825195,
-                9.507373
-              ],
-              [
-                138.2135742,
-                9.5472168
-              ],
-              [
-                138.1858398,
-                9.5933105
-              ],
-              [
-                138.1469727,
-                9.5835937
-              ],
-              [
-                138.1168945,
-                9.5501953
-              ],
-              [
-                138.0850586,
-                9.4945801
-              ],
-              [
-                138.0619141,
-                9.445752
-              ],
-              [
-                138.0670898,
-                9.419043
-              ],
-              [
-                138.1426758,
-                9.5006836
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                151.6477539,
-                7.3461914
-              ],
-              [
-                151.6504883,
-                7.3628418
-              ],
-              [
-                151.6432617,
-                7.379248
-              ],
-              [
-                151.6294922,
-                7.3904297
-              ],
-              [
-                151.6056641,
-                7.3887207
-              ],
-              [
-                151.5928711,
-                7.379248
-              ],
-              [
-                151.6078125,
-                7.3753906
-              ],
-              [
-                151.6042969,
-                7.3572266
-              ],
-              [
-                151.5750977,
-                7.3513184
-              ],
-              [
-                151.5697266,
-                7.3455078
-              ],
-              [
-                151.5783203,
-                7.3380859
-              ],
-              [
-                151.6394531,
-                7.3330078
-              ],
-              [
-                151.6477539,
-                7.3461914
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                151.8814453,
-                7.4320312
-              ],
-              [
-                151.9125977,
-                7.4538574
-              ],
-              [
-                151.9105469,
-                7.4601562
-              ],
-              [
-                151.8818359,
-                7.4670898
-              ],
-              [
-                151.865332,
-                7.4661621
-              ],
-              [
-                151.8599609,
-                7.457373
-              ],
-              [
-                151.855957,
-                7.4317871
-              ],
-              [
-                151.8642578,
-                7.4267578
-              ],
-              [
-                151.8814453,
-                7.4320312
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                158.3148438,
-                6.8136719
-              ],
-              [
-                158.309375,
-                6.8546387
-              ],
-              [
-                158.3349609,
-                6.8931641
-              ],
-              [
-                158.2946289,
-                6.9510742
-              ],
-              [
-                158.1861328,
-                6.9777344
-              ],
-              [
-                158.1347656,
-                6.9448242
-              ],
-              [
-                158.1276367,
-                6.9046387
-              ],
-              [
-                158.1608398,
-                6.8828125
-              ],
-              [
-                158.1833984,
-                6.8012695
-              ],
-              [
-                158.256543,
-                6.7910156
-              ],
-              [
-                158.3148438,
-                6.8136719
-              ]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for oceania/federated-states-of-micronesia.50m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE7WXTWvcSBCG7/MrxJxD09X1nevC3kwCOS5hGWwlDDgjM1YOJvi/L92xzdpTc5gKnoOQ1OpnSqX3rer+tZmm7fpwN28/Ttu/59368zj/tdzeztfrfjlsP/Thb79v328/Tv9spmmafo3j6cTx+Bi4Oy5383Hdj0nPj0/T9rD78TThZj7u1vlm+rLu1vl+Wr5NV/vr43KY7/e7F840bff3y7+7NuZcndzHcf/Lq4Hr5bDuD/Nh7WOfrufdYb/bPg0/vgT4fV5+zOvx4XV4z+9z9fN23X9ebh++P+Xghb0cb/aHHvFLMn7//n/+9ur0eppAWnHDVhE+nAxywcaKjd6MfH376Bku21kucq1uSW6D6mghF9TBPct1sxZza1WDluQ6EmuEbaqNBJLYiz/b5tzVq3+8WEJoBaiJcpA6L1yrGEriHTvXGoNzzFVUzGEbICu1EEvaQDLKHOGyocdpcESonOSSuLZAQl7YkB01yQUxpzi9XME5md9qXNkk4pITW81IvnMFHCiQvBciVs4YdGC1WvzZCLxSMguXm+KdDMpQhFQZ/TQWLUgjq4l37FyuZIYhV5oRZJw04sUmECheC6o3ymKbk7fA+FrQKzXPGKlzK4tEwtSCZtpqksveTCHm/kkaRjcLfN+xjF4z5XpwqbnEKmNtTZJcVq6usRoYECypXu5lVYI61V3BXDWZX9bRm0MuWjXOrFB6ftGJo5bfuWONknXbpdXh/SqVGRBxmDsaC55MkWcoDo3PaIgYjTWpIYfKFGuepAJLMl4z6K095o5+leQKI4YVkERAWqY1dyy7S43D5eRKbWDZo7VzFwOoaTZaocYatGYto2lnjXS5eN/LSFYQyCjaJkkxQFFIFSErWB016B1SjEnQUq3OCiLFApJijiCU+tRWmpM0C7nOUJVS/uxrfQGMdotSXFWRUvXECiCpcNCTpDiRtXS8TQUlsJIUr3/w3UBqvOeR0nfT0DJ7npFfRDcKuRWaeJLbWJgCh0pRh16vk/K92G3nnb95e/a4eT5+3Txu/gP5aFhULBMAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for oceania/federated-states-of-micronesia.50m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get oceaniaFederatedStatesOfMicronesia50m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

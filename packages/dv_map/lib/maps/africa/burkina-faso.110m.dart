@@ -2,193 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for africa/burkina-faso.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Burkina Faso",
-        "iso_a2": "BF",
-        "iso_a3": "BFA",
-        "continent": "Africa"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -5.4043416,
-              10.3707368
-            ],
-            [
-              -4.9546533,
-              10.1527139
-            ],
-            [
-              -4.7798836,
-              9.8219848
-            ],
-            [
-              -4.330247,
-              9.6108349
-            ],
-            [
-              -3.9804492,
-              9.8623441
-            ],
-            [
-              -3.511899,
-              9.9003262
-            ],
-            [
-              -2.8274963,
-              9.6424608
-            ],
-            [
-              -2.9638962,
-              10.3953348
-            ],
-            [
-              -2.9404093,
-              10.9626903
-            ],
-            [
-              -1.2033577,
-              11.0098192
-            ],
-            [
-              -0.7615759,
-              10.9369296
-            ],
-            [
-              -0.4387015,
-              11.098341
-            ],
-            [
-              0.0238025,
-              11.0186817
-            ],
-            [
-              0.899563,
-              10.9973394
-            ],
-            [
-              1.2434697,
-              11.1105108
-            ],
-            [
-              1.4471782,
-              11.5477192
-            ],
-            [
-              1.9359855,
-              11.6411502
-            ],
-            [
-              2.1544735,
-              11.9401501
-            ],
-            [
-              2.1771078,
-              12.6250178
-            ],
-            [
-              1.0241032,
-              12.8518257
-            ],
-            [
-              0.9930457,
-              13.3357496
-            ],
-            [
-              0.4299276,
-              13.988733
-            ],
-            [
-              0.2956464,
-              14.4442349
-            ],
-            [
-              0.3748922,
-              14.9289082
-            ],
-            [
-              -0.2662573,
-              14.924309
-            ],
-            [
-              -0.5158545,
-              15.1161577
-            ],
-            [
-              -1.0663635,
-              14.973815
-            ],
-            [
-              -2.0010351,
-              14.5590083
-            ],
-            [
-              -2.1918245,
-              14.2464175
-            ],
-            [
-              -2.9676945,
-              13.7981503
-            ],
-            [
-              -3.1037068,
-              13.5412668
-            ],
-            [
-              -3.5228027,
-              13.3376616
-            ],
-            [
-              -4.0063908,
-              13.4724855
-            ],
-            [
-              -4.280405,
-              13.2284435
-            ],
-            [
-              -4.4271661,
-              12.5426456
-            ],
-            [
-              -5.2209419,
-              11.713859
-            ],
-            [
-              -5.1978426,
-              11.3751458
-            ],
-            [
-              -5.4705649,
-              10.9512698
-            ],
-            [
-              -5.4043416,
-              10.3707368
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for africa/burkina-faso.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WWy2obSxBA9/qKQWunqPcjuyTgdfYhBOGrBBFHY2RlYYL/PYwcGyc9XCgthlZX96He1b8207Q9P9ztt2+n7fV+d/552n+Yb2/3N+fDfNxeLeKvT9v327fTp800TdOvy3e8eDl+Edyd5rv96Xy4XHo+Pk3b4+7H5cL7n6fvh+Nuut7dzy+3pml7uJ+/7Phy4nrYl6f9d68FN/PxfDjuj+dF9u7r6XCz2/6RPr5o820//9ifTw9/6/Ks/Mf59uHbH1tfqPPpv8Nxd35l9NPv9frff9P0xkBRRcmv/pEQggSGeP4l+Hz1/zyFMnUTWeGRcZBUkxdRmTLoV5BMldpVTwRZY6Q5YYr2lBOoRNXiFeWcRZWaOCPKqpFWiMLOLRpDcmj5EIkCV1bHnucYyiXLB1uXRCkTaUaCoRQVay1RytkLpcUjYBSxGEJLBIiVVD33IYSThQ3RWPQTLy5v8lQykGxNv0rp5QoCsiTyKo3Sk6KHyyobU2WxtUKktEMjYBX1WgsFERr1Uo9ANShyzDwC04hmZAlKrNLWXOdKZNjCMZCphqzhSpEMW4FloAjCyAHH4GxI0fQdshLK6DuGNEq2Zp5UCaqNkRVYik97RYGgXMUxDp+ls2ZIqwUgcJmr60BTUFVudvdl/mkWj65TKM7C7DYUdmeLscgWngr2Zg+CkaXpmHcGREvrakX2DQG6i6/ksUKFJFmzvSMSitEKzqwQs9feGagoecVcBVZXiq5+5eG1whOISrLm+BEglEAf61bAlNib7ygBY07k9UoLd+qNHwVEl8I1/TRY03r+U+BExTX3MaeqdHHKQe5jujCYsqv1zDVgxlIapzdBkKT1is2AKlJ5bFQEEkZqvegaaKC5rj4ujNirzeu94jdr6+fV4+b5+3nzuPkNyAIEmXENAAA=';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for africa/burkina-faso.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get africaBurkinaFaso110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

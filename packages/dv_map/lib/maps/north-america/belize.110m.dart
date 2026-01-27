@@ -2,117 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for north-america/belize.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Belize",
-        "iso_a2": "BZ",
-        "iso_a3": "BLZ",
-        "continent": "North America"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -89.1430804,
-              17.808319
-            ],
-            [
-              -89.150806,
-              17.0155767
-            ],
-            [
-              -89.2291217,
-              15.8869376
-            ],
-            [
-              -88.9306128,
-              15.8872735
-            ],
-            [
-              -88.7324336,
-              16.2336348
-            ],
-            [
-              -88.5518245,
-              16.2654674
-            ],
-            [
-              -88.3554282,
-              16.5307742
-            ],
-            [
-              -88.239518,
-              17.0360664
-            ],
-            [
-              -88.3026408,
-              17.1316936
-            ],
-            [
-              -88.1978668,
-              17.4894754
-            ],
-            [
-              -88.285355,
-              17.644143
-            ],
-            [
-              -88.1234786,
-              18.0766747
-            ],
-            [
-              -88.1068129,
-              18.3486736
-            ],
-            [
-              -88.2963362,
-              18.3532728
-            ],
-            [
-              -88.3000311,
-              18.4999822
-            ],
-            [
-              -88.4901229,
-              18.4868306
-            ],
-            [
-              -88.8483439,
-              17.8831981
-            ],
-            [
-              -89.0298573,
-              18.0015113
-            ],
-            [
-              -89.1509094,
-              17.9554676
-            ],
-            [
-              -89.1430804,
-              17.808319
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for north-america/belize.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WUS2vcQAyA7/4Vg89bo9dImtzaQk+l9NwSitk6qWHXXhz3sA3738s62TQbD5TxYdDo8SGNZD1WIdTz8dDVN6H+1LXz76n7OO523Xbux6HenM13T+qH+iZ8r0II4XE514GL+2I4TOOhm+Z+Cbq4h1AP7X4J+NDt+j///EOo+4fxR0uL7dtKz4v+85VhOw5zP3TDfLZ9Gaf5V3i/76Z+29bPTqeXdO67cd/N0/E6mUv2X8fd8f652Bf4OP3sh3Z+VfXT91p+ewvhnacGhcFBNm9MaI2DM6Yr/e3m/7wIDprBAcZoaqU8ooSEtgLGxl0Tm5YBvUkMiuRZoJFxLAUakzCvS9aGmJXFS4ExopPEHFCjqEkpkGMUcsoAI4OZUCmQOEVcP6E1wAqq5QkCqUAOiIyauLjJmMxVc0DxJBaLMySPHNctsUZFULg4P2IxX8+MN2CqJoW/iTcI6kgpA2RxtfIXpKTMup6Z8zQxGRVPNQMAI2aAklJyKh5CSYCULVlcnaG4ZBdn4TXQGj9vQsfS3QWUPBrnugwYEQvHZlmuCVJuWad43gyFJZdu/yonX6RTdTlvq1P1F5tv/yqqBwAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for north-america/belize.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get northAmericaBelize110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

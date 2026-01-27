@@ -2,307 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for oceania/new-zealand.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "New Zealand",
-        "iso_a2": "NZ",
-        "iso_a3": "NZL",
-        "continent": "Oceania"
-      },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [
-                176.8858236,
-                -40.0659779
-              ],
-              [
-                177.0329464,
-                -39.8799427
-              ],
-              [
-                176.9399805,
-                -39.4497364
-              ],
-              [
-                177.2069926,
-                -39.1457756
-              ],
-              [
-                177.9704602,
-                -39.1663429
-              ],
-              [
-                178.2747311,
-                -38.5828126
-              ],
-              [
-                178.5170935,
-                -37.6953732
-              ],
-              [
-                178.0103544,
-                -37.5798247
-              ],
-              [
-                177.4388131,
-                -37.9612485
-              ],
-              [
-                176.7631954,
-                -37.8812534
-              ],
-              [
-                175.95849,
-                -37.5553818
-              ],
-              [
-                175.8088868,
-                -36.7989422
-              ],
-              [
-                175.3575965,
-                -36.5261939
-              ],
-              [
-                175.3366158,
-                -37.209098
-              ],
-              [
-                174.6120089,
-                -36.1563974
-              ],
-              [
-                174.3293905,
-                -35.2654957
-              ],
-              [
-                173.5512985,
-                -35.0061834
-              ],
-              [
-                173.0070423,
-                -34.4506617
-              ],
-              [
-                172.6360055,
-                -34.5291065
-              ],
-              [
-                173.0541712,
-                -35.2371253
-              ],
-              [
-                173.8409965,
-                -36.1219809
-              ],
-              [
-                174.3190035,
-                -36.5348239
-              ],
-              [
-                174.2920284,
-                -36.7110922
-              ],
-              [
-                174.6970166,
-                -37.3811288
-              ],
-              [
-                174.7434737,
-                -38.0278077
-              ],
-              [
-                174.5748019,
-                -38.7976832
-              ],
-              [
-                173.852262,
-                -39.1466025
-              ],
-              [
-                173.8240467,
-                -39.5088543
-              ],
-              [
-                174.9001567,
-                -39.9089332
-              ],
-              [
-                175.2276302,
-                -40.4592355
-              ],
-              [
-                174.6509729,
-                -41.281821
-              ],
-              [
-                175.0678984,
-                -41.4258949
-              ],
-              [
-                175.2395675,
-                -41.6883078
-              ],
-              [
-                176.0124402,
-                -41.2896241
-              ],
-              [
-                176.5080172,
-                -40.604808
-              ],
-              [
-                176.8858236,
-                -40.0659779
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                169.6678146,
-                -43.5553256
-              ],
-              [
-                168.9494088,
-                -43.9358192
-              ],
-              [
-                168.3037635,
-                -44.1239731
-              ],
-              [
-                167.0464242,
-                -45.1109413
-              ],
-              [
-                166.5091443,
-                -45.8527048
-              ],
-              [
-                166.676886,
-                -46.2199175
-              ],
-              [
-                167.7637447,
-                -46.2901974
-              ],
-              [
-                168.4113538,
-                -46.6199448
-              ],
-              [
-                169.3323312,
-                -46.6412354
-              ],
-              [
-                169.8314222,
-                -46.3557748
-              ],
-              [
-                170.6166972,
-                -45.9089287
-              ],
-              [
-                171.185138,
-                -44.8971042
-              ],
-              [
-                171.4529252,
-                -44.2425188
-              ],
-              [
-                172.3085836,
-                -43.8656943
-              ],
-              [
-                173.0801127,
-                -43.8533436
-              ],
-              [
-                172.7112464,
-                -43.3722877
-              ],
-              [
-                173.2227397,
-                -42.9700383
-              ],
-              [
-                173.8764466,
-                -42.2331841
-              ],
-              [
-                174.2485169,
-                -41.7700082
-              ],
-              [
-                174.2475867,
-                -41.3491554
-              ],
-              [
-                173.9584054,
-                -40.9267005
-              ],
-              [
-                173.2472343,
-                -41.3319988
-              ],
-              [
-                173.0203748,
-                -40.9190524
-              ],
-              [
-                172.7985795,
-                -40.4939621
-              ],
-              [
-                172.097227,
-                -40.9561044
-              ],
-              [
-                171.9487089,
-                -41.5144166
-              ],
-              [
-                171.569714,
-                -41.7674244
-              ],
-              [
-                171.12509,
-                -42.5127536
-              ],
-              [
-                170.5249199,
-                -43.0316883
-              ],
-              [
-                169.6678146,
-                -43.5553256
-              ]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for oceania/new-zealand.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE51Yy4obVxDd6ysarZ2i3g9vA1nltXYwQdiKEYylYSwTjPG/h5Yf2DPVi5QWTXffvken656qOn0/7pZlf/1wf9w/X/a/HA/X9w/Hny93d8dX19PlvH+2Dv/z+fa7/fPlr92yLMvH2/HpxNvjt4H7h8v98eF6uk36+viy7M+Ht7cJvx//XV4cD3eH8+tvk5Zlf3p3+fvAtwdePLkvn+//+v3Aq8v5ejofz9d17I9Xx8P5dNh/Gf70jc2b4+Xt8frw4UcuX8n/9v7uevrzcvfhzZcX/oZ9eXh9Oh+u373559/354+vnl4vC4VDpiWLP3sy+JMioFtF1KOxl48f7pADULjUtUGWgowq5ZggO5RUJVqPrFohrjPOjF7FXTSkgNQizGfIFaiOvIHsLsqjOCdwaAhRh5xgyUk84pxgFFjSxjnAyySEZ8hIKKatNgIsKllH2ghQySRpoxFQTqxpM9WFC5VtcM4kNhmpzqAstTZiYSZJOcNNzEzPDtkhKkt5tH4GYmHlrTIcjJ1KRmo2EHEnazmv6VlYo2AoODFitmF2IHOpGC2fgnBJ9eXIgN20bCRmATPiyg1kRKecSU4AMVBZOmQFNXSnEWcGF0e0lrOCcRH6KAEF0JSC2hJqwBJrBs6QU7E25UxMlTiSs4JQIfYl1MFEk2eJosDFyNmWI4cgwpolt4JXIHnbBAMkiTiHORgqGhJ9q0KOxBipTsFCE6nN7oSo8Jy1KoE0Zt/q2+qOPJRzsqJ6G4wCw0zTkZwVCpFsC7kwS2bBMGAOl9bFKIJasdgoGgpuWMHdAioBJyXTjDJ6ZLV5ogTKlqXDVsVS5tHlthJ4pmCM8sQBiVX7MK/BKGcdRcNXXSHFxgI6auKQ8uQ7Yrd19cN//u+vGi9wjyRt2cjNU/HIx3tCaSlm509UoMSSapJbniAo4W2rUAViqZDJonsAqitru+gGa6dQmlQaX+VUpNrZCLW1cgbqRE/u4OGZ7QI6MFVRTAqNx2rjQ7UrjityIc18oCcokZi00nBwqtJZMApEWKR1PiuyEouNOBekkDJvIItZxIhzIDi5V19p7NaEOEe9noDSqA+zQlYQ6qi7EahxsbWUFVjZaGZ8GATTsq+OAunmNev1Ams9J27lvHoXEZXR1z+vHpL7/RsVkGDOmVkTYOaQajnzulGCklMjH67aWldlWHMoZ41zXf408g1/EoGIObTbrGHZujUlEC2yUXKH3PYVsN2xUIRiD8Shd2UNlr7uE4hQ1SxTBJBRQtvsRigqNB5Fg9cND4tq+yuClpTPLCbD6lz7FEQoc0IdUSYozej3LJTASJV8lNwE5hW0YYrDQ3lKmdiwJcxgxGGzaoRgrEXVIgug0Oq3Zy1w4hW3nevu8dmn3dfjy92n3X+IXVtH2BgAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for oceania/new-zealand.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get oceaniaNewZealand110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

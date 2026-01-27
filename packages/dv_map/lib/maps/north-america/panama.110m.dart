@@ -2,245 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for north-america/panama.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Panama",
-        "iso_a2": "PA",
-        "iso_a3": "PAN",
-        "continent": "North America"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -77.3533608,
-              8.6705047
-            ],
-            [
-              -77.7295135,
-              8.9468444
-            ],
-            [
-              -78.0559277,
-              9.2477304
-            ],
-            [
-              -78.5008876,
-              9.4204589
-            ],
-            [
-              -79.0584505,
-              9.4545653
-            ],
-            [
-              -79.0211918,
-              9.5529314
-            ],
-            [
-              -79.5733028,
-              9.61161
-            ],
-            [
-              -79.9145998,
-              9.3127652
-            ],
-            [
-              -80.5219012,
-              9.1110721
-            ],
-            [
-              -80.9473016,
-              8.8585035
-            ],
-            [
-              -81.4392871,
-              8.786234
-            ],
-            [
-              -81.714154,
-              9.0319555
-            ],
-            [
-              -81.8085669,
-              8.9506168
-            ],
-            [
-              -82.2075864,
-              8.9955753
-            ],
-            [
-              -82.1871226,
-              9.2074486
-            ],
-            [
-              -82.5461963,
-              9.5661348
-            ],
-            [
-              -82.932891,
-              9.476812
-            ],
-            [
-              -82.9271549,
-              9.0743301
-            ],
-            [
-              -82.7191831,
-              8.9257087
-            ],
-            [
-              -82.8686572,
-              8.8072663
-            ],
-            [
-              -82.8297707,
-              8.6262955
-            ],
-            [
-              -82.9131764,
-              8.4235172
-            ],
-            [
-              -82.965783,
-              8.225028
-            ],
-            [
-              -82.850958,
-              8.0738227
-            ],
-            [
-              -82.8200813,
-              8.2908638
-            ],
-            [
-              -82.3909344,
-              8.2923624
-            ],
-            [
-              -82.1314412,
-              8.1753928
-            ],
-            [
-              -81.7213112,
-              8.1089627
-            ],
-            [
-              -81.5195147,
-              7.70661
-            ],
-            [
-              -81.1897157,
-              7.6479056
-            ],
-            [
-              -81.0595428,
-              7.817921
-            ],
-            [
-              -80.8864009,
-              7.2205415
-            ],
-            [
-              -80.421158,
-              7.271572
-            ],
-            [
-              -80.2766707,
-              7.4197541
-            ],
-            [
-              -80.0036899,
-              7.5475241
-            ],
-            [
-              -80.4806893,
-              8.0903075
-            ],
-            [
-              -80.3826591,
-              8.2984085
-            ],
-            [
-              -80.1644812,
-              8.3333159
-            ],
-            [
-              -79.7605782,
-              8.5845151
-            ],
-            [
-              -79.5578774,
-              8.932375
-            ],
-            [
-              -79.1203072,
-              8.996092
-            ],
-            [
-              -78.6221205,
-              8.7181245
-            ],
-            [
-              -78.4354653,
-              8.3877054
-            ],
-            [
-              -78.1820957,
-              8.3191824
-            ],
-            [
-              -78.4291607,
-              8.0520411
-            ],
-            [
-              -78.2149361,
-              7.512255
-            ],
-            [
-              -77.8815714,
-              7.2237713
-            ],
-            [
-              -77.7534139,
-              7.7098398
-            ],
-            [
-              -77.431108,
-              7.6380612
-            ],
-            [
-              -77.2425665,
-              7.9352782
-            ],
-            [
-              -77.4747229,
-              8.5242862
-            ],
-            [
-              -77.3533608,
-              8.6705047
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for north-america/panama.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5VXy2pbSRDd6ysuWnuKej+yCwOzDNkPYRAeTSKwJaNoFib434crx8ZxNwylxaXVj0NV16lT1T82y7K9PD7stx+W7R/73eXf8/73093d/vZyOB23N+vyP8/T37cflj83y7IsP67f8eB1+3Xh4Xx62J8vh+uhl+3Lsj3u7q8HPu+Ou/vd6/5l2R6+n/7a8XXt4zAvz/Of3i7cno6Xw3F/vKxrn07ny7fl4/3+fLjdbX9ueno15+v+dL+/nB9/NebF+s+nu8evP519BT+d/z4cd5c3Xj//3o7f/1uW3yJATMQxb94tJXigocYv819u/hcvuIzERrxST1Xt4SWgWXHEe7wC1gjBNp4hZoaPeMqoltXDK0BLNRz8LVBTc5M2HhMVDfEoMOMSavpbYCGCPMFzIqcuWpFa1QRNiMONW3iJYEyFxCMeEWFwz75EKA1BGqKbkJaGYj08ApXiDBrxIp2lF4wkCFIyHb1FoTJrW5eY5l6TXDN08uzhMTCGpQ/2JVSZRZPLyUAZxDzJNcZQTe/imTqVyyQ33Em07W8JZw3BLdDwpCaXGYqDTIdoFGCoCDa5zBCrDsiEe8UWmD1lTob0dIsh1xISg93b0U2uCByUOcHZubpsZigSihn7lMUo+vFwixzIksBsyG2upGHZpExiSDL3g8GISTPrCtOlbZ4Ulujk8rhYnJtKxUBCqqMwJ1DYqolt5WMSmuJhlnfvj8CojHQgX0CgN8taElBWkE3QXKPQmkJFgFamY9ENSIrqV7VMV8RBWQKY0ZSamYagTDRyOWAVsG6eIXC4T3QgQKnCtO0tonjWxFvTMO7jaaJnTVINCwWjfXuS7DaWjTXVUjHbeOSqOUsNERGydkcajhY5wVs7VbJ2z2cWGTHrCoSleX1RQLze+sS8KsfqsS/WYsPEY/+dEJTE2jQvQcXUbcIWyQi09nuDkrFGaUmQtbw3hXm1j4t8VnXRGJWa0U1g0hIf2BxgxNws4hGQSRY0kGWVKomg5nMoIEyUZCIGgZVSvToUASpE42s3wCXRmz1fBLCyuQ/sCygxjmzjaWgwTzp6Y+X0Nl7vdb+ZjV9GT5uX75fN0+Y/rI9u14oRAAA=';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for north-america/panama.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get northAmericaPanama110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

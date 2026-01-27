@@ -2,115 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for seven-seas-open-ocean/saint-helena.50m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Saint Helena",
-        "iso_a2": "SH",
-        "iso_a3": "SHN",
-        "continent": "Seven seas (open ocean)"
-      },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [
-                -5.6921387,
-                -15.9977539
-              ],
-              [
-                -5.6597168,
-                -15.9708984
-              ],
-              [
-                -5.6625,
-                -15.912793
-              ],
-              [
-                -5.7078613,
-                -15.9061523
-              ],
-              [
-                -5.7750488,
-                -15.9567383
-              ],
-              [
-                -5.7825195,
-                -16.0040039
-              ],
-              [
-                -5.6921387,
-                -15.9977539
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                -14.3643555,
-                -7.9743164
-              ],
-              [
-                -14.3167969,
-                -7.9561523
-              ],
-              [
-                -14.3025391,
-                -7.9354492
-              ],
-              [
-                -14.3288574,
-                -7.9125977
-              ],
-              [
-                -14.3604004,
-                -7.8859375
-              ],
-              [
-                -14.3836426,
-                -7.8826172
-              ],
-              [
-                -14.398584,
-                -7.9057617
-              ],
-              [
-                -14.4149414,
-                -7.94375
-              ],
-              [
-                -14.4086914,
-                -7.9674805
-              ],
-              [
-                -14.3986816,
-                -7.9757813
-              ],
-              [
-                -14.3643555,
-                -7.9743164
-              ]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for seven-seas-open-ocean/saint-helena.50m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE52UTWvbMBjH7/4UwqcNOqO3563XQullY7DjKMOkWjG4UnDUQSj57iNOE9LEOlQ+CD1vP0l/PfJbo1Sbt+vQ3qr2PvT5dQp3aRzDKg8ptjf78N+De9Peqt+NUkq9zeN14Zw+B9ZTWocpD3PRMV2pNvYvc8GvfohZPYQxxP5UpVQ7bNKf3s4ZD1d+d/D/OA+sUsxDDDHPsfAvRLUJ/UZ9SesQVVqFPn5t39N3p+09h/QS8rT9uLnjab6/jnn4mcbt87sCp7XS9DTEPp9JcfjO55fWta3UN+hQrHFMN9cxA50IETi5iD1eJi+DQcggF8CkWdjXgdFCgWosiauCkiZG4wpcjQZsJZhAey7JAEiOK8FswciiEthp7bWuvbiKjmhK1oclP92exncOvQNYOiZ1Qt4ZrOmiPdggCcoyGGovfA/WFpyYZbAD78VWgi0zkF8GGwtCVAnGfbssg5lBHEElmB16iwWwRUO1UggDF5TQQGgqlfDGizcFsK/WwWtGKWGRPOtagYWRzbLAQkBsapv488+u/A9oLme75jg+NrvmP2l1/ez8BwAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for seven-seas-open-ocean/saint-helena.50m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get sevenSeasOpenOceanSaintHelena50m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

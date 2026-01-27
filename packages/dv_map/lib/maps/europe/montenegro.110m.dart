@@ -2,109 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for europe/montenegro.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Montenegro",
-        "iso_a2": "ME",
-        "iso_a3": "MNE",
-        "continent": "Europe"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              20.0707,
-              42.58863
-            ],
-            [
-              20.25758,
-              42.81275
-            ],
-            [
-              20.3398,
-              42.89852
-            ],
-            [
-              19.95857,
-              43.10604
-            ],
-            [
-              19.63,
-              43.21378
-            ],
-            [
-              19.48389,
-              43.35229
-            ],
-            [
-              19.21852,
-              43.52384
-            ],
-            [
-              19.03165,
-              43.43253
-            ],
-            [
-              18.70648,
-              43.20011
-            ],
-            [
-              18.56,
-              42.65
-            ],
-            [
-              18.4500169,
-              42.4799922
-            ],
-            [
-              18.88214,
-              42.28151
-            ],
-            [
-              19.16246,
-              41.95502
-            ],
-            [
-              19.3717682,
-              41.8775507
-            ],
-            [
-              19.3044861,
-              42.1957451
-            ],
-            [
-              19.7380514,
-              42.6882474
-            ],
-            [
-              19.8016134,
-              42.5000935
-            ],
-            [
-              20.0707,
-              42.58863
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for europe/montenegro.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WUzWrrMBCF934K4XUQ86ORRt1eenct3ZdSQqsbDKkVXHURSt69xG1CUwt65YUYz2g+z5EPeu+M6ct+l/or0/9N6/I2pT95u01PZchjvzqW/32mX/src98ZY8z7vC4b5+1zYTflXZrKMDedthvTj+uXueEmjyWNaTPlc48x/fCaH9c0168XeZ7ztxeFpzyWYUxjOdau344f7b+qh/Msm5RfUpn2l5OcRr/L2/3mS+mZmqfnYVyXb5I/n+/xzzdjCCwECKsfaUdWVD1fpB9Wv6FIgmiFpUhBGlnMsYqKKtSCwmijqCwlskXw4BpZnisgQg7aCHLKGissFqLYyCJUoQpLiLVVIDB6qbAckzT5AdUG8G75E9kSAGIjS3zFDb7JVajWCQD65bmTdSHGSG3WUqtK6Co0UpQ2hdGiJ7cUiTaKQKvlOWDwuvQEWg1BBEIrD5xTjxWlGCW4Zq2BFaR6cl6VXGh1rQJ65BpPACBy6+3z/5diV4tP0aE7rQ/dofsAGdJWrLkGAAA=';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for europe/montenegro.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get europeMontenegro110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

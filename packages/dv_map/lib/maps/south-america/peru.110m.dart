@@ -2,341 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for south-america/peru.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Peru",
-        "iso_a2": "PE",
-        "iso_a3": "PER",
-        "continent": "South America"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -69.8936352,
-              -4.2981869
-            ],
-            [
-              -70.394044,
-              -3.7665915
-            ],
-            [
-              -70.6926821,
-              -3.742872
-            ],
-            [
-              -70.0477085,
-              -2.7251563
-            ],
-            [
-              -70.8134757,
-              -2.2568645
-            ],
-            [
-              -71.4136458,
-              -2.3428024
-            ],
-            [
-              -71.7747607,
-              -2.1697897
-            ],
-            [
-              -72.3257865,
-              -2.434218
-            ],
-            [
-              -73.0703922,
-              -2.3089544
-            ],
-            [
-              -73.6595035,
-              -1.2604912
-            ],
-            [
-              -74.1223952,
-              -1.0028325
-            ],
-            [
-              -74.4416005,
-              -0.53082
-            ],
-            [
-              -75.1066245,
-              -0.0572055
-            ],
-            [
-              -75.3732232,
-              -0.1520318
-            ],
-            [
-              -75.2337227,
-              -0.9114169
-            ],
-            [
-              -75.5449957,
-              -1.5616098
-            ],
-            [
-              -76.6353943,
-              -2.6086777
-            ],
-            [
-              -77.8379048,
-              -3.0030205
-            ],
-            [
-              -78.450684,
-              -3.8730966
-            ],
-            [
-              -78.6398972,
-              -4.5477841
-            ],
-            [
-              -79.2052891,
-              -4.9591285
-            ],
-            [
-              -79.6249792,
-              -4.4541981
-            ],
-            [
-              -80.028908,
-              -4.346091
-            ],
-            [
-              -80.442242,
-              -4.4257244
-            ],
-            [
-              -80.4692946,
-              -4.0592868
-            ],
-            [
-              -80.1840149,
-              -3.8211618
-            ],
-            [
-              -80.3025606,
-              -3.4048565
-            ],
-            [
-              -81.0996696,
-              -4.0363941
-            ],
-            [
-              -81.4109426,
-              -4.7367648
-            ],
-            [
-              -80.9263468,
-              -5.6905567
-            ],
-            [
-              -81.2499963,
-              -6.1368344
-            ],
-            [
-              -80.5374817,
-              -6.5416676
-            ],
-            [
-              -79.7605782,
-              -7.1943409
-            ],
-            [
-              -79.4459204,
-              -7.9308334
-            ],
-            [
-              -79.0369531,
-              -8.3865679
-            ],
-            [
-              -78.0921529,
-              -10.3777125
-            ],
-            [
-              -77.1061924,
-              -12.2227162
-            ],
-            [
-              -76.2592415,
-              -13.5350392
-            ],
-            [
-              -76.4234692,
-              -13.8231869
-            ],
-            [
-              -76.0092051,
-              -14.6492864
-            ],
-            [
-              -75.2378827,
-              -15.2656829
-            ],
-            [
-              -73.4445296,
-              -16.3593629
-            ],
-            [
-              -71.4620408,
-              -17.3634876
-            ],
-            [
-              -71.3752502,
-              -17.7737985
-            ],
-            [
-              -70.3725724,
-              -18.3479754
-            ],
-            [
-              -69.8584436,
-              -18.0926938
-            ],
-            [
-              -69.5904238,
-              -17.5800119
-            ],
-            [
-              -68.9596354,
-              -16.5006979
-            ],
-            [
-              -69.3897642,
-              -15.6601291
-            ],
-            [
-              -69.1603466,
-              -15.3239739
-            ],
-            [
-              -69.3395347,
-              -14.9531955
-            ],
-            [
-              -68.9488867,
-              -14.4536394
-            ],
-            [
-              -68.9292238,
-              -13.6026836
-            ],
-            [
-              -68.8800795,
-              -12.8997291
-            ],
-            [
-              -68.6650797,
-              -12.5613001
-            ],
-            [
-              -69.5296781,
-              -10.9517343
-            ],
-            [
-              -70.0937522,
-              -11.1239719
-            ],
-            [
-              -70.5486857,
-              -11.0091468
-            ],
-            [
-              -70.4818939,
-              -9.4901181
-            ],
-            [
-              -71.3024123,
-              -10.0794361
-            ],
-            [
-              -72.1848907,
-              -10.0535979
-            ],
-            [
-              -72.563033,
-              -9.5201938
-            ],
-            [
-              -73.2267134,
-              -9.4622128
-            ],
-            [
-              -73.0153827,
-              -9.0328333
-            ],
-            [
-              -73.5710593,
-              -8.4244467
-            ],
-            [
-              -73.9872355,
-              -7.5238298
-            ],
-            [
-              -73.7234015,
-              -7.3409986
-            ],
-            [
-              -73.7244867,
-              -6.9185955
-            ],
-            [
-              -73.1200274,
-              -6.6299309
-            ],
-            [
-              -73.2197113,
-              -6.0891887
-            ],
-            [
-              -72.9645072,
-              -5.7412513
-            ],
-            [
-              -72.8919277,
-              -5.2745615
-            ],
-            [
-              -71.7484057,
-              -4.5939828
-            ],
-            [
-              -70.9288433,
-              -4.4015915
-            ],
-            [
-              -70.7947688,
-              -4.2512647
-            ],
-            [
-              -69.8936352,
-              -4.2981869
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for south-america/peru.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE51YTWscRxC961cMe1aK+v7wLYTkbJJjMEE4a0cgacV6dRBG/z30yhKyuwlU9jDMTs88qrpevarqrxfbtjs93u9377bdb/ur08Nx/8vh5mb/8XR9uNtdjuVPz4+/7N5tf15s27Z9PV/nD8+vnxfuj4f7/fF0ff7o5fVt291d3Z4/eL8/Pry+vW276y+Hv674vPLr9Fyen//+duHj4e50fbe/O421Pw4Pp3+2n2/3x+uPV7tvLz29GvN5f7jdn46P35vyYvv7w83j52+uvoIfjn9f312d3vj8/Ht7/+O/bfvJC7LExfjyxyUFrqT0+m7hw+V/AwaClKLqhCcQ7lZkXTwv9mRaASpncBcPNQLTJjyGYCNz6QImiYbFApDN07XpMYGSuFouAEU5kbULGKHhuLKQvCIreoAMwhbpqz1UUabs4QlgoBTPJGQQzDJteizgVoYyG0jAjlrUZI0CMUst0oQAkVO4GWQFVXLE2UIEE8ymfQaE7qwrOLRgtKZ9BhLCLLPDCGSM0o2xAYsE80xChCJS6gqNgalWLfKOwJwcq2mhg4tJqSxY6Jge0UyTgJQo1DmRBRAFGZtBSVBDz5W2ZgiWexfPpbJiJf6mEanUAyxgNM6axVqhrIiz6XGBs1bUykI1pcqehYmAnIVzSBREHasNp8qsS/PYgpvCNfC8uNQXgGjF6T1SJwKlImmtOMNE3szjRBBkc5wtFFDUNO+FOAmwyr2WLotLNUmYo35iKa8AQzxc2y4Xu6jPpDHwQjPvCUMSsFaVz0rjQOIpfdqYhCbNWuhgSu7RVIaCcLTImdgBVCqKTbUuULVinLUroARTpFnia5CjTGapSZB082hamIDFZDxnCiFIRFC3xscoylQ8+0wMzBzkzTLvwFastOhrBExsNFFdRGUZmrNCTJb+AOCAWIw2B4YUXIeGNUM9WofIXLQOZMBunty0UUBVjReaQw5iJd5FJFBn1EVhoQBx0eymIIGEseEiMgEREtUtpoPG56I0IyaIRoX1IjOmR0tVWezjOZ28pKe1XmCFyrLcR0tEol5kPEfn4WILrx0M0aupFF4gWeGLqk8G7kjcbCO8gBxFfbGPBsJSIX0bpUx0kTOjFROq5kQw9lEz05eIaudK3Ubk4mWsBRzZU3o54wmZiFELfWTIqmhHJsHdMGrhNY8xQxDbsR7CE7nQR4QyCtH2CQTW0IoFHwlosKeZM4Fgmp6r2WrMu0Xa7EMDQZOyZK6uBVpI1GzkhzwiK/HcQxECRql4E5FHq5y1OCYZiCbWFYoYDBGU2cTBAaSuOIYAswfJLGU1yg8T9w9eyGRVWUd7xSnSpKKABaHV7HKCsqo2W+UQqAwWmzM6wFiSu1O+QLAoLlqogNHWVjbr9ABUXemiQ1FaV2hDgBiRY46yg3OVdHtvAaYKotW4gVmU2T7/K1fDxbmBQSixUZM2Q5ypOOY9NOBQ8+6pMUFoKi4ETMFKKruZMmbATF3kssJg0/84147S8FydRLARu/aC0j/Jv1jdv9w9XbxcP1w8XfwLktjkLnUZAAA=';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for south-america/peru.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get southAmericaPeru110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

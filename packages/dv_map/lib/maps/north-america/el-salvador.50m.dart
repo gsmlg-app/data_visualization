@@ -2,333 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for north-america/el-salvador.50m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "El Salvador",
-        "iso_a2": "SV",
-        "iso_a3": "SLV",
-        "continent": "North America"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -89.3625977,
-              14.4160156
-            ],
-            [
-              -89.383252,
-              14.4276367
-            ],
-            [
-              -89.4188477,
-              14.4311035
-            ],
-            [
-              -89.5008789,
-              14.4137695
-            ],
-            [
-              -89.5405273,
-              14.4099121
-            ],
-            [
-              -89.5736328,
-              14.3900879
-            ],
-            [
-              -89.5769531,
-              14.3470703
-            ],
-            [
-              -89.5550293,
-              14.2772461
-            ],
-            [
-              -89.547168,
-              14.2412598
-            ],
-            [
-              -89.5702637,
-              14.2246582
-            ],
-            [
-              -89.6712891,
-              14.1827148
-            ],
-            [
-              -89.7111328,
-              14.1413086
-            ],
-            [
-              -89.7493652,
-              14.077002
-            ],
-            [
-              -89.7937012,
-              14.0500977
-            ],
-            [
-              -89.8399414,
-              14.0550781
-            ],
-            [
-              -89.8727051,
-              14.0456055
-            ],
-            [
-              -89.9426758,
-              13.9973633
-            ],
-            [
-              -90.0481445,
-              13.9040527
-            ],
-            [
-              -90.1047363,
-              13.8347656
-            ],
-            [
-              -90.1059082,
-              13.7830078
-            ],
-            [
-              -90.0952148,
-              13.7365234
-            ],
-            [
-              -89.970459,
-              13.6831543
-            ],
-            [
-              -89.8041992,
-              13.5601074
-            ],
-            [
-              -89.5232422,
-              13.5091309
-            ],
-            [
-              -89.2776367,
-              13.4780762
-            ],
-            [
-              -88.867041,
-              13.283252
-            ],
-            [
-              -88.5120117,
-              13.1839355
-            ],
-            [
-              -88.4838867,
-              13.197168
-            ],
-            [
-              -88.581543,
-              13.2449707
-            ],
-            [
-              -88.6558594,
-              13.2591797
-            ],
-            [
-              -88.6856445,
-              13.2814941
-            ],
-            [
-              -88.5915527,
-              13.2810547
-            ],
-            [
-              -88.4171387,
-              13.2135254
-            ],
-            [
-              -88.1806641,
-              13.1640137
-            ],
-            [
-              -88.0234375,
-              13.16875
-            ],
-            [
-              -87.9308594,
-              13.1806641
-            ],
-            [
-              -87.8780762,
-              13.2244141
-            ],
-            [
-              -87.8207031,
-              13.2851562
-            ],
-            [
-              -87.8383789,
-              13.385791
-            ],
-            [
-              -87.814209,
-              13.3991699
-            ],
-            [
-              -87.7370117,
-              13.4513672
-            ],
-            [
-              -87.7316406,
-              13.4831055
-            ],
-            [
-              -87.7564453,
-              13.5060059
-            ],
-            [
-              -87.7818848,
-              13.5213867
-            ],
-            [
-              -87.7742187,
-              13.5803223
-            ],
-            [
-              -87.7585449,
-              13.6499512
-            ],
-            [
-              -87.715332,
-              13.8126953
-            ],
-            [
-              -87.7314453,
-              13.8410645
-            ],
-            [
-              -87.8022461,
-              13.8899902
-            ],
-            [
-              -87.8919922,
-              13.8949707
-            ],
-            [
-              -87.9910156,
-              13.8796387
-            ],
-            [
-              -88.0387207,
-              13.9046387
-            ],
-            [
-              -88.0804687,
-              13.9605957
-            ],
-            [
-              -88.1510254,
-              13.9873535
-            ],
-            [
-              -88.2762207,
-              13.9426758
-            ],
-            [
-              -88.4084961,
-              13.8753906
-            ],
-            [
-              -88.4491211,
-              13.8509766
-            ],
-            [
-              -88.482666,
-              13.854248
-            ],
-            [
-              -88.4976562,
-              13.904541
-            ],
-            [
-              -88.5043457,
-              13.964209
-            ],
-            [
-              -88.5125488,
-              13.9789551
-            ],
-            [
-              -88.5831543,
-              14.0001465
-            ],
-            [
-              -88.665625,
-              14.0155273
-            ],
-            [
-              -88.7076172,
-              14.0320801
-            ],
-            [
-              -88.7473633,
-              14.0722656
-            ],
-            [
-              -88.8459473,
-              14.1247559
-            ],
-            [
-              -88.8683105,
-              14.1636719
-            ],
-            [
-              -89.0001953,
-              14.2527344
-            ],
-            [
-              -89.0268555,
-              14.2969727
-            ],
-            [
-              -89.0571289,
-              14.3291504
-            ],
-            [
-              -89.1205078,
-              14.3702148
-            ],
-            [
-              -89.1701172,
-              14.3603027
-            ],
-            [
-              -89.3372559,
-              14.411377
-            ],
-            [
-              -89.3625977,
-              14.4160156
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for north-america/el-salvador.50m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE51Yy2ocVxDd6yuaWSuXej+8CyFZhRAwZBNMGOSJI5A0YjwJCKN/D7f1wPKUMKVZND19uw91br3uqS9ny7I53t3uNu+WzS+77fHfw+6n/dXV7uJ4ub/ZnM/lvx8ef968W/48W5Zl+bJeTz9cX18Xbg/7293heLl+9PT6smxuttfrBz9fLe+3V/9tP+4Pzx8ty+by8/6vLc0X3v9x8pzX57++WLjY3xwvb3Y3x7n22/5w/Gf58Xp3uLzYbh5fun+26dNuf707Hu5eWvRE4ff91d2nR8bP4PvDx8ub7fEr6g+/r++//bcsP0QONtJ0P/9mCWUIGqDai4UP598HDCalCo/c2LyLJxghtYGMCKxdQAUIjywZs1v2AQWUnCtAyETCNqCzMUUByDmNzz6gpTJWgOLgwG1AVaCsKJM7ifUpi6NVjEmQNKPPGMi4ihoiMQ3qApojRVZbiEGO0rbQEbF2MgoyRDvxXJKtzDxwB2gz9mQHLPEUIL2dycGZglICKni0gyacHLTyCYgaaDuTU8hcT33CI3PmZC9PEgZIoIhWgLBWjS4ggkxDCsBgcWuW6xVQE+LUyzw8GMB7cT0ppxJKtYc+w5Ol7RQH0dNyzcOCUaVduwIEMyvGaoDgbQOVmIRKQEhkaJdr8rVTFoDiAW7NVI4R5iCnecKD1mbdhVMkQKzsw+Dkbt7FkOCIkjDm7AttA2MGRsVXJB2alSuGqYbmaeXiQZro2QcMtbouUKCkNEthDE1UpWoHKRBU2hYKOnKUgMhK2sySGBhgVgYhmgBy20IgFvZqD9HCmzHoIxle8fGj5V3AeMjVagdJBN8ASPOoVqexonbLgo/g4OokzINDPfsGohCUcJlo2ayDPnweQMo6I4ps3ibsPGPNKsBgbB8YfPiaxlWlUTAA7VOOKXeq7qmEHF355MNdCMs81gAmarbPSTlUpOzHkqnYdwoqc5UmgTRlyxuc/IpPQhBM2k4OmJqhyruIzOyerH1EzgNISTnf0J98ZOKU6hWgp3H0ayuHE1RRkyBvAgwQK8MwDTS1DYiKQFqV6wxn7Y4FYpAbvUL5QRW0OyiEZB02rpzQFHgxROYwoQRUSLc+YJBZGTUq1FW0MSSnAKnCOkH0DWcaEBatY2Y2mjYekkqU6s4jVfsGPgiQSn8CoFg7Bm3u3+mJRgasp7tmKYzh4IZeSngmCGgz9lV9loydqCs/pzIRTSlnZ0ji2m2gU+qsnbwCnJoK22JsujKLdiKDpkukLReBLFQrCyktvTkTmIC6zqaq6R4lKrQtRII5j6kAHegNsy5cz3FVHLIBQ58ys5MWQ4E5w0Xuj6aaU/Cz6v7p7v7s6frh7P7sf5IORoS4GAAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for north-america/el-salvador.50m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get northAmericaElSalvador50m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

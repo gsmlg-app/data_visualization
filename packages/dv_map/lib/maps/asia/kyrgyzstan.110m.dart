@@ -2,177 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/kyrgyzstan.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Kyrgyzstan",
-        "iso_a2": "KG",
-        "iso_a3": "KGZ",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              70.9623149,
-              42.2661543
-            ],
-            [
-              71.2592477,
-              42.1677107
-            ],
-            [
-              70.4200224,
-              41.5199983
-            ],
-            [
-              71.1578585,
-              41.1435871
-            ],
-            [
-              71.8701148,
-              41.3929001
-            ],
-            [
-              73.0554171,
-              40.866033
-            ],
-            [
-              71.7748751,
-              40.1458444
-            ],
-            [
-              71.014198,
-              40.2443655
-            ],
-            [
-              70.6480188,
-              39.9357539
-            ],
-            [
-              69.5596098,
-              40.1032114
-            ],
-            [
-              69.4648869,
-              39.5266833
-            ],
-            [
-              70.5491618,
-              39.6041979
-            ],
-            [
-              71.7846936,
-              39.2794632
-            ],
-            [
-              73.6753793,
-              39.4312369
-            ],
-            [
-              73.9600131,
-              39.6600084
-            ],
-            [
-              73.8222437,
-              39.8939735
-            ],
-            [
-              74.7768624,
-              40.3664253
-            ],
-            [
-              75.467828,
-              40.5620723
-            ],
-            [
-              76.526368,
-              40.4279461
-            ],
-            [
-              76.9044845,
-              41.0664859
-            ],
-            [
-              78.1871969,
-              41.1853159
-            ],
-            [
-              78.5436609,
-              41.5822425
-            ],
-            [
-              80.1194304,
-              42.1239407
-            ],
-            [
-              80.2599903,
-              42.3499993
-            ],
-            [
-              79.6436455,
-              42.4966828
-            ],
-            [
-              79.1421774,
-              42.8560924
-            ],
-            [
-              77.658392,
-              42.9606855
-            ],
-            [
-              76.0003536,
-              42.9880224
-            ],
-            [
-              75.636965,
-              42.8778999
-            ],
-            [
-              74.2128658,
-              43.2983393
-            ],
-            [
-              73.6453036,
-              43.0912719
-            ],
-            [
-              73.4897575,
-              42.5008945
-            ],
-            [
-              71.8446383,
-              42.8453954
-            ],
-            [
-              71.1862806,
-              42.7042929
-            ],
-            [
-              70.9623149,
-              42.2661543
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/kyrgyzstan.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WWy2ojVxCG93qKRmtT1P0yuxCYWWSTdcIQxEQxAo/ayJ2FMvjdQ8vxYE8fAqVF032qz0f9+qvq9LfdNO2X6+Nx/2Hafzwelr8vx5/nh4fjl+U0n/d3a/ivl+Wn/Yfp9900TdO323W78fb6LfB4mR+Pl+V02/T6+jTtz4evtw2/XC/313+elsP5+55p2p+e5j8OfIt/2qzLy/pvbwNf5vNyOh/Pyxr76el02P8Xe/6eyf1x/npcLtf3ebwm/uv8cL2fz++Z8+XP0/mwvBH88nt7/+PTNAVCOQtp3f0QUQZ2J1N5F/h89/88ArZijRjwyCMIo8VDUEZk1g2PwKiqspsfWaSlDXikYhnU5GUgkeaAJ8WF2OMJoJlS0IaHkO4oXbkRmmEjHKmlqjZ5SEq1VYvAquJmTXddEyk3PCkosTCpDs8LzMpxmB+hMFFLrheoa6ZvukMKjN2zaQeCaZHTSK+jUkVL72pvqpf4gMdR6sLN6vMwiZIBT4VYvJefQDkiyab8Vr2OiNkrP4FkZpXNdJGCLKmQXv0pRHj6YLogiLuy9fw1UI/kUfmZMwb3cL4WmfgIpzd7e7PFoVA1dTT70F3Teu4mUAbVtjvWWZom1OaZijuOeJbMyi13E4GoVHDrLgOxlPbOosT1bKvCTXcog2hVVc/eAldxta0fDFruydnkkTJFjPSmORb3ui3ALaV4gCtHz+awd0BEse2wWnmZ6yHfbDYXLx/9exmRVb3qU2DidNt2mwBXijTdFXA1wYFcASzioO4s1aywGOk1xCzt2UGQqi45quZUk7LupwGlc+LI3kDl4p7e9pfpbnT/eve8e71+3j3v/gXVekDyQQwAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/kyrgyzstan.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaKyrgyzstan110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

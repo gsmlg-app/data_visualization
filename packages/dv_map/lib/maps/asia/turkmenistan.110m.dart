@@ -2,253 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/turkmenistan.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Turkmenistan",
-        "iso_a2": "TM",
-        "iso_a3": "TKM",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              52.5024598,
-              41.7833155
-            ],
-            [
-              52.8146888,
-              41.1353706
-            ],
-            [
-              52.9167497,
-              41.8681166
-            ],
-            [
-              53.7217135,
-              42.1231914
-            ],
-            [
-              54.008311,
-              41.5512108
-            ],
-            [
-              54.7368453,
-              40.9510149
-            ],
-            [
-              53.8581393,
-              40.6310345
-            ],
-            [
-              52.9152511,
-              40.8765233
-            ],
-            [
-              52.6939726,
-              40.0336291
-            ],
-            [
-              53.3578081,
-              39.9752864
-            ],
-            [
-              53.1010279,
-              39.2905736
-            ],
-            [
-              53.8809286,
-              38.952093
-            ],
-            [
-              53.7355111,
-              37.9061362
-            ],
-            [
-              53.9215979,
-              37.1989184
-            ],
-            [
-              54.800304,
-              37.3924208
-            ],
-            [
-              55.5115784,
-              37.9641171
-            ],
-            [
-              56.1803748,
-              37.9351267
-            ],
-            [
-              56.6193661,
-              38.1213944
-            ],
-            [
-              57.3304338,
-              38.0292294
-            ],
-            [
-              58.4361544,
-              37.5223095
-            ],
-            [
-              59.234762,
-              37.412988
-            ],
-            [
-              60.377638,
-              36.5273831
-            ],
-            [
-              61.1230705,
-              36.4915972
-            ],
-            [
-              61.2108171,
-              35.6500723
-            ],
-            [
-              62.2306515,
-              35.270664
-            ],
-            [
-              62.9846623,
-              35.4040408
-            ],
-            [
-              63.1935384,
-              35.8571656
-            ],
-            [
-              63.9828959,
-              36.0079575
-            ],
-            [
-              64.5464791,
-              36.3120733
-            ],
-            [
-              64.7461052,
-              37.1118177
-            ],
-            [
-              65.5889478,
-              37.3052168
-            ],
-            [
-              65.7456307,
-              37.661164
-            ],
-            [
-              66.2173849,
-              37.3937902
-            ],
-            [
-              66.5186068,
-              37.3627843
-            ],
-            [
-              66.5461503,
-              37.974685
-            ],
-            [
-              65.215999,
-              38.402695
-            ],
-            [
-              64.170223,
-              38.8924067
-            ],
-            [
-              63.5180148,
-              39.3632565
-            ],
-            [
-              62.3742603,
-              40.0538862
-            ],
-            [
-              61.8827141,
-              41.0848569
-            ],
-            [
-              61.547179,
-              41.2663703
-            ],
-            [
-              60.465953,
-              41.2203266
-            ],
-            [
-              60.0833407,
-              41.4251462
-            ],
-            [
-              59.9764222,
-              42.223082
-            ],
-            [
-              58.6290109,
-              42.751551
-            ],
-            [
-              57.78653,
-              42.1705529
-            ],
-            [
-              56.9322152,
-              41.8260261
-            ],
-            [
-              57.0963912,
-              41.3223101
-            ],
-            [
-              55.9681914,
-              41.3086417
-            ],
-            [
-              55.4552511,
-              41.2598591
-            ],
-            [
-              54.7553455,
-              42.0439715
-            ],
-            [
-              54.0794178,
-              42.3241094
-            ],
-            [
-              52.9442932,
-              42.1160342
-            ],
-            [
-              52.5024598,
-              41.7833155
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/turkmenistan.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5VYS4sbRxC+61cMOi9FvR++hUAuIZBDbsEE4ShGeFezaOXDYva/h5GzxutuCCXB0Jrq/qjn11X6sluW/fX58bh/t+x/OR6uny/Hn9f7++OH62k97+828T9fXz/t3y1/7pZlWb7cnuPB2/ab4PGyPh4v19Pt0Ov2ZdmfDw+3A398vnx6OJ5PT9fD+dupZdmfnta/Dnzb8dvwXm7vf30j+LCer6fz8XzdZD89nQ77/2Qv33T5eFwfjtfL81tNXlX/fb1//rie32Kul79P58P1O5O/fr5f//hrWYzBkNUq736QKEGkCJm9Eby/+z+8JPXMGR6JSaA38Yo8tGKCl55E3sMTCKYgsQGPgVioSFt4CogpRBP1zIgJswkX4qkmAx5CGSFpNc1NS5Ka4bkQinbDW2RsE3sRMtxYpInnJRXsEzwUcS5q2isWiTnoJwUVxum98AoQEnLUBI8LLaSbfplYnIO9klDGWD33CYSY0RgOCSh0EucmXjFZTcwNoMqi7FZHIgrqBE6KlZvVYWBEFjnDK1ei6GWLAyVK6EBWG54YsUcTz6nEfQxHAjFJac99ASKoIqN+CcjFXD28BBUn05n/jFmwemxQwKLhPIFT4spWdB1BInxirINxSEoruE4bn2PgwPTioLVleas2nGBjc4oxuAZuiMGt2nUGFnSjUT8DDvQeUzlDpbrzwPRioLh9e9EQoBKTSa0ZpAW5tZjPBSo5y0ZqcUCMsmjlniuYukaN4XAQYozeTeQKoU5os2QmoqRocYEbWGZpzLhF0Ji8Fw+DUHPBoRGSAHeiZro4MIWkzpheSqKwVx0ORunoU3OdI7UXDt/CS4ZjOgdUqGcvWwy2e61GaxMU2Xu85woUyJNSS8hixd614bL5DmlyDRWIC5v31GOQUPbRd1tTZZLZ6wqcIJODdNbkYmqat5pSJzANGpsMJWB3CeylCoK61aRlJmBG4d6E4AiYIjoWmhIoG2mzp9oaT1fmgViUYbtzsweX4FxIOHqPIYzMei1QQKRPfMdbiptxb9xwKGGmkUS3aY0d2bvaYbkUzfCEWQh7eAbluc14MzxMV+o1fAZq83GIgK3SmuOLQpiJ2mw6RZUK6jVoChilNF5CyiCshM0GkqFUuWSWy0SOor1kbv/7sJutX1cvu9fn+93L7l+j50O5JxIAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/turkmenistan.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaTurkmenistan110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

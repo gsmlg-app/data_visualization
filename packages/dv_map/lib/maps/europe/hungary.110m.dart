@@ -2,165 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for europe/hungary.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Hungary",
-        "iso_a2": "HU",
-        "iso_a3": "HUN",
-        "continent": "Europe"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              22.0856084,
-              48.4222643
-            ],
-            [
-              21.8722364,
-              48.3199708
-            ],
-            [
-              20.801294,
-              48.6238541
-            ],
-            [
-              20.473562,
-              48.56285
-            ],
-            [
-              20.2390544,
-              48.3275672
-            ],
-            [
-              19.7694707,
-              48.2026911
-            ],
-            [
-              19.6613636,
-              48.2666149
-            ],
-            [
-              19.1743649,
-              48.1113789
-            ],
-            [
-              18.7770248,
-              48.0817683
-            ],
-            [
-              18.6965129,
-              47.8809537
-            ],
-            [
-              17.8571326,
-              47.7584289
-            ],
-            [
-              17.4884729,
-              47.8674661
-            ],
-            [
-              16.9796668,
-              48.123497
-            ],
-            [
-              16.9037541,
-              47.7148656
-            ],
-            [
-              16.3405843,
-              47.7129019
-            ],
-            [
-              16.5342676,
-              47.496171
-            ],
-            [
-              16.2022982,
-              46.852386
-            ],
-            [
-              16.370505,
-              46.8413272
-            ],
-            [
-              16.5648084,
-              46.5037509
-            ],
-            [
-              16.8825151,
-              46.3806318
-            ],
-            [
-              17.6300664,
-              45.9517691
-            ],
-            [
-              18.4560625,
-              45.7594811
-            ],
-            [
-              18.8298248,
-              45.9088724
-            ],
-            [
-              18.8298381,
-              45.9088777
-            ],
-            [
-              19.5960445,
-              46.1717298
-            ],
-            [
-              20.2201925,
-              46.127469
-            ],
-            [
-              21.0219523,
-              46.316088
-            ],
-            [
-              21.6265149,
-              46.9942378
-            ],
-            [
-              22.0997677,
-              47.6724393
-            ],
-            [
-              22.7105314,
-              47.8821939
-            ],
-            [
-              22.6408199,
-              48.1502396
-            ],
-            [
-              22.0856084,
-              48.4222643
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for europe/hungary.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE52WS2vbQBDH7/4UwucwzPuRa2npqfTSUwnFpGowJFZwlIMJ+e7FzoMkWgpbHcRqR/vTzH92Z/SwGob1fLgd1+fD+su4me/346fp+nq8nLfTbn12NP95mr5bnw8/V8MwDA+n+3Lh6fWT4XY/3Y77eXta9PL6MKx3m5vTgq/3u6vN/vC6YBjW27vp14ZPxh+LeXma//bWcDnt5u1u3M1H2+f74xfXz9bHV0euxulmnPeH9268+P19uj5cPYf5Sp32v7e7zfwm3qfr7fjj0zAwA6Y5pp59sGiCMrOrvDNcnP2bR5DBLN7iCVUFZhcPIZG4WjhnSVPqxGmIOTdw5pzWCWMpNG3GymEe3MOjgvDSwGjwGNmLuoKlAncSF2/x3J20OnkUKq7V4BGRRPbxEiICWbPBw6Tw7Np7lODlRrz0LyATyyS6eAFpQcJL/QLCUrkz3gDN1Gj756Huffl1qCh3b+lHLFp94ToUSphSK1zSdPNOnihaqjR5XEh98jmYKHu00qHlFL3qMTJXLmuBQxpLdkcbaGgtmpJwZy1wMNds1WUHO6YJe8XLZCNbJtdBEl2oqy5TgAuiN+q8QRmFV182EtQcnZf6GYSVZmftS8hjbhu1xaAwM1j/gye51O+ZF32HrcDKUbW1XygouHr7JDNSNfRzIA71ru3CBMhUxsuz6yDkmH3eETi7UaNzOFQpS/TxGLAqPJadMsCDVarvr4UhCE1ouZuPnYOppE8+BldMqmanNGSpruLS/5e2ao1fRo+rl/vF6nH1FxZil2lMCwAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for europe/hungary.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get europeHungary110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

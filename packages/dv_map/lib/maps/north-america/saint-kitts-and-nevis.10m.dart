@@ -2,215 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for north-america/saint-kitts-and-nevis.10m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Saint Kitts and Nevis",
-        "iso_a2": "KN",
-        "iso_a3": "KNA",
-        "continent": "North America"
-      },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [
-                -62.5992326,
-                17.2029483
-              ],
-              [
-                -62.6186417,
-                17.1828067
-              ],
-              [
-                -62.6263729,
-                17.1406925
-              ],
-              [
-                -62.612172,
-                17.1041527
-              ],
-              [
-                -62.5657446,
-                17.1005313
-              ],
-              [
-                -62.5475968,
-                17.104641
-              ],
-              [
-                -62.5435685,
-                17.1088728
-              ],
-              [
-                -62.5384415,
-                17.1209984
-              ],
-              [
-                -62.5367732,
-                17.1297061
-              ],
-              [
-                -62.5372615,
-                17.1528995
-              ],
-              [
-                -62.5384415,
-                17.1619327
-              ],
-              [
-                -62.5464982,
-                17.1837833
-              ],
-              [
-                -62.5603735,
-                17.1967227
-              ],
-              [
-                -62.5784399,
-                17.2025414
-              ],
-              [
-                -62.5992326,
-                17.2029483
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                -62.6504614,
-                17.2656111
-              ],
-              [
-                -62.6668595,
-                17.273505
-              ],
-              [
-                -62.6781307,
-                17.2922224
-              ],
-              [
-                -62.6954646,
-                17.333238
-              ],
-              [
-                -62.7199601,
-                17.3585473
-              ],
-              [
-                -62.8195695,
-                17.4158389
-              ],
-              [
-                -62.8223364,
-                17.4101016
-              ],
-              [
-                -62.8266495,
-                17.4071719
-              ],
-              [
-                -62.8388566,
-                17.4021671
-              ],
-              [
-                -62.8435766,
-                17.4010684
-              ],
-              [
-                -62.846547,
-                17.3999698
-              ],
-              [
-                -62.8492326,
-                17.3981387
-              ],
-              [
-                -62.8531388,
-                17.3947208
-              ],
-              [
-                -62.8610734,
-                17.3622908
-              ],
-              [
-                -62.8316137,
-                17.3301456
-              ],
-              [
-                -62.7887264,
-                17.3046736
-              ],
-              [
-                -62.7569474,
-                17.2923038
-              ],
-              [
-                -62.7440486,
-                17.2905948
-              ],
-              [
-                -62.7125545,
-                17.2923038
-              ],
-              [
-                -62.7033585,
-                17.28913
-              ],
-              [
-                -62.690297,
-                17.2749698
-              ],
-              [
-                -62.6704809,
-                17.2631697
-              ],
-              [
-                -62.6597387,
-                17.2254906
-              ],
-              [
-                -62.6470434,
-                17.2171898
-              ],
-              [
-                -62.6247452,
-                17.2252872
-              ],
-              [
-                -62.6248266,
-                17.241848
-              ],
-              [
-                -62.6368302,
-                17.2582055
-              ],
-              [
-                -62.6504614,
-                17.2656111
-              ]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for north-america/saint-kitts-and-nevis.10m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE6VXTWscORC9z68Qc86G+v7ILQRyCTELe1zCMjidpMGeNuPOggn+78uMY+PY0oIrfWhaKun169LTU/WPTWvb9eZq2r5p2/fTbv1+mN4tFxfT+Tov++2rY/jLXff19k37e9Naaz9O9+cTT8NPgavDcjUd1vk06X54a9v97vI04a/dvF/bh3ldr9tu/7mdTf/O1w/TW9vO18s/OzoO/XD2rJ/v+t8+Dpwv+3XeT/v1GDtbDuu39vZyOsznu+3PQbcP7L5Oy+W0Hm5+5Xb/MR+/X6zzn8vFzdefCXh4w3L4PO9366NM3F2Pn5+2nrdb+8PotWYSk716FkR/TUApwU9Cn56O7QMbhgl6FxiDAsyLwGTslH1gAUvSKmNCpz4uCCoVCaupi/RTjADKWEyximtajBibYBWX1UIHuBFOUQTmEMEBMEFmSBXY3HmwdpQOVk0FO9mIsVJkFsX2v6kwTC6rTUwyBqkI9uCq2gzYecA4zanM2EM4+xuagFSwqoqXe9tm1PrllRWjNQUxlD4ZU0MsStTMQrO/LuSsULVDD2ToGzglEVFxWSyPGu0vCzMTF93FMdMA+7gaKl5UfmCqDTIsqMGRRWAiZutrQhAQ0KrAZjJiDI6OVcYcodZfOwFC86KKQ1h9CIxg1aMhxFT6KubMtCyqLWRsLpyBHEU7jGNBEP1TnVOcoMrYEJz7amMjyjIwoyEPcsyAokUZ+7HWGOwPBjHnKrBaig/MOImh7EEiIDE4chI0pWxupCoDl/8txsBHc+wDR1ZrU0ugHBweLvVtZw4SMCgWjNGy+luh6RwDxqSSUNSaiYMMth2hY5RTQeKi/UqPSCmcysDHA6QPLBhVDRtbMAwIaxBotVR5eW01LvQ2T59uN/f3T5vbzX8lseBwqhAAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for north-america/saint-kitts-and-nevis.10m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get northAmericaSaintKittsAndNevis10m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

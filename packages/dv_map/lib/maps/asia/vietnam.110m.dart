@@ -2,213 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/vietnam.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Vietnam",
-        "iso_a2": "VN",
-        "iso_a3": "VNM",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              104.3343348,
-              10.4865437
-            ],
-            [
-              105.0762016,
-              9.9184905
-            ],
-            [
-              104.7951852,
-              9.2410383
-            ],
-            [
-              105.1582638,
-              8.5997596
-            ],
-            [
-              106.4051127,
-              9.5308397
-            ],
-            [
-              107.2209286,
-              10.364484
-            ],
-            [
-              108.36613,
-              11.0083206
-            ],
-            [
-              109.2001359,
-              11.6668592
-            ],
-            [
-              109.3352698,
-              13.4260283
-            ],
-            [
-              108.8771066,
-              15.2766906
-            ],
-            [
-              108.2694951,
-              16.0797423
-            ],
-            [
-              107.3619536,
-              16.6974566
-            ],
-            [
-              106.4268168,
-              18.004121
-            ],
-            [
-              105.6620056,
-              19.0581652
-            ],
-            [
-              105.8816822,
-              19.7520505
-            ],
-            [
-              106.715068,
-              20.6968507
-            ],
-            [
-              108.0501803,
-              21.5523799
-            ],
-            [
-              107.04342,
-              21.8118989
-            ],
-            [
-              106.5672734,
-              22.2182049
-            ],
-            [
-              106.7254033,
-              22.7942679
-            ],
-            [
-              105.8112472,
-              22.9768924
-            ],
-            [
-              105.3292094,
-              23.3520633
-            ],
-            [
-              104.4768584,
-              22.8191501
-            ],
-            [
-              103.5045146,
-              22.7037566
-            ],
-            [
-              102.7069922,
-              22.7087951
-            ],
-            [
-              102.1704358,
-              22.4647531
-            ],
-            [
-              102.7548963,
-              21.6751372
-            ],
-            [
-              103.2038611,
-              20.7665622
-            ],
-            [
-              104.4350004,
-              20.7587332
-            ],
-            [
-              104.8225737,
-              19.8866418
-            ],
-            [
-              104.1833879,
-              19.6246681
-            ],
-            [
-              103.896532,
-              19.265181
-            ],
-            [
-              105.0945984,
-              18.6669746
-            ],
-            [
-              105.9257622,
-              17.4853155
-            ],
-            [
-              106.5560079,
-              16.604284
-            ],
-            [
-              107.3127059,
-              15.9085383
-            ],
-            [
-              107.5645252,
-              15.2021732
-            ],
-            [
-              107.3827275,
-              14.2024409
-            ],
-            [
-              107.614548,
-              13.5355307
-            ],
-            [
-              107.491403,
-              12.3372059
-            ],
-            [
-              105.8105237,
-              11.5676147
-            ],
-            [
-              106.24967,
-              10.9618118
-            ],
-            [
-              105.199915,
-              10.8893098
-            ],
-            [
-              104.3343348,
-              10.4865437
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/vietnam.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE52Xy2ocWQyG9/0URa+N0P2SXRiY3YSsZhNCaDI1ocHuNu2ahQl+96HasXFyCgZNL4rqUp0PSef8kur7bpr2y+P9vH837X+fD8s/l/m38+3t/HU5nk/7m9X89/Pjh/276dNumqbp+/U6Lry+fjXcX87382U5Xhe9vD5N+9Ph7rrgz+O8nA53rwumaX98OH858NX4YXguz8//eGv4ej4tx9N8Wlbb+4fjYf/D9vTqxrf5fDcvl8efnXjx+uP59vHbjyBfmefLX8fTYXkT7fPv7f2v/6aJUEFERTRvBhNouqnET4bPN/8BNMBwRvJfgQVFqYXW4ylEGaXxyGMllJSuf2TJLkPACVYVVt7jOSgaEcfonwmmVDN/AcxYnEP+CEFcNbXHSxB3koFGgJjC2Ay3gBFJrDaA7p5W3AWKGHuNB1BA2ZG7G5yQEYQ+JtCAw726ISewl5bRAHTAqFBuehggTmUyeujgFWreP4PsST7mMAFRiamrEXdGtNHBArQkt+YmG+TqHg8ipoIwRutWBYcgwzFgRvDyNGyqLgENKXHQCROYsURVd49RRYd4mSCJsrKJczAPDtEByMCUjNoGBpuijAEzRCl7NIG2BsYaY8gMFZ7FzcJlIFyMNYYsIMbo0pSdgoan5VYOk4oMmzIRMFQjHWSy5hAl2jpel3nVKJMrMNdG2AVSoIqNOmFQ1zBpA8M0y7d04mEk0awMAoySTkNxZYRwN+cmUEHFEHHcZYSwDJE2MJktZGjwVJDprpRdIKVIxthCC5zVPdvnMMtNtooru1EXZ4ClVqNOKNcWX6HNY21QbOEb1T9A04SsXf3NHHEjgw6Oyt0ZKUCIAzeGGoPCtPaQGWCuxuPQus4gyBTdQxggycFhA1BXoCq2+5OT2sbYL2BiJt0GGqBFOvZPYhAJRvsf7QTXxrsxZ5qHkzYddGAtH3EI5bT25K5/VFU07gdCZglWuyg0v8N2W/cvd0+7l+vn3dPuXwRTe1ctDwAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/vietnam.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaVietnam110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

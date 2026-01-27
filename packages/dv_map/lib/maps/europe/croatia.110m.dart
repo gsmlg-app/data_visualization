@@ -2,209 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for europe/croatia.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Croatia",
-        "iso_a2": "HR",
-        "iso_a3": "HRV",
-        "continent": "Europe"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              16.5648084,
-              46.5037509
-            ],
-            [
-              15.7687329,
-              46.2381082
-            ],
-            [
-              15.6715296,
-              45.8341536
-            ],
-            [
-              15.3239539,
-              45.7317825
-            ],
-            [
-              15.3276746,
-              45.4523164
-            ],
-            [
-              14.9352438,
-              45.4716951
-            ],
-            [
-              14.5951095,
-              45.6349409
-            ],
-            [
-              14.4119682,
-              45.4661657
-            ],
-            [
-              13.7150598,
-              45.5003238
-            ],
-            [
-              13.6794031,
-              45.4841491
-            ],
-            [
-              13.6569755,
-              45.1369351
-            ],
-            [
-              13.9522547,
-              44.8021235
-            ],
-            [
-              14.2587476,
-              45.2337768
-            ],
-            [
-              14.9016024,
-              45.0760603
-            ],
-            [
-              14.9203093,
-              44.738484
-            ],
-            [
-              15.3762504,
-              44.3179154
-            ],
-            [
-              15.174454,
-              44.2431912
-            ],
-            [
-              16.0153846,
-              43.5072155
-            ],
-            [
-              16.9300057,
-              43.2099985
-            ],
-            [
-              17.5099703,
-              42.8499946
-            ],
-            [
-              18.4500163,
-              42.4799914
-            ],
-            [
-              18.4500169,
-              42.4799922
-            ],
-            [
-              18.56,
-              42.65
-            ],
-            [
-              17.6749215,
-              43.0285625
-            ],
-            [
-              17.2973735,
-              43.4463406
-            ],
-            [
-              16.9161564,
-              43.6677225
-            ],
-            [
-              16.4564429,
-              44.0412397
-            ],
-            [
-              16.2396603,
-              44.3511433
-            ],
-            [
-              15.7500261,
-              44.8187117
-            ],
-            [
-              15.9593673,
-              45.2337768
-            ],
-            [
-              16.3181568,
-              45.0041267
-            ],
-            [
-              16.5349394,
-              45.2116076
-            ],
-            [
-              17.002146,
-              45.2337768
-            ],
-            [
-              17.8617835,
-              45.0677404
-            ],
-            [
-              18.5532141,
-              45.0815897
-            ],
-            [
-              19.0054846,
-              44.8602345
-            ],
-            [
-              19.3904757,
-              45.2365156
-            ],
-            [
-              19.072769,
-              45.5215111
-            ],
-            [
-              18.8298248,
-              45.9088724
-            ],
-            [
-              18.4560625,
-              45.7594811
-            ],
-            [
-              17.6300664,
-              45.9517691
-            ],
-            [
-              16.8825151,
-              46.3806318
-            ],
-            [
-              16.5648084,
-              46.5037509
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for europe/croatia.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE52XTWsbSRCG7/oVg86mqO+PXEPCHpc97GUJQWS1QeBojDw+mOD/vki2jJNpAhUdhtHU9KO3q6rfbn3fTNN2ebzbb99N24/73fJw2r+fb2/3X5bDfNzenMP/PT++376b/tlM0zR9v1zXAy+vXwJ3p/luf1oOl0HX16dpe9x9uwx4f5p3y2H3OmCatof7+fOOz8E//lo9l+fnf78NfJmPy+G4Py7n2IeH8y9uX6JPr0K+7udv++X0+KOMq+4/59vHry/TfKXOp38Px93yZr7Pn7f3P3+bJnIw18TUm58i6mAoYVg/BD7d/JpnEJ4hXAMeSxImN3keZFy+4hmkKJl4kycsZbLWZxBCkWxtXnjoSJ8aC7m2eAolxio54gV5GTV5VkZYNuC5aGmzvgpKVJ480udObtHiCQQZWo3ma4jCkk2eRykKjfSlklYvfwJuXmGj/JF4SbMeAmXMprHiKSQysfT6T4EtQ2PUfywS4b38KRSSI6/9wADD0VG6PEbBksF8Q1KztzwMJJwN1/IUhKLIujwKVRvhWIWKem7lgGSSAzcQMAwm61XXoQQRbd0tAoxVlT1egGFV4LoaDKlVpT03TVBDJB/xNKqKeuW48tbu/MLjXj0SbF0KBu9mzUOLae0BAshp3twzArhCQkY8VRfFXhUcipzM110s4B7BTX0Oaq462MMVUImleh5/3vnLfdB1CmJEKj1PMQhDZF97vEJSBlFPn0FZicda3+95qINQkvloT8NzAr2bPxMtqZEnM5Fj9PolAJFpeGT5nekGpFPkoJ0N0CMUuyZgJkw62sIxybLZfgWIpiNTVkhHFu0tjwIp1BiY8jl/bmS9chRgcAw8z8CYjKh3wkhIrmQddV9hZnDfkx2dR+UNK82mvgAXRB+41XkdUnjzhOaQyUa2bhcHSXSh7upt/iPajO6vd0+b6/XT5mnzP3rArVy4DgAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for europe/croatia.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get europeCroatia110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

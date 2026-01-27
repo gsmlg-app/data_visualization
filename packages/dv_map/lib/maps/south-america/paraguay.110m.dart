@@ -2,169 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for south-america/paraguay.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Paraguay",
-        "iso_a2": "PY",
-        "iso_a3": "PRY",
-        "continent": "South America"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -58.1663924,
-              -20.1767009
-            ],
-            [
-              -58.1834714,
-              -19.8683993
-            ],
-            [
-              -59.1150425,
-              -19.356906
-            ],
-            [
-              -60.0435646,
-              -19.3427467
-            ],
-            [
-              -61.7863265,
-              -19.6337367
-            ],
-            [
-              -62.2659613,
-              -20.5137346
-            ],
-            [
-              -62.2911794,
-              -21.0516346
-            ],
-            [
-              -62.6850571,
-              -22.2490292
-            ],
-            [
-              -60.8465647,
-              -23.8807126
-            ],
-            [
-              -60.028966,
-              -24.0327963
-            ],
-            [
-              -58.8071285,
-              -24.7714592
-            ],
-            [
-              -57.7772172,
-              -25.1623398
-            ],
-            [
-              -57.63366,
-              -25.6036565
-            ],
-            [
-              -58.6181736,
-              -27.1237188
-            ],
-            [
-              -57.6097597,
-              -27.3958985
-            ],
-            [
-              -56.4867016,
-              -27.548499
-            ],
-            [
-              -55.6958455,
-              -27.387837
-            ],
-            [
-              -54.7887949,
-              -26.6217856
-            ],
-            [
-              -54.6252907,
-              -25.7392555
-            ],
-            [
-              -54.4289461,
-              -25.1621847
-            ],
-            [
-              -54.2934763,
-              -24.5707997
-            ],
-            [
-              -54.2929596,
-              -24.0210141
-            ],
-            [
-              -54.6528342,
-              -23.8395781
-            ],
-            [
-              -55.0279018,
-              -24.0012737
-            ],
-            [
-              -55.4007472,
-              -23.9569353
-            ],
-            [
-              -55.5176393,
-              -23.5719976
-            ],
-            [
-              -55.6106827,
-              -22.6556194
-            ],
-            [
-              -55.7979581,
-              -22.3569296
-            ],
-            [
-              -56.4733174,
-              -22.0863001
-            ],
-            [
-              -56.8815096,
-              -22.2821538
-            ],
-            [
-              -57.9371557,
-              -22.0901759
-            ],
-            [
-              -57.870674,
-              -20.7326877
-            ],
-            [
-              -58.1663924,
-              -20.1767009
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for south-america/paraguay.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE52WTUscQRCG7/srhjmbouu7ylsI5CzJKQQJg5mYBd2RdTws4n8Pjq6o0xDaPQyzXd0Pb/VbXT33m67r58PN2J92/ddxmO/245fp6mq8mLfTrj95DP95Gr7tT7ufm67ruvvluV64TF8CN/vpZtzP22XRcXrX9bvhellwNuyHy7vh8LKi6/rt7fRroCX6YzXOy/i3N4GLaTdvd+Nufox9n+7mv93n63G/vRj650kPL4Iux+l6nPeHt3KO+s+mq8Plc7ov8Gn/e7sb5ld5P/1ev7//13WfNADNOElO3oeoALp5Kfkmcn7yf2KwOK6JmBAWnMltxARELUJaI7JaFmsCWoEirCZWBQq5mLcRETyMyaoSjdm5lUhApmnINWMU2VkasyagRPSsWI1QFO0DRAst6rgmEpBkoaRWZ0JMTXxNZIgojtTuNUXa2moSKEye1liNAYuMWFtNAu4o2pi0Org7odOaqIBGzBmtRGOu5axghU1NW3M2DHSuEB2Q2DHaFZZ0zYrRDpwaGY0aDSTMC1Y1qoRkYyNTsNQQrRjtwOHBbUdaBTzCU3INNDBCD20rbhUwUspS2UUF5yTVxl0UEIoUqxzppRYxpDlrSha3SiMTUC+e+QEipWb9TBMWFGzeR6VgqZxAhuBUj0aiQiHPglHVWJC8tXoUpBSXWpdgSLVkbexkCopunBVnGNQx0xvrUcGwWFClHglM1TCllejpqVG9Yh7vfspGjQbizOiVa5CghHEpjV4bRKCWWj0SUBAqN3fHZEfV6j6WLOja2MwcwovVki7gTBbeWI7tH46b2vvx7WFzfJ5vHjb/AMNsXffpCwAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for south-america/paraguay.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get southAmericaParaguay110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

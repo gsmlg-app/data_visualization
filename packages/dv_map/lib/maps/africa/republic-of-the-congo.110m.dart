@@ -2,233 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for africa/republic-of-the-congo.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Republic of the Congo",
-        "iso_a2": "CG",
-        "iso_a3": "COG",
-        "continent": "Africa"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              18.4530652,
-              3.5043859
-            ],
-            [
-              17.8099003,
-              3.5601964
-            ],
-            [
-              17.1330424,
-              3.7281965
-            ],
-            [
-              16.5370581,
-              3.1982547
-            ],
-            [
-              16.0128524,
-              2.2676397
-            ],
-            [
-              15.9409188,
-              1.7276726
-            ],
-            [
-              15.146342,
-              1.9640148
-            ],
-            [
-              14.3378125,
-              2.2278747
-            ],
-            [
-              13.0758224,
-              2.2670971
-            ],
-            [
-              13.0031136,
-              1.8308963
-            ],
-            [
-              13.2826315,
-              1.3141837
-            ],
-            [
-              14.0266687,
-              1.3956774
-            ],
-            [
-              14.2762659,
-              1.1969298
-            ],
-            [
-              13.8433208,
-              0.0387576
-            ],
-            [
-              14.3164185,
-              -0.5526275
-            ],
-            [
-              14.4254558,
-              -1.3334067
-            ],
-            [
-              14.2992102,
-              -1.9982756
-            ],
-            [
-              13.9924073,
-              -2.4708049
-            ],
-            [
-              13.1096188,
-              -2.4287403
-            ],
-            [
-              12.5752845,
-              -1.9485112
-            ],
-            [
-              12.4957028,
-              -2.3916883
-            ],
-            [
-              11.8209636,
-              -2.5141615
-            ],
-            [
-              11.4780388,
-              -2.765619
-            ],
-            [
-              11.8551217,
-              -3.4268706
-            ],
-            [
-              11.0937728,
-              -3.9788266
-            ],
-            [
-              11.914963,
-              -5.0379867
-            ],
-            [
-              12.3186076,
-              -4.6062302
-            ],
-            [
-              12.6207597,
-              -4.4380234
-            ],
-            [
-              12.9955172,
-              -4.7811032
-            ],
-            [
-              13.2582402,
-              -4.8829575
-            ],
-            [
-              13.6002348,
-              -4.5001384
-            ],
-            [
-              14.1449561,
-              -4.5100086
-            ],
-            [
-              14.2090349,
-              -4.7930921
-            ],
-            [
-              14.5826038,
-              -4.9702389
-            ],
-            [
-              15.1709917,
-              -4.3435072
-            ],
-            [
-              15.7535401,
-              -3.8551649
-            ],
-            [
-              16.0062895,
-              -3.5351327
-            ],
-            [
-              15.9728032,
-              -2.7123923
-            ],
-            [
-              16.4070919,
-              -1.740927
-            ],
-            [
-              16.8653068,
-              -1.2258163
-            ],
-            [
-              17.5237163,
-              -0.7438303
-            ],
-            [
-              17.6386446,
-              -0.4248316
-            ],
-            [
-              17.6635527,
-              -0.058084
-            ],
-            [
-              17.8265402,
-              0.2889232
-            ],
-            [
-              17.7741919,
-              0.8556587
-            ],
-            [
-              17.8988355,
-              1.741832
-            ],
-            [
-              18.0942758,
-              2.3657215
-            ],
-            [
-              18.3937924,
-              2.9004434
-            ],
-            [
-              18.4530652,
-              3.5043859
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for africa/republic-of-the-congo.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5VXS2sjRxC+61cMOltFvR97C4bkmJBrWILjjB2BV2O02oNZ/N+DtGuzdk8CpcPQ6ur+qOdX1V8307Q9PT3O2w/T9uf55vTlOF8vDw/z7Wm/HLZXZ/Hdt+3P2w/TH5tpmqavl+948XL8Ing8Lo/z8bS/XHo5Pk3bw82ny4Xf58cvfz3sb6flbjr9M0/Xy+F+eb0+Tdv95+XPGz4fvf5l2JfL/q9vBLfL4bQ/zIfTWfbT3XF/e7P9Ln1+Vet+Xj7Np+PTW6VerPhteXi6/270K+py/Ht/uDn9YP2334/r9/+miRLUBN346p1EwFAlrd7sf7z6f7iAxCpEWYFzpHJtwpEIKusIF5xUbi04B5NASxrhqJJNowmHxGmjdgzs4VI9OINSLMp8D0cQHB7sTThSFx0CS1CuSJotNAWRSGJbsZUjo+k6AQxL/g/XYQV14VCIxEdjUzDLpQnHyS40GEsgpJTSM1YB2d0zVuDKPKJXFAoczm41wlF5cfUiK5AqwjikHQJKhkUv7RSEXCkH3+0QzNg5ejWroGxqNqi3IxARRe8Gg6uYcKiLHUFVcljPXoEqVoyB8XYMGpioPQYVICxfYYEzHmco9nKZwcI4dYwHQWkaETfxtCyQ1/STIs/s6UeQjOVj6e4YjJScevlCoJEoq/4LN6deOAjSjJiG2t0JKHsG9tKFAEsiVtwnUJHJ3sUr0vIx+wxQorJZHQxC6RhjNBQcnQW72eKMYTW6T0ElkaXHfQxVZhRj9SpEEqH09BNgS9YVNlDI5LImWwk4no0aw6tgiCTZ5XpSLfNhYjnjESJml50ZC0WH3nH2XwkW9xqvgiU7ypq9FciSvXIzoMCqlXJTEBXD6MXXIExMcfSfXArbm+zsgOicNbKpgImRcHvmC06UMf8YgliKe2zqoBhYNMaXIBSrqZ5D+vl5sNZ8mS2pOVgFGEvQCl0hhEpKs7kFuKSrjnSFoKwp1CuPAHcx4zH9ENASm9UbkOy2wi4InFncJKuACKWV4OI5l92yF9yArEyxlSk3zkNuT7kELOUY5zQGcQtutvEEKYlaeyAUomqzb3SfuZu19cvqefPy/bh53vwLF2OnbJoQAAA=';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for africa/republic-of-the-congo.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get africaRepublicOfTheCongo110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

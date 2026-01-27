@@ -2,113 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/jordan.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Jordan",
-        "iso_a2": "JO",
-        "iso_a3": "JOR",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              35.5456653,
-              32.393992
-            ],
-            [
-              35.5452519,
-              31.7825048
-            ],
-            [
-              35.3975607,
-              31.489086
-            ],
-            [
-              35.4209184,
-              31.1000658
-            ],
-            [
-              34.9226026,
-              29.5013262
-            ],
-            [
-              34.9560372,
-              29.3565547
-            ],
-            [
-              36.0689409,
-              29.1974946
-            ],
-            [
-              36.5012142,
-              29.5052536
-            ],
-            [
-              36.7405278,
-              29.8652833
-            ],
-            [
-              37.503582,
-              30.0037762
-            ],
-            [
-              37.6681197,
-              30.3386653
-            ],
-            [
-              37.9988489,
-              30.5084999
-            ],
-            [
-              37.0021656,
-              31.508413
-            ],
-            [
-              39.0048857,
-              32.010217
-            ],
-            [
-              39.1954684,
-              32.1610088
-            ],
-            [
-              38.7923405,
-              33.3786864
-            ],
-            [
-              36.8340621,
-              32.3129375
-            ],
-            [
-              35.7199182,
-              32.7091924
-            ],
-            [
-              35.5456653,
-              32.393992
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/jordan.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WUTYvbMBCG7/4Vwucg5kMzmtlbKexhLy29lqWYXXcxZO3guIew5L+XOM2SxD5UPgh5Xs3DK2lGH1UI9XTYtfVDqB/bZvoztl+H7bZ9mbqhrzcn+fc5vK8fws8qhBA+5nGZOC+fhd047Npx6uaky/IQ6r55nxOehvG16T/Xh1B3++FXQ7P2bRHnc/zHtfAy9FPXt/100r7su6b+px0/Xby1w3s7jYdbDxfT34ft4W3ob5nD+Nr1zXS12fN3Pb//C4ElShJV4c29QpGd3ekm/rz5DxwJ+gKHMRsJJCvksWdRyCu8ZA6mhbhE4GhpBYcAoFJmL0UnUiC955FHAWTSsuNL0UWBM63wWFQk5SKeRlDzBIvrII/oOXkqOz897YowrfkTEBIu5eUEQtlWeKZCxlzEy1GAxRb2GCIA51x4HTmqGqIvqw8is53appDnbpZs2R0QBSy5eyEPgFBlUX6MMw/L7HkESGay3C5FQCAsK75TiUnSlWajiIoAVtZsFrMTJ5AFjyNnU9NUWHzGCZRw7elDcs5S+LhkdMeV6qOYwdGpzF/p01ytzS+zY3UZn6tj9Rcr6zzlPQcAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/jordan.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaJordan110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

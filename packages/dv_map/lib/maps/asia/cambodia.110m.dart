@@ -2,105 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/cambodia.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Cambodia",
-        "iso_a2": "KH",
-        "iso_a3": "KHM",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              102.5849325,
-              12.186595
-            ],
-            [
-              103.0906897,
-              11.1536606
-            ],
-            [
-              103.4972799,
-              10.6325554
-            ],
-            [
-              104.3343348,
-              10.4865437
-            ],
-            [
-              105.199915,
-              10.8893098
-            ],
-            [
-              106.24967,
-              10.9618118
-            ],
-            [
-              105.8105237,
-              11.5676147
-            ],
-            [
-              107.491403,
-              12.3372059
-            ],
-            [
-              107.614548,
-              13.5355307
-            ],
-            [
-              107.3827275,
-              14.2024409
-            ],
-            [
-              106.4963733,
-              14.5705838
-            ],
-            [
-              106.0439462,
-              13.881091
-            ],
-            [
-              105.2187769,
-              14.2732118
-            ],
-            [
-              104.2814181,
-              14.4167431
-            ],
-            [
-              102.9884221,
-              14.2257211
-            ],
-            [
-              102.3480994,
-              13.3942473
-            ],
-            [
-              102.5849325,
-              12.186595
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/cambodia.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WUTWvbQBCG7/oVi85m2PnancmtBEqgFHovoaiJEgS2ZGTlYIL/e7EdGycSlNVhGc278/DOzkrvVQj1tN+29V2ov7fN9Da298N63T5N3dDXq6P8ck7v6rvwuwohhPfTOi88bT8J23HYtuPUnYou20Oo+2ZzKrhvNn+H5665VoRQd7vhT0NH9cfDLM/n/M9b4Wnop65v++mofdt1Tf2hHa4+Xtth007j/rOLi+1fw3r/+tHllTmMz13fTDftnp/b+OtbCBgJ1MSZdPVVIkBL6vop/7j6D48hekzmecZDQOWUYioFimfK7jNghMSkqlIGFGAWZrEFoFhS4VwGVEB3x/kJRjBzjm5lvAQknuYHGMETGmIhTsEwKvHSRDTlhFLYbwZxlMgLN4Y5U1Qv5SUUXZgHg7Iqx2J/bJQpzwciQJFEYqHBBOKJM887FtAc1bh4wlHYJdFCy2YYHUtHTGg5p/k3IkCZqfjOCJChoOECUDBl4UKHBG4mREtAIs2ExUAWi+6ycITsQpK5FFj2I6yW4kt0qC7rY3Wo/gHsV+fkrgYAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/cambodia.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaCambodia110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

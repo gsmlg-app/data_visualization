@@ -2,193 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for africa/mauritania.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Mauritania",
-        "iso_a2": "MR",
-        "iso_a3": "MRT",
-        "continent": "Africa"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -17.0634232,
-              20.9997521
-            ],
-            [
-              -16.5363236,
-              20.5678663
-            ],
-            [
-              -16.2778381,
-              20.0925207
-            ],
-            [
-              -16.3776511,
-              19.5938172
-            ],
-            [
-              -16.2568833,
-              19.0967158
-            ],
-            [
-              -16.1463474,
-              18.1084816
-            ],
-            [
-              -16.2705517,
-              17.1669628
-            ],
-            [
-              -16.5497078,
-              16.6738921
-            ],
-            [
-              -16.4630981,
-              16.1350361
-            ],
-            [
-              -16.1206901,
-              16.4556625
-            ],
-            [
-              -15.6236661,
-              16.3693371
-            ],
-            [
-              -15.1357373,
-              16.5872824
-            ],
-            [
-              -14.5773476,
-              16.5982637
-            ],
-            [
-              -14.0995215,
-              16.3043023
-            ],
-            [
-              -13.4357377,
-              16.039383
-            ],
-            [
-              -12.8306583,
-              15.3036915
-            ],
-            [
-              -12.1707503,
-              14.6168342
-            ],
-            [
-              -11.8342075,
-              14.799097
-            ],
-            [
-              -11.6660783,
-              15.3882083
-            ],
-            [
-              -11.349095,
-              15.411256
-            ],
-            [
-              -10.6507914,
-              15.1327459
-            ],
-            [
-              -10.0868465,
-              15.3304857
-            ],
-            [
-              -9.7002551,
-              15.2641074
-            ],
-            [
-              -9.5502384,
-              15.4864969
-            ],
-            [
-              -5.5377443,
-              15.5016898
-            ],
-            [
-              -5.3152773,
-              16.2018537
-            ],
-            [
-              -5.4885225,
-              16.325102
-            ],
-            [
-              -5.9711287,
-              20.6408334
-            ],
-            [
-              -6.4537866,
-              24.9565907
-            ],
-            [
-              -4.9233374,
-              24.9745741
-            ],
-            [
-              -8.6843998,
-              27.3957441
-            ],
-            [
-              -8.6872937,
-              25.8810562
-            ],
-            [
-              -11.9694189,
-              25.9333528
-            ],
-            [
-              -11.9372245,
-              23.3745942
-            ],
-            [
-              -12.8742216,
-              23.2848323
-            ],
-            [
-              -13.1187544,
-              22.7712202
-            ],
-            [
-              -12.9291019,
-              21.3270706
-            ],
-            [
-              -16.8451937,
-              21.3333235
-            ],
-            [
-              -17.0634232,
-              20.9997521
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for africa/mauritania.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE52Wy2obSxCG93qKQWufou6X7ELg7A6EQ3YhBOHIQeBIRpksTPC7h5Fj46QHQkWLYdQ1/VHXv/v7Zpq28/3dfvtq2v67383fzvs3p9vb/fV8OB23V4v55nH56/bV9H4zTdP0/fIcN14+vxjuzqe7/Xk+XDY9fT5N2+Puy2XDf7tv58O8Ox52z3umaXv4evq444v9/2FdHtffvTRcn47z4bg/zovt9c35cL3b/rQ+PPvyeX/6sp/P97968uT629Pt/eefkT5TT+dPh+NufhHy4+/l++//pukfCkAXZeGr30yMUFVhTL8YPlz9Aehg4sLiK0DzSHfpAjkiJWkFiMXGGF2gRLjRAKQCK0kKbntonimyAsTyIMsukNRFQwdgAmFqkvdziGYUAzCA3Mu57aFpBUYOQAcPyeq3jbpgjVVekiGG4m0gMXrhGlDN3Nl6QANncfc1oHiJRNNDWwILibFtHCyDk7UHVLAI0RhGbwFWsktzUhSwyphsLWRUQW7OsoBeQh770AGlJJs8hhR0yzGFBoLiRc0iM1BgGI5ABSdP0aY2ECx7MMYUKkQVVrMkBO6OsR5xJmM3hQSihTX6Z6BEbE2lQXDDKBqla2l3DrXqAjE91dccFEFN62WwIBDZbBxjA3YljN7UFZghS64FrOla3gvYwCRCda3AhuRZPak2EDKOVZVhpLSmKCxRpTGvagIbYW9ADCqIOAdFYARXTJFeORZxl+WWMfAUytyqeVtQKBaR8SheeKEW2lP9BE+VquHg5AApC/0LXnDJmD+DTELztmCVl1LWCrBExLpXBYKSYNahYVhAFj3oSipDhjLTWGIBTk3pn0pEGaZjjRkiiLnZ08RQXIQ05pBAODCwfX9LNVqrMoGICEvznGtf+zdr709vD5un54fNw+YH2isGRaENAAA=';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for africa/mauritania.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get africaMauritania110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

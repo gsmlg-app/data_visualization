@@ -2,269 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for africa/chad.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Chad",
-        "iso_a2": "TD",
-        "iso_a3": "TCD",
-        "continent": "Africa"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              23.83766,
-              19.58047
-            ],
-            [
-              19.84926,
-              21.49509
-            ],
-            [
-              15.86085,
-              23.40972
-            ],
-            [
-              14.8513,
-              22.86295
-            ],
-            [
-              15.0968876,
-              21.3085188
-            ],
-            [
-              15.47106,
-              21.04845
-            ],
-            [
-              15.4871481,
-              20.7304145
-            ],
-            [
-              15.9032467,
-              20.3876189
-            ],
-            [
-              15.6857406,
-              19.9571801
-            ],
-            [
-              15.3004411,
-              17.9279499
-            ],
-            [
-              15.2477312,
-              16.6273058
-            ],
-            [
-              13.97217,
-              15.68437
-            ],
-            [
-              13.5403935,
-              14.3671337
-            ],
-            [
-              13.9566988,
-              13.9966912
-            ],
-            [
-              13.9544768,
-              13.3534488
-            ],
-            [
-              14.5957813,
-              13.3304269
-            ],
-            [
-              14.4957874,
-              12.8593963
-            ],
-            [
-              14.89336,
-              12.21905
-            ],
-            [
-              14.9601518,
-              11.555574
-            ],
-            [
-              14.9235649,
-              10.8913252
-            ],
-            [
-              15.4678728,
-              9.9823367
-            ],
-            [
-              14.9093539,
-              9.9921294
-            ],
-            [
-              14.6272006,
-              9.9209193
-            ],
-            [
-              14.1714661,
-              10.0213783
-            ],
-            [
-              13.9542184,
-              9.5494949
-            ],
-            [
-              14.5444666,
-              8.9658613
-            ],
-            [
-              14.9799956,
-              8.7961042
-            ],
-            [
-              15.1208655,
-              8.3821502
-            ],
-            [
-              15.4360917,
-              7.6928124
-            ],
-            [
-              15.2794605,
-              7.4219245
-            ],
-            [
-              16.1062317,
-              7.4970879
-            ],
-            [
-              16.2905616,
-              7.7543074
-            ],
-            [
-              16.4561845,
-              7.7347737
-            ],
-            [
-              16.7059884,
-              7.5083275
-            ],
-            [
-              17.9649296,
-              7.890914
-            ],
-            [
-              18.3895549,
-              8.2813036
-            ],
-            [
-              18.9110218,
-              8.6308947
-            ],
-            [
-              18.8120097,
-              8.9829145
-            ],
-            [
-              19.094008,
-              9.0748469
-            ],
-            [
-              20.0596855,
-              9.012706
-            ],
-            [
-              21.0008684,
-              9.4759852
-            ],
-            [
-              21.7238216,
-              10.5670556
-            ],
-            [
-              22.2311292,
-              10.9718887
-            ],
-            [
-              22.8641655,
-              11.1423951
-            ],
-            [
-              22.87622,
-              11.38461
-            ],
-            [
-              22.50869,
-              11.67936
-            ],
-            [
-              22.49762,
-              12.26024
-            ],
-            [
-              22.28801,
-              12.64605
-            ],
-            [
-              21.93681,
-              12.58818
-            ],
-            [
-              22.03759,
-              12.95546
-            ],
-            [
-              22.29658,
-              13.37232
-            ],
-            [
-              22.18329,
-              13.78648
-            ],
-            [
-              22.51202,
-              14.09318
-            ],
-            [
-              22.30351,
-              14.32682
-            ],
-            [
-              22.56795,
-              14.94429
-            ],
-            [
-              23.02459,
-              15.68072
-            ],
-            [
-              23.88689,
-              15.61084
-            ],
-            [
-              23.83766,
-              19.58047
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for africa/chad.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5VYy2obWRDd6ysarU1R70d2wWHWs5jdEIJwlETgSEbRLEzwvw9XiU2c2wRKAtG6t/tw6nWqbn/fLMv28viw375Ztn/td5f/zvvb0/39/u5yOB23N2P704/lb9s3y7+bZVmW79ff+cHr7deNh/PpYX++HK4PPd++LNvj7uv1gdsvu48vdy/L9vDt9GHHY+efd9O6XNdvX23cnY6Xw3F/vIy9t5/Oh7vd9ufu0wuLz/vT1/3l/PiawzPpv0/3j59/2viCejp/PBx3l1+M/fH59fr3f8vCAinhfvPbOhVYosar5fc3f8SigtTiCYsJtAyrhWWQjmkTloBiBbewFNJIJiiGdC5r0sLyzFgzUjCNMpt4GoRraKipXW6aQZo0oSGEoFIbr1BYPVbwJMMpuyH1tNDZWiooC0qkJp4gqtJkLwUUR2l1+bFGCPGE5+AcgtaLrUAF0+S9qx9UeqUlYIpSMhUEKYgHSRuvzL0yJzyBKveiXokNPNXwNTwxUW3WhYKVRc5VO/AElb0XWx0SFBk64TGklZRLV1JKZM5kBqbCXp0plCMZzb4jMDML7cKxmGtNcAhZJGy90BqoRwZP9AoqWcR7madQWGIy0SuoYuLqWuscjLOoFBRjUXXjSkHqPmsKAjJJZA/vWhdMOeVdgWmNb7csVNXnfp1QbunUtbaiqmwFLsoJtZspxJhuk0glSDIZthNPHGtW0AAvTuJephiMnuA4sQtQpuJmd3QgdJY1dlqBGb3IOnChOU2hCAhTwaYIOKg5pa4YGzK6XK9oHQKtck7jAMMUjp7vAsq1uFaMzcKinq0ju8psFrwEThIUb8IVEfIsxwkumNUcihOSGLGmPMkhn9UdygqwFHFFjDE0tdcWGQGtPOeKLUDiwJbnxtCKmL4mdhpW2Ws8TBA8dGPusgjmgWY9egwsRFzzfIdQQZnZiuz1/KC0IndEQMpS1ppnB144z+wIJNW7WIbp8whA4FG9gmAeguYzLwZ27InwiEEmzt2VwYc0N/OjxOfTDjFYJrXmTWZACZv9xTCUpZ1noxmvTa7B0qsBBkrhmZdApGvXRiPGOY4KWNL2l6DY7HsFYc+ujeZRayebUuWeoAkg60ocx5kLe68NxquR9FzFIsxe3rdes2zWrp+vnjbPv+83T5v/AawTRdQGEwAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for africa/chad.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get africaChad110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

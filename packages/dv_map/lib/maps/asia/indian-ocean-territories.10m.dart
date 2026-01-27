@@ -2,263 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/indian-ocean-territories.10m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Indian Ocean Territories",
-        "iso_a2": "-99",
-        "iso_a3": "-99",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [
-                96.8631291,
-                -12.1817359
-              ],
-              [
-                96.8476669,
-                -12.1871884
-              ],
-              [
-                96.8361923,
-                -12.1820615
-              ],
-              [
-                96.8313094,
-                -12.171482
-              ],
-              [
-                96.8352157,
-                -12.1605771
-              ],
-              [
-                96.8298446,
-                -12.1444638
-              ],
-              [
-                96.8283798,
-                -12.1363258
-              ],
-              [
-                96.8283798,
-                -12.1265602
-              ],
-              [
-                96.8215438,
-                -12.1265602
-              ],
-              [
-                96.8234156,
-                -12.1509742
-              ],
-              [
-                96.830577,
-                -12.1799456
-              ],
-              [
-                96.8452255,
-                -12.1976865
-              ],
-              [
-                96.8693954,
-                -12.1879208
-              ],
-              [
-                96.8631291,
-                -12.1817359
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                96.9021916,
-                -12.1999651
-              ],
-              [
-                96.9139104,
-                -12.1945126
-              ],
-              [
-                96.9201766,
-                -12.1849911
-              ],
-              [
-                96.9210718,
-                -12.1735165
-              ],
-              [
-                96.916189,
-                -12.1617978
-              ],
-              [
-                96.9145614,
-                -12.1735165
-              ],
-              [
-                96.9090275,
-                -12.1820615
-              ],
-              [
-                96.9000757,
-                -12.1867815
-              ],
-              [
-                96.8885197,
-                -12.1874325
-              ],
-              [
-                96.8896591,
-                -12.1928036
-              ],
-              [
-                96.8923446,
-                -12.1958961
-              ],
-              [
-                96.9021916,
-                -12.1999651
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                105.7041122,
-                -10.4308408
-              ],
-              [
-                105.685232,
-                -10.4403622
-              ],
-              [
-                105.6692814,
-                -10.4562314
-              ],
-              [
-                105.6545516,
-                -10.4699033
-              ],
-              [
-                105.6271265,
-                -10.4689267
-              ],
-              [
-                105.6071883,
-                -10.4584286
-              ],
-              [
-                105.5942489,
-                -10.4540341
-              ],
-              [
-                105.5942489,
-                -10.4667294
-              ],
-              [
-                105.59962,
-                -10.4805641
-              ],
-              [
-                105.5922958,
-                -10.4984677
-              ],
-              [
-                105.5817977,
-                -10.5048154
-              ],
-              [
-                105.5849716,
-                -10.5163714
-              ],
-              [
-                105.6049911,
-                -10.5100237
-              ],
-              [
-                105.6281844,
-                -10.5089658
-              ],
-              [
-                105.6492619,
-                -10.5131161
-              ],
-              [
-                105.6640731,
-                -10.5184872
-              ],
-              [
-                105.6672469,
-                -10.5332984
-              ],
-              [
-                105.6735132,
-                -10.5490862
-              ],
-              [
-                105.6787216,
-                -10.5660133
-              ],
-              [
-                105.6945907,
-                -10.564874
-              ],
-              [
-                105.6998804,
-                -10.5533993
-              ],
-              [
-                105.6979273,
-                -10.5289853
-              ],
-              [
-                105.7063094,
-                -10.5142555
-              ],
-              [
-                105.7063094,
-                -10.4942359
-              ],
-              [
-                105.7114364,
-                -10.4699033
-              ],
-              [
-                105.7126571,
-                -10.4509417
-              ],
-              [
-                105.7146916,
-                -10.4371884
-              ],
-              [
-                105.7041122,
-                -10.4308408
-              ]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/indian-ocean-territories.10m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE7WYTWvcaAzH7/MpzJxTI+nRa2+lsLCH0j3sbSnLkLrFkNph4h5CyXdf7DTdNrEoKGQOZjx6/BtZj/SX7G+Hrjsut9fD8XV3/GM4LV/Pw9v56mq4XMZ5Ol6s5k/3P98cX3f/HLqu675tx6cXbss3w/V5vh7Oy7hd9LC8647T6ct2wZ/Tx/E0de8vh9PU/T2cz+Myn9fVF/+vHW/mf0+0rn4V8cTQdgyX87SM0zAtq+3NzXg6frfd/XDs8zB/GZbz7a9uPdzHu69Xy/jXfHX7+fu9/wDP54/jdFp+CsL95+fvj8+ennddaO/akAIvntheIfXoaE3ike3D48X7YDZVjQxs6M41cFMMahmYQFGKYGwQnIAN2anIFUKxhKsgZlgDUzizJmBm1uZFsDcLT8BNG8lLgElFoRhjQuH2IuDGKFmMBcK4mhXrxmfJFsGixboTIpEEHKauxfLQaCFZebgFQTEpChJ0yM5++cuCHgYQBmb7HREqtWINbIGQhS9YkGobHgRomnnsHIFFjwnBMKspa4LFTApU9KwzKFpYLZECWRRTAX+GwxBAltXUM1pOAIClrcHVvNrL3AUjBRs3qoJDJS3WIIdW1K2gljezEA8tpnGhol9GXhCkN2BEoj1voOcGzhUVXcnqQi0DMzSlQqPawBrk+2UFPYtSw8Ikt5GFRfa3BnrWCGitSCZbu35G9iC1InnVRN8dP9doOJMXCmAlSzDxvi6uZIbGhQr4PVnVKIo7KBGa5ZyDaN1jopDd3gM9h7Nacf/E1wazq4zQC7CjVGPhHJZls6A2K9cJbF08IwNQq2YzOTontS2win1VjjhIMck5wYZY0fN7PWKwlkbD2a2sdEa8/8wKvbS2Pm8Vyev0kamzcIBr1WdzozTrVAHLGhosAVmlKLtVgxHhvj8KQy/SWkTZZQuyRJyFPFyKZAPNXg6sScckUhiofkvmYCq9gdnIiNw0Iz+nvW7N1ZISZIFgLAqSIWsyra3zUfG1UXXyyufAw+Nvd4eH44fD3eE/MZtc0MoUAAA=';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/indian-ocean-territories.10m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaIndianOceanTerritories10m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

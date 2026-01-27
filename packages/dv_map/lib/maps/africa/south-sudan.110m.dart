@@ -2,289 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for africa/south-sudan.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "South Sudan",
-        "iso_a2": "SS",
-        "iso_a3": "SSD",
-        "continent": "Africa"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              30.8338524,
-              3.5091716
-            ],
-            [
-              31.24556,
-              3.7819
-            ],
-            [
-              31.88145,
-              3.55827
-            ],
-            [
-              32.68642,
-              3.79232
-            ],
-            [
-              33.39,
-              3.79
-            ],
-            [
-              34.005,
-              4.2498849
-            ],
-            [
-              34.6201963,
-              4.8471227
-            ],
-            [
-              35.2980071,
-              5.506
-            ],
-            [
-              34.70702,
-              6.59422
-            ],
-            [
-              34.25032,
-              6.82607
-            ],
-            [
-              34.0751,
-              7.22595
-            ],
-            [
-              33.56829,
-              7.71334
-            ],
-            [
-              32.95418,
-              7.78497
-            ],
-            [
-              33.2948,
-              8.35458
-            ],
-            [
-              33.8255,
-              8.37916
-            ],
-            [
-              33.97498,
-              8.68456
-            ],
-            [
-              33.9633928,
-              9.4642852
-            ],
-            [
-              33.8249635,
-              9.4840608
-            ],
-            [
-              33.8421309,
-              9.9819146
-            ],
-            [
-              33.7219592,
-              10.3252621
-            ],
-            [
-              33.2069381,
-              10.7201116
-            ],
-            [
-              33.0867665,
-              11.4411413
-            ],
-            [
-              33.2069381,
-              12.1793383
-            ],
-            [
-              32.743419,
-              12.2480078
-            ],
-            [
-              32.6747495,
-              12.0248319
-            ],
-            [
-              32.0738915,
-              11.9733298
-            ],
-            [
-              32.3142347,
-              11.6814845
-            ],
-            [
-              32.4000716,
-              11.0806265
-            ],
-            [
-              31.8507157,
-              10.5312705
-            ],
-            [
-              31.3528619,
-              9.8102409
-            ],
-            [
-              30.8378407,
-              9.7072367
-            ],
-            [
-              29.9966395,
-              10.2909273
-            ],
-            [
-              29.6189573,
-              10.0849189
-            ],
-            [
-              29.5159531,
-              9.7930735
-            ],
-            [
-              29.0009319,
-              9.6042325
-            ],
-            [
-              28.9665972,
-              9.398224
-            ],
-            [
-              27.9708896,
-              9.398224
-            ],
-            [
-              27.8335506,
-              9.6042325
-            ],
-            [
-              27.112521,
-              9.6385672
-            ],
-            [
-              26.7520062,
-              9.4668935
-            ],
-            [
-              26.4773282,
-              9.5527303
-            ],
-            [
-              25.962307,
-              10.136421
-            ],
-            [
-              25.7906333,
-              10.4110989
-            ],
-            [
-              25.0696037,
-              10.27376
-            ],
-            [
-              24.7949257,
-              9.8102409
-            ],
-            [
-              24.5374152,
-              8.9175376
-            ],
-            [
-              24.1940677,
-              8.7286965
-            ],
-            [
-              23.8869796,
-              8.6197297
-            ],
-            [
-              24.567369,
-              8.2291879
-            ],
-            [
-              25.1149325,
-              7.8251041
-            ],
-            [
-              25.1241309,
-              7.5000852
-            ],
-            [
-              25.796648,
-              6.9793159
-            ],
-            [
-              26.2134184,
-              6.5466033
-            ],
-            [
-              26.4659095,
-              5.9467174
-            ],
-            [
-              27.2134091,
-              5.5509535
-            ],
-            [
-              27.3742261,
-              5.2339444
-            ],
-            [
-              27.9799772,
-              4.4084134
-            ],
-            [
-              28.4289938,
-              4.2871546
-            ],
-            [
-              28.6966777,
-              4.4550772
-            ],
-            [
-              29.1590784,
-              4.3892673
-            ],
-            [
-              29.7159953,
-              4.6008048
-            ],
-            [
-              29.9535002,
-              4.173699
-            ],
-            [
-              30.8338524,
-              3.5091716
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for africa/south-sudan.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE61YS2sbSRC+61cMOpui3o/cll1yDvi4hEU4SlbgaIwiH0zwf19GXgfbPSyUWR2GUff0x1ddXz26f26maXt+uNtvP0zbj/vd+f60/32+vd3fnA/zcXu1TH99Gv6x/TD9uZmmafp5eY4LL59fJu5O893+dD5cFj1/Pk3b4+77ZcH1fH/+e7q+/7I7/lo0TdvDj/mvHV8+uB7G5Wn8j5cTN/PxfDjuj+dl7revp8PNbvvv7OMvMt/28/f9+fTwmsoz90/z7cO3+fgadT59ORx35xc2P/1evr/9N02CkCJprFdvZ8CwKMhfjX+++m84AlYzH8EiqZpImaS2QsuSowXF4OnKK6SKhVtQAlJrOC0QBcTBMAXWytQulDNSuYxwqUHc3CkDrkQMegtnYNhTgkJg4LDpDlbKvU1XYENZgUp27BmogGGDdQHMVtZUgnnyIIaAIBFt6rNMKVegUqtnnwCXDkgJYmrZREq2QaUJEtXMCQIVWiukPNXaUC5SPIAVqCundaM5WctlMLNAU9GxvWXKJDiIoqCSirRrbDCV1SB8QhA2dqauNtBLcpA/IQQjUduvmB7uw+4RgSqRkvxP/BgoSiR7eAyhojR4gxhYlyzX8y6Dh4bWaC4DsqY0CxwDhmTR2vZViHB1+Qkpi8YKnidpai/BMSgupWAo5kSAic7ewyNIwyAb+SGYEAd28cQ4ffRvQRKyYs8dSyMUqTjQq6WQsXgrEXNBlbusqAWBC4ujJWYucMqyGAo9IWBqUbbM5QIjK5Mh2AqiBENazuACRCxZc4ajsnAPLqHcrWJIfQVSydyqrxxQgZk1KPmdaClihito7zE1gIiNV/zgkubRqmjsEMaIvrJx6p7VdKuDRgjnCpwZh2BPxAblLGOIEQKJa6+esUEUushaSCgRVjMkDNDLUdbocUi0qiMrRGnxmO7elZ5YwSSUbPBEQlFYnx2VosfALiE4vXq5nQUyvWKMsASnCu51sYuxHuJDMklgLsrecYsNiLSEh1QcS4tLqF3ZEetalxdgiNjsQS8qdh97doeKErKerQ5MopTDcd7B1B2lF7AO6lY4VjGDUg+Kbupc2GGtHS8Ny5rZKUBCmX0FjkVKtV8mqmIsOgqKqdQ71XGCclbJ4FkFziDrnQY4wcs9xohVUDOMZqEoICuMUSgKksXebk+CrMpW7iEcMVFbvezSPZkYjtcHCrQkhn5r17nj2qy9P789bp6fnzePm38AaZgjyI0UAAA=';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for africa/south-sudan.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get africaSouthSudan110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

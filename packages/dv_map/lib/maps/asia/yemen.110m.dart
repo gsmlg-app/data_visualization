@@ -2,213 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/yemen.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Yemen",
-        "iso_a2": "YE",
-        "iso_a3": "YEM",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              52.0000098,
-              19.0000034
-            ],
-            [
-              49.1166716,
-              18.6166676
-            ],
-            [
-              48.1833435,
-              18.1666692
-            ],
-            [
-              47.4666948,
-              17.1166816
-            ],
-            [
-              47.0000049,
-              16.9499993
-            ],
-            [
-              46.7499943,
-              17.2833381
-            ],
-            [
-              46.3666586,
-              17.2333153
-            ],
-            [
-              45.3999992,
-              17.3333351
-            ],
-            [
-              45.2166512,
-              17.433329
-            ],
-            [
-              44.0626132,
-              17.4103588
-            ],
-            [
-              43.7915186,
-              17.3199767
-            ],
-            [
-              43.3807943,
-              17.5799867
-            ],
-            [
-              43.1157976,
-              17.0884405
-            ],
-            [
-              43.2183753,
-              16.66689
-            ],
-            [
-              42.7793323,
-              16.3478913
-            ],
-            [
-              42.8236707,
-              15.9117423
-            ],
-            [
-              42.7024378,
-              15.7188858
-            ],
-            [
-              42.8050155,
-              15.2619628
-            ],
-            [
-              42.6048727,
-              15.2133353
-            ],
-            [
-              42.8922453,
-              14.8022493
-            ],
-            [
-              43.087944,
-              14.0626303
-            ],
-            [
-              43.2514482,
-              13.7675837
-            ],
-            [
-              43.2228711,
-              13.2209504
-            ],
-            [
-              43.4829586,
-              12.6368
-            ],
-            [
-              44.1751127,
-              12.5859504
-            ],
-            [
-              44.4945765,
-              12.7216527
-            ],
-            [
-              44.9895333,
-              12.6995869
-            ],
-            [
-              45.1443559,
-              12.9539383
-            ],
-            [
-              45.4064588,
-              13.0269054
-            ],
-            [
-              45.6250501,
-              13.2909462
-            ],
-            [
-              45.8775928,
-              13.3477644
-            ],
-            [
-              46.7170765,
-              13.3996992
-            ],
-            [
-              47.3544536,
-              13.5922198
-            ],
-            [
-              47.938914,
-              14.0072332
-            ],
-            [
-              48.2389474,
-              13.9480895
-            ],
-            [
-              48.6792306,
-              14.0032024
-            ],
-            [
-              49.5745765,
-              14.7087666
-            ],
-            [
-              51.1725151,
-              15.1752497
-            ],
-            [
-              52.1681649,
-              15.5974204
-            ],
-            [
-              52.1917294,
-              15.9384331
-            ],
-            [
-              52.3852059,
-              16.3824112
-            ],
-            [
-              53.1085726,
-              16.6510511
-            ],
-            [
-              52.7821843,
-              17.3497423
-            ],
-            [
-              52.0000098,
-              19.0000034
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/yemen.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WXTWsjRxCG7/oVg86m6Pqu2tsSsrdAriEsQWwmi8DWGFl7MIv/e2gpXuztJlBzGFpT3Q9vd3106ftuWfaX58d1/2HZf1oPl2/n9Zft/n79cjlup/1dN/9z+/y0/7D8uVuWZfl+fY8Lr9Ovhsfz9rieL8frotfpy7I/HR6uC/5YH9bTj+nLsj8+bX8d6Gr6dfjOt++/vTV82U6X42k9Xbrt49PxsP/P9vJDxNd1e1gv5+f3El41/77dP3/dTu+Z2/nv4+lwebPX2/N2/POvZVGC1p+Mu58smDcLyzvD57v/5UkCopmjDbwAQzNzK/ECMJiFdcLrOEsq8RykL5Jxv35VHljT57dTkhx4BimZmVziGXhfJTzRR8HMgUUem5nG6A8HYmbUmj4F7ptKmvC4P1rTp0BopjjjCTNTlnACzciQpzhsrBElHoMnKk6PjzHTzYs8juZz96pnRpmHqJ4+09ciRJoWeYTBrqM+AzOLmjcI3JOZZjQWj8Ra8BEEsXnzgaeQiC5U5XkjYR+LgYJjRGgtWgiiaUMdi5UCGaZRlWdNwmm2X8KebOXzSyKZeFcgGpEUixVDC0+RCa6nIbcqjhRFYkxeBjfX4GpyEFE44oRH1FJb7W5jkKCc1VICY6v5VgBdESe+JdDQsjgBSVG3MfYInNCUaocnkJHKPMYKgWU/hVotUEARVh0vSoJUTo7qRSTNRGPMXYZGlk1r56dgpD17Z8GSLcVqjYZCuGvSTB+Lu0lNn4Gjt5l/uV/JluVGiFVEeQxmBk0izFo8OyRH4rQWNCfmmrwA4kjxkceQEi2ydrEFmCdxG7fb9TE1qva56vN0E/AWblbqIxUBnRR1DD/thYIkS+mrBNh72UlfqqDpQrXy0nmJTjn6Q7vjhbnU9ykBh1KblAMDDhLEUrwoA7ZQp9G/BqbYFKv6PAhj2qixZLXVqP/P2s3Gr6OX3ev78+5l9y/tuctzCg8AAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/yemen.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaYemen110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

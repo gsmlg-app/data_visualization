@@ -2,197 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for africa/botswana.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Botswana",
-        "iso_a2": "BW",
-        "iso_a3": "BWA",
-        "continent": "Africa"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              29.4321883,
-              -22.0913128
-            ],
-            [
-              28.7946562,
-              -21.639454
-            ],
-            [
-              28.0213701,
-              -21.485975
-            ],
-            [
-              27.7272278,
-              -20.8518019
-            ],
-            [
-              27.7247473,
-              -20.4990585
-            ],
-            [
-              27.2965048,
-              -20.3915199
-            ],
-            [
-              26.1647909,
-              -19.2930856
-            ],
-            [
-              25.8503915,
-              -18.7144129
-            ],
-            [
-              25.6491634,
-              -18.5360259
-            ],
-            [
-              25.2642257,
-              -17.7365398
-            ],
-            [
-              25.0844434,
-              -17.6618157
-            ],
-            [
-              24.5207052,
-              -17.8871249
-            ],
-            [
-              24.2173645,
-              -17.889347
-            ],
-            [
-              23.5790056,
-              -18.2812611
-            ],
-            [
-              23.1968584,
-              -17.8690382
-            ],
-            [
-              21.6550403,
-              -18.219146
-            ],
-            [
-              20.9106413,
-              -18.2522189
-            ],
-            [
-              20.8811341,
-              -21.8143271
-            ],
-            [
-              19.8954578,
-              -21.849157
-            ],
-            [
-              19.8957679,
-              -24.7677902
-            ],
-            [
-              20.1657255,
-              -24.9179619
-            ],
-            [
-              20.7586092,
-              -25.8681365
-            ],
-            [
-              20.6664702,
-              -26.4774533
-            ],
-            [
-              20.889609,
-              -26.828543
-            ],
-            [
-              21.605896,
-              -26.7265337
-            ],
-            [
-              22.1059689,
-              -26.280256
-            ],
-            [
-              22.5795317,
-              -25.9794475
-            ],
-            [
-              22.8242713,
-              -25.5004587
-            ],
-            [
-              23.3120968,
-              -25.2686899
-            ],
-            [
-              23.7335698,
-              -25.3901295
-            ],
-            [
-              24.2112667,
-              -25.6702158
-            ],
-            [
-              25.0251705,
-              -25.7196701
-            ],
-            [
-              25.6646664,
-              -25.4868161
-            ],
-            [
-              25.7658488,
-              -25.1748455
-            ],
-            [
-              25.9416521,
-              -24.6963734
-            ],
-            [
-              26.4857532,
-              -24.6163266
-            ],
-            [
-              26.7864067,
-              -24.2406906
-            ],
-            [
-              27.1194096,
-              -23.574323
-            ],
-            [
-              28.017236,
-              -22.8277536
-            ],
-            [
-              29.4321883,
-              -22.0913128
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for africa/botswana.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WXTWvcSBCG7/MrxJy9RX1/5JYs7Dm3PSxhGbyTMOCMzFjLYoL/e9A4Nk7ULNQchKZL/fB2dddb0rfdNO2Xx/vj/t20/+N4WP69HH+f7+6Ot8tpPu9v1vDn5+GH/bvpr900TdO363U78fr4NXB/me+Pl+V0nfTy+DTtz4ev1wkf5uXhv8P58Dpjmvanh/nvA1+jf27G5Xn8/dvA7XxeTufjeVlj7z9fTreH/Y/o06uSL8f563G5PP6s40X4x/nu8cuPdb5S58s/p/NhebPg59/b+1//TRMXqDBlys0vkd+YAYuEOH+KfLr5f2BClLo5b4EELqWmTR4ySSCNeJpWYS1eQHAwR255CGmUSNUGamgMMoigVWjZVcjlhjpUKEVG1VPoQK5RWBsgFXAJpnkLaJCGq5ItMCFIlbin0MC1yEVHQBNHti6QXZkttsCAEDep3rE2wFTVkcIAd0qyaAEVjDHQtnVCAZlBrL0lKzCFuA42ZQWWaE+ggEUhmo/2hJPYiZpAKk/LYQrTCyW5BSRwM1TcVt6qkIq0d6wRitCVxjxjpuxtCUImkejQu5JUOFoppIIsUxuZF0FqNQ/hMy88ts7ACuERhb0tQSC3YNseQlYoivKmuyKEpWMN2olBepJ4z10R3F0DB0AHjVATaW9y+cBc2SE5TXs4AkfL2lYdOwS7ifTKmIHQynOojxO56f282oIJbZ2VDSpKtdmQGZKVY1B1bGCIatk1LiHG8kGRrG0hPZv9UyBEzGsIlELi6i15tWpi92EOPZDJ2t2JjQIHZWcQVB7Y82oDd10LZQTUte68Cwy31BzmkEJTrZdDg1Jy44G3Kni5hPReNH19mwyTgTEoOLmw9yrFIdIVR7uswIpe2AMGEJXiyBvWZq3CPatJQAqWAW6tyQiTnr7+t8RudP9y97R7uX7aPe2+A/wjD3P0DQAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for africa/botswana.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get africaBotswana110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

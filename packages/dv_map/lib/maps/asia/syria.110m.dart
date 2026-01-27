@@ -2,145 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/syria.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Syria",
-        "iso_a2": "SY",
-        "iso_a3": "SYR",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              35.7199182,
-              32.7091924
-            ],
-            [
-              36.8340621,
-              32.3129375
-            ],
-            [
-              38.7923405,
-              33.3786864
-            ],
-            [
-              41.0061589,
-              34.4193723
-            ],
-            [
-              41.3839653,
-              35.6283166
-            ],
-            [
-              41.2897075,
-              36.3588146
-            ],
-            [
-              41.8370642,
-              36.6058538
-            ],
-            [
-              42.3495911,
-              37.2298725
-            ],
-            [
-              41.2120895,
-              37.0743523
-            ],
-            [
-              40.6732593,
-              37.0912764
-            ],
-            [
-              39.5225802,
-              36.7160538
-            ],
-            [
-              38.6998914,
-              36.7129274
-            ],
-            [
-              38.1677275,
-              36.9012104
-            ],
-            [
-              37.0667611,
-              36.6230362
-            ],
-            [
-              36.7394943,
-              36.8175205
-            ],
-            [
-              36.685389,
-              36.2596992
-            ],
-            [
-              36.4175501,
-              36.040617
-            ],
-            [
-              36.1497628,
-              35.8215347
-            ],
-            [
-              35.9050232,
-              35.4100095
-            ],
-            [
-              35.9984025,
-              34.644914
-            ],
-            [
-              36.4481942,
-              34.5939352
-            ],
-            [
-              36.6117501,
-              34.2017886
-            ],
-            [
-              36.0664604,
-              33.8249124
-            ],
-            [
-              35.8211007,
-              33.2774265
-            ],
-            [
-              35.8363969,
-              32.8681233
-            ],
-            [
-              35.700798,
-              32.7160137
-            ],
-            [
-              35.7199182,
-              32.7091924
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/syria.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5VWy2rcQBC871cMOpumX9MP30Ig55CcQjBhcRSzYK/MWjksxv8eVvYa2yMCo4MYTc0U3VOlkh43pQzz8X4cLsvwZdzOfw/j5+n2dryed9N+uDjBf56nH4bL8nNTSimPy73duCxfgPvDdD8e5t2y6by8lGG/vVs2fD8edtvX5aUMu4fp15YX6EczL8/z394C19N+3u3H/XzCPj3stsML9vRaxM043Y3z4fi+hHPNX6fb481Li6+c0+H3br+d3/T6fL0df3wqRSo4ZVLwxUeEwTEpWd8BVxf/5zMIUTSmFT4hTvHaxRfgyaJYGz4B8bCwrvqUANGoRjZ8CkopztLJJyFpVRq+CsYhZNbJx5GO3vZrIDWCtJcvxNG01dfAsEaV6OJjEM2a1OrrwJzh3KXvqV9ijGz7dUBXqZ16IJgL12z1cMAk9j6/SEJlroFr5+dk2Hl+EmCZkaSrfJzsffUFkLnzql8SiQn7+BzQzG1FXwNjQTHuzAOX1NRWD4Mgr4x9eWBgJ8+2r68B17TM3vKUvFZcaxcVjbyTjjTdOFbSIJiqaB9fhcSKLK37KighYvadXoXMUOTWLQqmmtQb9qpBuRIuCjUlpfaqYUS+poYCI3lEV/idNDRTw/ZlEwjWpM6P2yIiIfoKH7srW68cISZprZsZwoJYusLv9DFH9Gzdx0tWkfS6r/PfYLM2Po+eNuf71eZp8w8k7YEKvgkAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/syria.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaSyria110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

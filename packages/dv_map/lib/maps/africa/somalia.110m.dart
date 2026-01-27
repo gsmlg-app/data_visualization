@@ -2,185 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for africa/somalia.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Somalia",
-        "iso_a2": "SO",
-        "iso_a3": "SOM",
-        "continent": "Africa"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              41.58513,
-              -1.68325
-            ],
-            [
-              41.81095,
-              -1.44647
-            ],
-            [
-              42.04157,
-              -0.91916
-            ],
-            [
-              43.13597,
-              0.2922
-            ],
-            [
-              44.06815,
-              1.05283
-            ],
-            [
-              45.56399,
-              2.04576
-            ],
-            [
-              46.56476,
-              2.85529
-            ],
-            [
-              47.74079,
-              4.2194
-            ],
-            [
-              48.59455,
-              5.33911
-            ],
-            [
-              49.4527,
-              6.80466
-            ],
-            [
-              50.07092,
-              8.08173
-            ],
-            [
-              50.55239,
-              9.19874
-            ],
-            [
-              50.83418,
-              10.27972
-            ],
-            [
-              51.04531,
-              10.6409
-            ],
-            [
-              51.04153,
-              11.16651
-            ],
-            [
-              51.13387,
-              11.74815
-            ],
-            [
-              51.1112,
-              12.02464
-            ],
-            [
-              50.73202,
-              12.0219
-            ],
-            [
-              50.25878,
-              11.67957
-            ],
-            [
-              49.72862,
-              11.5789
-            ],
-            [
-              49.26776,
-              11.43033
-            ],
-            [
-              48.9482048,
-              11.4106173
-            ],
-            [
-              48.9482048,
-              11.4106173
-            ],
-            [
-              48.9420052,
-              11.3942661
-            ],
-            [
-              48.9384912,
-              10.9823274
-            ],
-            [
-              48.9382329,
-              9.9735001
-            ],
-            [
-              48.9381295,
-              9.451749
-            ],
-            [
-              48.4867359,
-              8.8376262
-            ],
-            [
-              47.78942,
-              8.003
-            ],
-            [
-              44.9636,
-              5.00162
-            ],
-            [
-              43.66087,
-              4.95755
-            ],
-            [
-              42.76967,
-              4.25259
-            ],
-            [
-              42.12861,
-              4.23413
-            ],
-            [
-              41.8550831,
-              3.9189119
-            ],
-            [
-              40.98105,
-              2.78452
-            ],
-            [
-              40.993,
-              -0.85829
-            ],
-            [
-              41.58513,
-              -1.68325
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for africa/somalia.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE7WWTWvcQAyG7/srjM+pkDSSRsqtFHorLfRYQllSJyxs1mHjHkLIfy/ezYZkx1BUqA9mPPI86GvemadV1/XT4/3QX3b952E9/d4Pn8btdrieNuOuv5jNN8fph/6y+7Hquq57OrzbhYffD4b7/Xg/7KfNYdHp967rd+u7w4Lv4916u1m/Lui6fvMw/lzzwfi1mS/H+S9vDdfjbtrsht002z7e7DfX6/7F+vzqyO0w3g3T/vG9Gye/v43bx9uXMF+p4/7XZree3sR7fN6Oz7+6TgjUlcrF2fwHAvPC+m766uJvLCcMXWCJmNQUiwGFtDYshKAgS7EKUNFoWAgczCmSAJpTEyEBKntJoRTUSsQ5ao5bay4+AzWp1qJclSOFqlAFa+OVAFNIiuSgIdqkSqGUIEqhAkS5KZ+Bo1gqU4qAFYPPUQ7oVFP1UwRVLk2mAii8plKlCF6EvOkqBK5RUx2qNPdPoQWWCaZ64YAibaSBCMhMUyVUAirFmxoSQRWnlMzMLKKmhsSALJbNfC2MyyzKZQuB1WtbRAKroTnxC6js1rpFoNVzGzqArbbaQARSsOQkyyHEGWUpSCG05Bb6LzxG1KXElRA2y+mOQxSXWOg1hHAunNvnRx4XXhCNqEUR/8E94vbAnfWSquQaxUHcatHGOQcv1dhyJ2WF6iFLSou5ogqElaZ/FRAp6VIBM2w1SCC0au6mw1AtbAHFyprLOwOxWyPYAlyEcqmi+cBHb9W/QJAH5RRN5iYnbLqLobpoLvUIEe0dE8HVkxeU1H11tTQ+jZ5Xp/fV6nn1BxRV4kdSDAAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for africa/somalia.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get africaSomalia110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

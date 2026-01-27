@@ -107,16 +107,39 @@ Future<void> example() async {
 
 ## Tree Shaking Benefits
 
+**Data format:**
+- Maps stored as gzipped binary (base64 encoded)
+- 80-85% size reduction vs raw JSON
+- Decompressed on first access, then cached
+
 **Without tree shaking** (legacy API):
-- Bundle size: ~13 MB compressed (112 MB uncompressed)
-- All 680+ maps included
+- Bundle size: All 680+ maps (~112 MB uncompressed)
+- ❌ No tree shaking support
 
 **With tree shaking** (direct imports):
 - Bundle size: Only what you import
 - Examples:
-  - `world_110m` only: ~921 KB
-  - `world_110m` + 5 countries (110m): ~1.5 MB
+  - `world.110m` only: ~171 KB (after gzip)
+  - `world.50m` only: ~1.3 MB (after gzip)
+  - `world.110m` + 5 countries (110m): ~350 KB
   - Custom selection: You decide
+
+**Size comparison:**
+
+| Map | Raw JSON | Gzipped in Dart | Savings |
+|-----|----------|-----------------|---------|
+| world.110m | 921 KB | 171 KB | 81% |
+| world.50m | 8.4 MB | 1.3 MB | 84% |
+| world.10m | 46 MB | 7.3 MB | 84% |
+| Country (avg) | ~100 KB | ~15 KB | 85% |
+
+## How It Works
+
+1. **GeoJSON files** are gzip compressed during code generation
+2. **Binary data** is base64-encoded and embedded as Dart strings
+3. **First access**: Data is decoded, decompressed, and parsed
+4. **Subsequent accesses**: Cached `GeoJsonFeatureCollection` is returned
+5. **Tree shaking**: Flutter's build system only bundles imported maps
 
 ## Generating maps
 
@@ -126,3 +149,10 @@ To regenerate the map files from assets:
 cd packages/dv_map
 dart scripts/generate_map_widgets.dart
 ```
+
+This script:
+- Reads all `.json` files from `assets/`
+- Gzip compresses each file
+- Base64 encodes the compressed data
+- Generates Dart files with getter functions
+- Creates continent-level index files

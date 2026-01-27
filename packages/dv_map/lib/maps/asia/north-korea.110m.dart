@@ -2,235 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/north-korea.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "North Korea",
-        "iso_a2": "KP",
-        "iso_a3": "PRK",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [
-                130.7800037,
-                42.2200078
-              ],
-              [
-                130.7800074,
-                42.2200072
-              ],
-              [
-                130.7800049,
-                42.2200104
-              ],
-              [
-                130.7800037,
-                42.2200078
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                130.6399997,
-                42.3950243
-              ],
-              [
-                129.9942672,
-                42.9853869
-              ],
-              [
-                129.5966687,
-                42.4249818
-              ],
-              [
-                128.0522152,
-                41.9942846
-              ],
-              [
-                128.2084331,
-                41.4667716
-              ],
-              [
-                127.343783,
-                41.5031518
-              ],
-              [
-                126.8690833,
-                41.8165693
-              ],
-              [
-                126.1820451,
-                41.1073361
-              ],
-              [
-                125.0799418,
-                40.5698237
-              ],
-              [
-                124.2656246,
-                39.9284934
-              ],
-              [
-                124.7374821,
-                39.6603443
-              ],
-              [
-                125.3211158,
-                39.5513846
-              ],
-              [
-                125.3865898,
-                39.3879579
-              ],
-              [
-                125.1328585,
-                38.8485593
-              ],
-              [
-                125.2219487,
-                38.6658572
-              ],
-              [
-                124.9859941,
-                38.5484742
-              ],
-              [
-                124.7121607,
-                38.1083461
-              ],
-              [
-                124.9810332,
-                37.9488209
-              ],
-              [
-                125.2400871,
-                37.8572244
-              ],
-              [
-                125.2753304,
-                37.6690705
-              ],
-              [
-                125.5684392,
-                37.7520887
-              ],
-              [
-                125.6891036,
-                37.9400101
-              ],
-              [
-                126.1747587,
-                37.7496858
-              ],
-              [
-                126.2373389,
-                37.8403779
-              ],
-              [
-                126.6837199,
-                37.8047729
-              ],
-              [
-                127.0733085,
-                38.2561148
-              ],
-              [
-                127.7800354,
-                38.3045356
-              ],
-              [
-                128.2057459,
-                38.3703972
-              ],
-              [
-                128.3497164,
-                38.6122429
-              ],
-              [
-                127.7833427,
-                39.0508983
-              ],
-              [
-                127.3854342,
-                39.2134724
-              ],
-              [
-                127.5021196,
-                39.3239308
-              ],
-              [
-                127.5334355,
-                39.7568501
-              ],
-              [
-                127.9674142,
-                40.0254125
-              ],
-              [
-                128.6333684,
-                40.1898469
-              ],
-              [
-                129.0103996,
-                40.4854361
-              ],
-              [
-                129.1881149,
-                40.6618078
-              ],
-              [
-                129.7051892,
-                40.8828279
-              ],
-              [
-                129.6673621,
-                41.6011044
-              ],
-              [
-                129.9659485,
-                41.9413679
-              ],
-              [
-                130.4000306,
-                42.2800036
-              ],
-              [
-                130.7799923,
-                42.2200096
-              ],
-              [
-                130.64,
-                42.395
-              ],
-              [
-                130.6399997,
-                42.3950243
-              ]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/north-korea.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE6VXS2sbSRC+61cMOoei3o/clkAuZhez1yUsIqtkBY7GyMrBBP/3ZeTHOlY7kIoOw/RU96fqr6u+6vq2mqb18fZ6u347rd9vN8evh+27+epq+/G4m/frN4v50/3nm/Xb6a/VNE3Tt9PzfOFp+slwfZivt4fj7rTocfo0rfebL6cFf8yH47/TxXzYbp4WTdN6dzP/veFlwsXl2XdZvl/+efHc8HHeH3f77f642H672W3WD7a7J1c+b+cv2+Ph9ntHHj3//evVcXc5X91+ftjtE/B8+Ge33xyfbfv+9/z95eh8PE0kCJGIKPHmzKgMzIgY+cL04eXcHwCH/gCYfwFY61VgQv0F4J+jYvXa6Lu/7JyLS1XV2BkpQ1Zp7JILqpQ9eAhcaZJePWArd8+xx8paSZ1I4gQ0ZrKRx3TaTar3gBlTRWgIrO4R1AIOEJVIGeIaClmPCYf0wpQxcJKbVysoHCgZ1cZMEIaIUwfYAKNKKQfACOaVLNEBVmA3Z/VzYCkoTi3pqAArhIQmD6iQAncU7SWegTAR2YAKKTAjaYaxgaRb1hhYMsqildEGJJyWNgBOSE2zXrgZMFPpSCokwd3SWrWBdRGwJd6GwKapoU3gICbHsceEKdpLkMVjQpGBuElAaSZj8/BYETNGVAQsBLO2EsSAw0RwUNglwL0w0HrA5qlSYyrCGDNbWmHgWYQy0oqF4+XG0Do8BwoNG8ZxQGh5WlPoWUIkB3ec5fAUJXop7eApQfUKMGoEt4ADliKBr2gFmxNpi4o43crERuGWIKgm1q7+FmojKhIkUKonQgmiFeRjj52YtctxpIjyKNwK0DArW3ocIGkqOsq8AibR4JZWBBgyUY2rtLCUYDMqTETFRuFWEOZpvZQOKA+lERWKgGxK3FK3BBcRz1E/hEBZqd17NxJKjThWBF0OtleaCiiTaNhoIbhT9lpDLgg0ypHQK0ImJ/fUbbmfhfjo7qYEjkTYq3kF5VY6UrelBVESb3ksCLq0nDg6PAY+9aMddVua2agqHrUKD81sNYFHwnbfkzbxfr7RXb02+v/98e1u9fj8sLpb/Qf6w6Z2UxIAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/north-korea.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaNorthKorea110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

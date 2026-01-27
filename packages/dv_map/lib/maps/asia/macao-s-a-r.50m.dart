@@ -2,73 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/macao-s-a-r.50m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Macao S.A.R",
-        "iso_a2": "MO",
-        "iso_a3": "MAC",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              113.4789063,
-              22.1955566
-            ],
-            [
-              113.4841797,
-              22.1977539
-            ],
-            [
-              113.4988281,
-              22.2016602
-            ],
-            [
-              113.5455078,
-              22.2214844
-            ],
-            [
-              113.5481445,
-              22.2226074
-            ],
-            [
-              113.5270508,
-              22.2459473
-            ],
-            [
-              113.4941406,
-              22.2415527
-            ],
-            [
-              113.4810547,
-              22.2174805
-            ],
-            [
-              113.4789063,
-              22.1955566
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/macao-s-a-r.50m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WSTWvDMAyG7/kVwucSbEeynd5KYbexsR1HGaZzSyCNQ+IdSul/H3Wb0g/DsA9C1is9SJYPBQAL+96xObAXZ8Pv4Ja+bd06NL5js5O8OYdHNoevAgDgEO1zYUyPQj/43g2hiUVTOgDr7C4WvNq19fBZLsqPaxEAa0b/bWVMeHuKVzG+WN4Ka9+FpnNdOGmLsbHsoh2vrWyd37kw7O8bmTp/9+1+exn0yvTDT9PZcDPx+dz6jzcAIaoStam5qmYPkpSlqIlIqTthNfsfaFDoWieBWlNVZwNrY6QRCaDkQikuc4GERFybFFAKNIj5QCMQKQmUiut8oNSceLJDpBp1lf+GKJCrJFAQSZ2/ZcEJU1uWQqPhlA3M+4dFyp+8YzHZVXEs/gAzWbYTMQQAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/macao-s-a-r.50m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaMacaoSAR50m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

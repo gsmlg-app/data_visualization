@@ -2,181 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for north-america/costa-rica.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Costa Rica",
-        "iso_a2": "CR",
-        "iso_a3": "CRI",
-        "continent": "North America"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -82.5461963,
-              9.5661348
-            ],
-            [
-              -83.0156766,
-              9.9929821
-            ],
-            [
-              -83.4023197,
-              10.3954381
-            ],
-            [
-              -83.6556117,
-              10.9387641
-            ],
-            [
-              -83.8950545,
-              10.7268391
-            ],
-            [
-              -84.1901786,
-              10.79345
-            ],
-            [
-              -84.3559308,
-              10.9992256
-            ],
-            [
-              -84.673069,
-              11.0826572
-            ],
-            [
-              -84.9030033,
-              10.9523034
-            ],
-            [
-              -85.561852,
-              11.2171192
-            ],
-            [
-              -85.7125405,
-              11.0884449
-            ],
-            [
-              -85.9417254,
-              10.8952784
-            ],
-            [
-              -85.6593137,
-              10.754331
-            ],
-            [
-              -85.7917087,
-              10.4393373
-            ],
-            [
-              -85.7974448,
-              10.1348856
-            ],
-            [
-              -85.6607865,
-              9.9333475
-            ],
-            [
-              -85.3394883,
-              9.8345421
-            ],
-            [
-              -85.1109234,
-              9.5570397
-            ],
-            [
-              -84.9113749,
-              9.7959915
-            ],
-            [
-              -84.9756604,
-              10.0867231
-            ],
-            [
-              -84.7133508,
-              9.9080519
-            ],
-            [
-              -84.6476442,
-              9.6155374
-            ],
-            [
-              -84.3034017,
-              9.487354
-            ],
-            [
-              -83.9098856,
-              9.2908027
-            ],
-            [
-              -83.6326416,
-              9.0513858
-            ],
-            [
-              -83.596313,
-              8.8304432
-            ],
-            [
-              -83.711474,
-              8.6568362
-            ],
-            [
-              -83.5084373,
-              8.4469266
-            ],
-            [
-              -82.965783,
-              8.225028
-            ],
-            [
-              -82.9131764,
-              8.4235172
-            ],
-            [
-              -82.8297707,
-              8.6262955
-            ],
-            [
-              -82.8686572,
-              8.8072663
-            ],
-            [
-              -82.7191831,
-              8.9257087
-            ],
-            [
-              -82.9271549,
-              9.0743301
-            ],
-            [
-              -82.932891,
-              9.476812
-            ],
-            [
-              -82.5461963,
-              9.5661348
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for north-america/costa-rica.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WWTWvcQAyG7/srzJ5TMfqWciuFQi+l9FpCWVI3XUjWYeMeQsl/L940IckYinww49HMgzSS3vGfzTBs5/vbcXs+bD+Ou/n3cfwwXV+Pl/N+OmzPFvPPx+m77fnwbTMMw/Dn9O43npafDLfH6XY8zvvTpqflw7A97G5OGz5Md/Nu+Lq/3D3vGYbt/m76vqOT/Ws3z4/zn14aLqfDvD+Mh3mxfZ6O86/h/c14XLD/Fj08u3Q1TjfjfLx/7dBTBF+m6/urfwE/w6fjj/1hN7+I/PF5OX77NQzvgkDFMI3P3pgS1AxZ4tX8xdl/eAwN1dys52VSBmGVJ40Y09/ysAGnCkcZaKqGuAZMDjcpAyO1qegK0MmCswgUwGzo0R3hAkwWreJYNbnFWsCZRGpVoDk3y46H0IJMnaq8bNwadyW4OKjEjaUGVFDDUFpxkNARs+iggiOptD7DS8QhIlkFpqCTykrEkUoe5YhNk5HXitpVmIslqOCJ3mKNJ5zMznWgi8haES4iE9UiVDBrHtblJCGZWbzYJQrMKRErOhgsKlXdUkBsSdylOEHVG6eXmwSRXbquS/DUTCyrQrqatbUSbGFO1ZIRcGTWXmYSskVTLPaIgImbSNfFCYaq7MUWEViEpPW6nyDhrEUcQ7ZcyrbH0RIvFfPLYEwmuMJrihxavoc1jbEr54DgJsJFCWRwRPGuWgJMLdjKOG0h7CvuiViSFdWAIE29b94AIm1UPDuCREa3lWiFWLF6wREEpXvrSi/AyCi12LsEYbHcsyvJbU5mRXEmcEwMxp6XpMs1UD4/ctQ1rWouzK0oLQTJFNm5lyBugeVs1P54N2vjp9HD5ul9sXnY/AWccM8MogwAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for north-america/costa-rica.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get northAmericaCostaRica110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

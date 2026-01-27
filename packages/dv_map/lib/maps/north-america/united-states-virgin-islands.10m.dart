@@ -2,331 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for north-america/united-states-virgin-islands.10m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "United States Virgin Islands",
-        "iso_a2": "VI",
-        "iso_a3": "VIR",
-        "continent": "North America"
-      },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [
-                -64.5593969,
-                17.7516137
-              ],
-              [
-                -64.5593969,
-                17.7584496
-              ],
-              [
-                -64.5917863,
-                17.7682966
-              ],
-              [
-                -64.6309708,
-                17.7703311
-              ],
-              [
-                -64.6669002,
-                17.7628848
-              ],
-              [
-                -64.689768,
-                17.7447777
-              ],
-              [
-                -64.6990454,
-                17.7528344
-              ],
-              [
-                -64.7097062,
-                17.7582055
-              ],
-              [
-                -64.7307837,
-                17.7652855
-              ],
-              [
-                -64.7691544,
-                17.7900251
-              ],
-              [
-                -64.7716365,
-                17.7926293
-              ],
-              [
-                -64.7954809,
-                17.787543
-              ],
-              [
-                -64.8174536,
-                17.7741153
-              ],
-              [
-                -64.8386938,
-                17.764838
-              ],
-              [
-                -64.8764542,
-                17.775865
-              ],
-              [
-                -64.8846329,
-                17.7678897
-              ],
-              [
-                -64.8876847,
-                17.7552758
-              ],
-              [
-                -64.8866268,
-                17.7144229
-              ],
-              [
-                -64.8878475,
-                17.6998966
-              ],
-              [
-                -64.8951717,
-                17.682766
-              ],
-              [
-                -64.8763729,
-                17.6891137
-              ],
-              [
-                -64.6705216,
-                17.7172305
-              ],
-              [
-                -64.6487931,
-                17.7237003
-              ],
-              [
-                -64.6066788,
-                17.742255
-              ],
-              [
-                -64.5851945,
-                17.7489688
-              ],
-              [
-                -64.5593969,
-                17.7516137
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                -64.7009935,
-                18.3429761
-              ],
-              [
-                -64.67413,
-                18.3344629
-              ],
-              [
-                -64.6603903,
-                18.3367232
-              ],
-              [
-                -64.6645615,
-                18.3469272
-              ],
-              [
-                -64.6824723,
-                18.3560031
-              ],
-              [
-                -64.6973969,
-                18.3622439
-              ],
-              [
-                -64.7135186,
-                18.3650832
-              ],
-              [
-                -64.7469554,
-                18.37359
-              ],
-              [
-                -64.7559134,
-                18.3690568
-              ],
-              [
-                -64.7517363,
-                18.3616892
-              ],
-              [
-                -64.7696489,
-                18.356589
-              ],
-              [
-                -64.7863654,
-                18.3497721
-              ],
-              [
-                -64.801285,
-                18.328253
-              ],
-              [
-                -64.7863672,
-                18.3152218
-              ],
-              [
-                -64.7362304,
-                18.3197532
-              ],
-              [
-                -64.7040051,
-                18.3033101
-              ],
-              [
-                -64.6974231,
-                18.32654
-              ],
-              [
-                -64.7081606,
-                18.340145
-              ],
-              [
-                -64.7009935,
-                18.3429761
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                -64.871637,
-                18.314623
-              ],
-              [
-                -64.8603121,
-                18.3185909
-              ],
-              [
-                -64.8514082,
-                18.3157818
-              ],
-              [
-                -64.8400796,
-                18.3174892
-              ],
-              [
-                -64.8549838,
-                18.3401294
-              ],
-              [
-                -64.8914365,
-                18.3599682
-              ],
-              [
-                -64.9285048,
-                18.3803696
-              ],
-              [
-                -64.9500283,
-                18.3865986
-              ],
-              [
-                -64.9422509,
-                18.3780992
-              ],
-              [
-                -64.9260194,
-                18.3661536
-              ],
-              [
-                -64.93498,
-                18.36332
-              ],
-              [
-                -64.9500023,
-                18.373554
-              ],
-              [
-                -64.986643,
-                18.3748233
-              ],
-              [
-                -65.0118709,
-                18.3685977
-              ],
-              [
-                -65.0414934,
-                18.3536581
-              ],
-              [
-                -65.0253089,
-                18.3389261
-              ],
-              [
-                -64.993621,
-                18.348024
-              ],
-              [
-                -64.9816431,
-                18.3355583
-              ],
-              [
-                -64.9660951,
-                18.3327353
-              ],
-              [
-                -64.9445858,
-                18.3367143
-              ],
-              [
-                -64.935023,
-                18.3304861
-              ],
-              [
-                -64.9308338,
-                18.3395504
-              ],
-              [
-                -64.9218589,
-                18.3225547
-              ],
-              [
-                -64.9104979,
-                18.3157577
-              ],
-              [
-                -64.8788392,
-                18.3044405
-              ],
-              [
-                -64.871637,
-                18.314623
-              ]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for north-america/united-states-virgin-islands.10m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE7VYTWsbZxC+61csOqfLfH/kVgqFHBJKS3MpoQh76wpsycibgwn+72Xl2CT2ziED1UFo9e4+Gj3zzMzzvl82w7Cd72+n7dth++u0mz+fpl+O19fTxbw/HrZvluV/Hr++274d/toMwzB8Ob+/fvB8+3nh9nS8nU7z/vzQ0+3DsD3sbs4P/HnYz9Pl8Me8m6e74eP+dLU/DO/urneHy7tnlGHY7u+Of+9oeeLju1ff8+P3v3+7cHE8zPvDdJiXtQ/H0/zv8PPNdNpf7LZfb3p4DvJqOt5M8+n++xCf/tP7z9fz/rfj9f3VVx6ef+F4utwflsCfCXl8ffv55dXr62H4yWRUTU7LN68W0UdXNGR/sfTp5b0d4BBJawInehivA1tQWhPYGNIh1oEdmBGbwGYJQEXEFCHRBI50KwIWcfdm7iwTRKXIHQWL9IB9YdgKJjQIVJvADB7sBcVK0Qa2RJWCiiWr2hSFOxqbFsBklNwETpWAovDCVZq4gS7KVpSHIGoXmMOSCxmbBDerI9xEpRCba1hTEhFiTAXB5hHZLLsIt5BCxKrk2mUizKhqFChClO2IQ3xdxJYZ7V4cqei4ToUFeRvXjb3InUVie9yZgxIW1YFODE21mYQn4zowsQM0y87AFrEW04Oo2zE1FFOKxiaRFk0VN6zKprr67ic7vskBMnntX8bIQunWNQsuuGZuYmQWsW6lmgEnVMDmxNQFFjWsiLAk7wIHiVMRsRoAdxlOL3QUIxuRcJNjR1aMtR6wACtEl2MXS131YzGys3bjVU3kAtYS1JqV6orOqxZ9AUaL7BJhaRJF6tQ0ukzE4sUKJiTdqam1AKQoioOCupbpHK+vWZsYGZUIu5ljI4aCCEzXtoRBAHRtjMXIy94K+tUstDofF4pN2zuVQIOilgVQuvuJH58b/98Qi2UPsmaylmSLUdfQGzBSkRIMTejaTUWBKGXv0ZV9CIBnkW1cXEtT9qGSsbq3eZQRZVOfkSjr28elE2ZaNCNOCgUpIg5g657bpAJQFEMhTDO6wItZXd3wLtMxILvJSzLArOajoXI3YpYsGDbudtiFX6j8krN2O2GGmVSwEsStLqEjIIZXabPQ7J1e6QiCkpWtUTaN1qjREUgZKvfBkdT1/JlsVb+UAGpnDk2q0ciqGs0Gn2aQ1TBncu76mhTR0KI02By7h1fJWtYGg0Q7cwzBVX/nVIVu7ghDK60tm3NpHlQkgqQXwKiu3UPj8AjOYjiDiHRPQH7YpdSGafPy08Pm6f3T5mHzH1r823WNGgAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for north-america/united-states-virgin-islands.10m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get northAmericaUnitedStatesVirginIslands10m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

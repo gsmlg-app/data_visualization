@@ -2,243 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for oceania/marshall-islands.50m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Marshall Islands",
-        "iso_a2": "MH",
-        "iso_a3": "MHL",
-        "continent": "Oceania"
-      },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [
-                169.6350586,
-                5.8300781
-              ],
-              [
-                169.6725586,
-                5.9352051
-              ],
-              [
-                169.7263672,
-                5.9756836
-              ],
-              [
-                169.7345703,
-                6.0141602
-              ],
-              [
-                169.7003906,
-                5.9770508
-              ],
-              [
-                169.6510742,
-                5.9451172
-              ],
-              [
-                169.6271484,
-                5.8558105
-              ],
-              [
-                169.612207,
-                5.8244141
-              ],
-              [
-                169.5905273,
-                5.8019043
-              ],
-              [
-                169.6154297,
-                5.7998047
-              ],
-              [
-                169.6350586,
-                5.8300781
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                168.8302734,
-                7.3089844
-              ],
-              [
-                168.7554688,
-                7.3224609
-              ],
-              [
-                168.6792969,
-                7.3362305
-              ],
-              [
-                168.6750977,
-                7.3219238
-              ],
-              [
-                168.7192383,
-                7.3027344
-              ],
-              [
-                168.8154297,
-                7.2935547
-              ],
-              [
-                168.8302734,
-                7.3089844
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                171.5773438,
-                7.0482422
-              ],
-              [
-                171.5927734,
-                7.0162598
-              ],
-              [
-                171.6141602,
-                7.0071777
-              ],
-              [
-                171.659375,
-                7.0100586
-              ],
-              [
-                171.6933594,
-                7.0001465
-              ],
-              [
-                171.7304688,
-                6.9766113
-              ],
-              [
-                171.7568359,
-                6.9731445
-              ],
-              [
-                171.6883789,
-                7.0282715
-              ],
-              [
-                171.6147461,
-                7.0266113
-              ],
-              [
-                171.5773438,
-                7.0482422
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                171.1019531,
-                7.1382324
-              ],
-              [
-                171.0503906,
-                7.1717773
-              ],
-              [
-                171.0357422,
-                7.1561035
-              ],
-              [
-                171.0955078,
-                7.1092773
-              ],
-              [
-                171.2023438,
-                7.0735352
-              ],
-              [
-                171.2353516,
-                7.06875
-              ],
-              [
-                171.2632813,
-                7.06875
-              ],
-              [
-                171.3046875,
-                7.0811523
-              ],
-              [
-                171.3669922,
-                7.0955566
-              ],
-              [
-                171.39375,
-                7.1109375
-              ],
-              [
-                171.2269531,
-                7.0869629
-              ],
-              [
-                171.1019531,
-                7.1382324
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                166.890332,
-                11.1530762
-              ],
-              [
-                166.8994141,
-                11.1650391
-              ],
-              [
-                166.8880859,
-                11.1686523
-              ],
-              [
-                166.8588867,
-                11.1663086
-              ],
-              [
-                166.8447266,
-                11.1533691
-              ],
-              [
-                166.8644531,
-                11.1462402
-              ],
-              [
-                166.890332,
-                11.1530762
-              ]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for oceania/marshall-islands.50m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE7WXS2vbQBDH7/4UwuewzGPnsbkWSgsN7b2EIhI1NTh2sJVDCPnuZeUkJPHqkAnxQVia3Z9m//PY1f2i65bj3c2wPO2WX4d+vN0NX7br9XAxrrab5Uk1/z083i9Pu9+Lruu6++l6PHEaPhludtubYTeupklPw7tuuemvpwln/W7/r1+vu+/7db+53D/P7Lrlar/909M06tvRcz48//HScLHdjKvNsBmr7efF0G9W/fLR/PDs0tWwvR7G3d1rh55WcHa7Hle/tuu7q8dVP7O3u8vVph9fLP/we/n/7d3xfdehlqQsIK4nR0ZJzgDm+MZy/nboDNdIZriFhUCCXCNlNWpyTdRZg1zOYsDHXE2AGRUoyAXgAm0dzEDAg/oKguW2DlkQLeivkmH23MwHEUeQIBeJwJpYyhlzMB2kgJA1wibJAQtkjrormUrTXyvFIVuQ++5yW8zdvXrj+0vf6wvJuBFqSwxePOfIGj2ZSFb3JpcoK5QYV61Q0dLkshLHUrNyBYo1Yl39xUIcKlFPNs1t5GbVtyof1NfnctMSFRaJ5WYkHz4pNw2TmHHmZg5BdsoUaW+VW8hm1gioJCUSa8Okhz2iyQVDs0hMKlcKm7TdhdpJgtjCLKUtAwBmjZSSYTKGdulrKqaKGGnHlVt3dmmUfuUy5hz0V93ZvNlSgJwMo1zMlhXb3A/o8P6y+LwSRcAi3FwjshNTpL0ZJpCZE5MlnCopqB2wWKZmiaIoAgdjDUUErBkThKndxLgENBtrY2EJtkCqc7GpL6hbUAVSJsfmZvcB6tROZvqfIwoFtWXVUtq5UMMpGuyrPNetEaGagtqSzlUauBalyIEqVMGfdRjV5AWYGwFBTCgMpqHvmcot9euiDdbaakJfHprcHby1JU1g11huVrC4uzaOdxNYGUKbfgXnbKSNwj9ozBqWQnNu5lEFZ6Uc+3iOJMV8gi7e/ntYPF3PFw+L/2u0Ecl2EgAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for oceania/marshall-islands.50m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get oceaniaMarshallIslands50m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

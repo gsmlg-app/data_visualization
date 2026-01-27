@@ -2,93 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for africa/rwanda.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Rwanda",
-        "iso_a2": "RW",
-        "iso_a3": "RWA",
-        "continent": "Africa"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              30.4191049,
-              -1.1346591
-            ],
-            [
-              29.8215186,
-              -1.4433224
-            ],
-            [
-              29.5794662,
-              -1.3413132
-            ],
-            [
-              29.2918868,
-              -1.6200558
-            ],
-            [
-              29.2548348,
-              -2.21511
-            ],
-            [
-              29.1174789,
-              -2.2922112
-            ],
-            [
-              29.0249264,
-              -2.8392579
-            ],
-            [
-              29.6321761,
-              -2.9178578
-            ],
-            [
-              29.938359,
-              -2.3484868
-            ],
-            [
-              30.4696736,
-              -2.4138548
-            ],
-            [
-              30.46967,
-              -2.41383
-            ],
-            [
-              30.758309,
-              -2.2872503
-            ],
-            [
-              30.8161349,
-              -1.6989141
-            ],
-            [
-              30.4191049,
-              -1.1346591
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for africa/rwanda.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE52UTWvCQBCG7/kVS842ZD52d9abFHouvfRQpASNEtBE4pYi4n8viUbUbAvbHJbJvDMPM7OTHBOlUn/YlelUpS9l4b/a8rnZbMqFr5o6nXTy6uzep1P1kSil1LE/x4l9eC/s2mZXtr7qk4ZwpdK62PYJb99FvSyu8Uql1b75LLDX3kd+Ovtnt8KiqX1Vl7XvtNmqrRZFelFP1zrWZbMtfXu4r2Io+7XZHNaXLq/Upl1WdeFv2j0/t/bjm1KUZwwOcnaTB+UJMiA22sGdMJ/8yUOXCYIGMQEeMxEiR/K0dWwMBnjEQEAYyUMHIkYCPIN5rrXE8jQL8ZiHWTeI2OkBWLYyvg3M0CECxHabIzs0HOAJOdTWRfIMIVgDAZ4DK9rGTs+RkA61SywsJgrXLbNxxtJ4+TBjINH8L94vNIpkWS2UB29WLOo8FidggILfrXHigKM2L/4/kITswTolwzlPTskPATAKLq0FAAA=';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for africa/rwanda.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get africaRwanda110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

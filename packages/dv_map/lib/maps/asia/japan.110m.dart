@@ -2,307 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/japan.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Japan",
-        "iso_a2": "JP",
-        "iso_a3": "JPN",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [
-                141.8846009,
-                39.1808646
-              ],
-              [
-                141.9142631,
-                39.9916161
-              ],
-              [
-                141.3689734,
-                41.3785599
-              ],
-              [
-                140.3057825,
-                41.1950052
-              ],
-              [
-                139.8833793,
-                40.5633125
-              ],
-              [
-                140.0547901,
-                39.4388075
-              ],
-              [
-                139.4264047,
-                38.2159622
-              ],
-              [
-                138.8576022,
-                37.8274846
-              ],
-              [
-                137.3906116,
-                36.8273907
-              ],
-              [
-                136.7238306,
-                37.3049842
-              ],
-              [
-                135.6775379,
-                35.5271341
-              ],
-              [
-                134.6083008,
-                35.7316177
-              ],
-              [
-                132.617673,
-                35.4333931
-              ],
-              [
-                131.8842294,
-                34.7497139
-              ],
-              [
-                130.878451,
-                34.2327428
-              ],
-              [
-                130.3539352,
-                33.6041507
-              ],
-              [
-                129.4084632,
-                33.2960558
-              ],
-              [
-                129.8146916,
-                32.6103096
-              ],
-              [
-                130.4476762,
-                32.3194746
-              ],
-              [
-                130.2024199,
-                31.4182376
-              ],
-              [
-                130.686318,
-                31.0295792
-              ],
-              [
-                131.3327902,
-                31.4503545
-              ],
-              [
-                132.0000362,
-                33.1499924
-              ],
-              [
-                130.9861446,
-                33.8857614
-              ],
-              [
-                132.1567709,
-                33.9049334
-              ],
-              [
-                133.3403162,
-                34.3759382
-              ],
-              [
-                135.0794348,
-                34.5965449
-              ],
-              [
-                135.1209827,
-                33.8490712
-              ],
-              [
-                135.792983,
-                33.4648052
-              ],
-              [
-                137.2175989,
-                34.6062859
-              ],
-              [
-                138.9755278,
-                34.6676
-              ],
-              [
-                140.2532793,
-                35.1381139
-              ],
-              [
-                140.7740743,
-                35.8428771
-              ],
-              [
-                140.5997697,
-                36.3439835
-              ],
-              [
-                140.9763876,
-                37.1420743
-              ],
-              [
-                140.9594894,
-                38.174001
-              ],
-              [
-                141.8846009,
-                39.1808646
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                144.6134265,
-                43.9608829
-              ],
-              [
-                143.910162,
-                44.1740998
-              ],
-              [
-                143.1428703,
-                44.5103584
-              ],
-              [
-                141.9676449,
-                45.5514835
-              ],
-              [
-                141.6719523,
-                44.7721254
-              ],
-              [
-                141.3805489,
-                43.3888248
-              ],
-              [
-                140.312087,
-                43.3332726
-              ],
-              [
-                139.8175436,
-                42.5637589
-              ],
-              [
-                139.9551062,
-                41.569556
-              ],
-              [
-                141.0672864,
-                41.5845938
-              ],
-              [
-                141.6114909,
-                42.6787906
-              ],
-              [
-                143.1838497,
-                41.9952147
-              ],
-              [
-                144.0596619,
-                42.9883583
-              ],
-              [
-                145.5431372,
-                43.2620883
-              ],
-              [
-                145.3208252,
-                44.384733
-              ],
-              [
-                144.6134265,
-                43.9608829
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                132.3711764,
-                33.4636425
-              ],
-              [
-                132.3631149,
-                32.989382
-              ],
-              [
-                133.014858,
-                32.7045674
-              ],
-              [
-                133.2802682,
-                33.2895704
-              ],
-              [
-                133.7929501,
-                33.5219852
-              ],
-              [
-                134.203416,
-                33.2011779
-              ],
-              [
-                134.766379,
-                33.8063347
-              ],
-              [
-                134.6384282,
-                34.1492337
-              ],
-              [
-                133.9041061,
-                34.3649311
-              ],
-              [
-                133.4929684,
-                33.9446209
-              ],
-              [
-                132.9243726,
-                34.0602986
-              ],
-              [
-                132.3711764,
-                33.4636425
-              ]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/japan.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE7VYTasbVwzd+1cMXgeh74/sSqGLQkv2JRSTusHwYj/ecxYh5L+X6zQheU9ZVFAvhpnRzLFGVzo6uh9327a/frg/7l9u+1+Oh+v7h+PPl7u745vr6XLev1jmvz/ffty/3P7Ybdu2fbwdn794e/xmuH+43B8frqfbS18e37b9+fDu9sKvh/vD+evj27Y/PV7+PPDN9OrZffl8//dvDW8u5+vpfDxfl+2nx9Nh/6/t01cn3h4v747Xhw/fu/DF59/e311Pry53H95ezt8DXx7+Op0P128++PPv2/OnV8+vt42UIFMdsV48M0oBJaarPzG9fvpsD1yk7EItcBU5Oc2AxbNC9DnwskWaVU2AEQQtkq0FpjJE4wGwFGSKREkDjGAuQmwzj9E0CvsYq2RiTIDXy+yKGg1wApOV8ygUCWnhyNwABySH5ijdJEAKncgbYF/AUhgTYIdgScEOOEBQK3UUCgOPMImu8gyMg0QnBSIKjimI2QKHkFOMQsHgFB5NGouBikjJyOEbBzFXU9GiEFpBMqloQchIta48FFg4lHOGKyYl1mWxgKOSjZKNCxRTXXpgLkezicdckKRebXmsZUXBGtUdgmp4eOcxg1BpzAoagZGVqisPAqVkiSGwpwt11UGAXBY1qmcCEY7CLhIEaiimIzJmQESUNsQCpFXFOotEpZNqlxQCuZiaRsAMZB7RigqBQi2REbCAKAq1oVCQsJIckjFGqWiXFQpWbqojCjIgxkruOqlAamHQ0OMoruzIWEBdcyhWApjCKru1W53FOW0UiYQKM44+xO6jalYEtlV2fVMiSZr1DkWIUAztgVM5I0b6FcGqwqvLCAdRqZShGqxwyeiVCimvrxkCW2m2/TmBQhGHSn4we+x+dPXdX/73QUjBSZS9U/8C5ZjJo0QSKMKWslRvwauatHRd1M8Z2E0VCkYolhOSXZObh6s2y6IGZqTDBCXwoDLuPY5gYht6LImmHWepgGQm6yjGCEKM2ZTqwl39nkcaZMmxMJWmVJXXRBiWI5ItKDPCNtsIzMtsOM2jB6f3Q7elrs47zAkirY4DlMEjo3DksQClpHY0uzK8jEknGl0V0Mqdeo8rUyxHNGtgKiTRrZ0AO2NOgYUxuRtXVEFSQ0a4I8r8n/h7DRtBFF2G3gSRuI42WRawy8rRdsKpnEpOASRN6+QQQ6Cax1AjcyJ7/mCGzLLAIfBSnNbuNgkYU+VMciowirazqQAjUcSIDBXCvd9gEUh0kREDLLUqSwD2UwhpscgI+DYbEXq/YSGuJTTaYRHQ4vLsi6NUnXEUYoZileBu7RTQkStHHXJUzj/mlt3Ts0+7L8fXu0+7fwC+USQlZBgAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/japan.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaJapan110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

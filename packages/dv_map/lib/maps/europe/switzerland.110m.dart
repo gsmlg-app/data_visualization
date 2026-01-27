@@ -2,133 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for europe/switzerland.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Switzerland",
-        "iso_a2": "CH",
-        "iso_a3": "CHE",
-        "continent": "Europe"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              9.5942261,
-              47.5250581
-            ],
-            [
-              8.5226119,
-              47.8308275
-            ],
-            [
-              8.3173015,
-              47.6135798
-            ],
-            [
-              7.4667591,
-              47.620582
-            ],
-            [
-              7.1922022,
-              47.4497655
-            ],
-            [
-              6.7365711,
-              47.5418013
-            ],
-            [
-              6.7687138,
-              47.2877082
-            ],
-            [
-              6.037389,
-              46.7257787
-            ],
-            [
-              6.0226095,
-              46.2729898
-            ],
-            [
-              6.5000997,
-              46.4296728
-            ],
-            [
-              6.843593,
-              45.9911466
-            ],
-            [
-              7.2738509,
-              45.7769477
-            ],
-            [
-              7.7559921,
-              45.8244901
-            ],
-            [
-              8.3166297,
-              46.1636425
-            ],
-            [
-              8.4899524,
-              46.0051509
-            ],
-            [
-              8.9663058,
-              46.0369319
-            ],
-            [
-              9.1828817,
-              46.4402147
-            ],
-            [
-              9.9228365,
-              46.3148994
-            ],
-            [
-              10.3633781,
-              46.4835713
-            ],
-            [
-              10.4427015,
-              46.8935463
-            ],
-            [
-              9.9324484,
-              46.9207281
-            ],
-            [
-              9.4799695,
-              47.10281
-            ],
-            [
-              9.6329318,
-              47.3476012
-            ],
-            [
-              9.5942261,
-              47.5250581
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for europe/switzerland.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WVTWvcMBCG7/srhM+L0HzP5BoSeiz0WEJZEjcsbOxl41C2If+9eJMNSSwK8sHIejWPNR8aPa9S6qbjvu8uUnfdb6anQ3857nb97bQdh249y79fpx+7i/RzlVJKz6f30vC0/CTsD+O+P0zbk9F5eUrdsHk4Gfz4s53+9ofdZrh7N0qp2z6OvzY4L7j8tpin1/mrj8LtOEzboR+mWbt6mv/avakv75u578eHfjocP2/lvPfv4+54/+bqO3U83G2HzfTB59fn4/jrV0qRJRhRYf1FYMuCUsThk3Cz/i/Os8wwiArOqTiatOEIjApIBadAYuEtOMusahI1ZxWLOLbRIBALYoXGHKbS5KtmIxWDaiYYvAA14tQNyCs4dLPS5qzmQka+zKtmQzFza6QhaollXjWjYXhbXjVLKSXCKjjGUMNGnDNJ0IImOQKAVdvKBI1cyjJ0ks002JpCZ9lEInBZJpIdmaM0HlgCVayGDpSUsfHAskcIcgVXioCUaMOFKhVZFvFcjxoETbjI4OgO1TrhgsBNqYgciE5aq2KCORDcgoOSSYnMl6nVzE5ibR0ASmZGq3VPzR4krE28yEHI7LXcBhbDtqsiMluEVnqAZSjNMCUMglq3IzYt0NTtmm/FVW18Hr2szu+b1cvqH/0yfW2/CAAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for europe/switzerland.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get europeSwitzerland110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

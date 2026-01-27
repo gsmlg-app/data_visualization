@@ -2,141 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/israel.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Israel",
-        "iso_a2": "IL",
-        "iso_a3": "ISR",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              35.7199182,
-              32.7091924
-            ],
-            [
-              35.700798,
-              32.7160137
-            ],
-            [
-              35.8363969,
-              32.8681233
-            ],
-            [
-              35.8211007,
-              33.2774265
-            ],
-            [
-              35.5527967,
-              33.2642748
-            ],
-            [
-              35.4607093,
-              33.08904
-            ],
-            [
-              35.1260527,
-              33.0909004
-            ],
-            [
-              35.0984575,
-              33.0805393
-            ],
-            [
-              34.9554171,
-              32.8273764
-            ],
-            [
-              34.7525871,
-              32.0729263
-            ],
-            [
-              34.4881071,
-              31.6055388
-            ],
-            [
-              34.5563717,
-              31.548824
-            ],
-            [
-              34.2654334,
-              31.2193609
-            ],
-            [
-              34.2654347,
-              31.2193573
-            ],
-            [
-              34.26544,
-              31.21936
-            ],
-            [
-              34.8232433,
-              29.7610808
-            ],
-            [
-              34.9226026,
-              29.5013262
-            ],
-            [
-              35.4209184,
-              31.1000658
-            ],
-            [
-              35.3975607,
-              31.489086
-            ],
-            [
-              34.9274085,
-              31.3534354
-            ],
-            [
-              34.9705066,
-              31.6167785
-            ],
-            [
-              35.2258916,
-              31.7543411
-            ],
-            [
-              34.9746407,
-              31.8665823
-            ],
-            [
-              35.1839303,
-              32.5325107
-            ],
-            [
-              35.5456653,
-              32.393992
-            ],
-            [
-              35.7199182,
-              32.7091924
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/israel.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE52VTWsbMRCG7/4VYs9GzIfmK7dSKBR6KO2xhGLSTTA4XmNvDyb4vxdvYpNkVYq6B6HVKz280mhGT4uUuvG467ub1H3qV+Pvff9x2Gz6u3E9bLvlWb5/Hj50N+nHIqWUnqZ2vnCaPgm7/bDr9+N6WnSZnlK3XT1OCz4f9qt+c52fUrc+DD9XNGlfZuM8jX//9lq4G7bjettvx7P24bBedS/a6erioR8e+3F/fOvhYvrrsDk+vOzxyhz2v9bb1fhqs8/f6/77v5RYsmEEOi3fK5QNAoPKG+F2+U8egIXXcKiAbI04Z+XQqPBcHYm5lUeIADbjcSazQiqNPBGy0CpPC1nxRl5RMAiu8MADWoOBpCBUcwcBAc08CC9iUnUHwtEWjZJDpKBhLbpkbNrmr2QTEq/ywChIW/0Vd4QKD7OCCHtbdEsWUTacxwOzFPfGXCuZVApzqeAIgxXif3ilZu/ME2s9vjPvr+4aWU5MhWeJQZFNERxaQxFECqQVngAyKbUmLkGg13aLAKDSWgg4TLRSqDAXD/DW4wuyAj7PXMwsXFhar14YCOjs+M6ZgWrmrXWUSDywxrPznURs9le0VI/PVcWp9d1A52CY12XKwiQIre+aFFGVGo+DI1pvX+Mrvqj1L73T4tLeLk6LP/QKtEFpCQAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/israel.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaIsrael110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

@@ -2,117 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for europe/iceland.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Iceland",
-        "iso_a2": "IS",
-        "iso_a3": "ISL",
-        "continent": "Europe"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -14.5086954,
-              66.4558922
-            ],
-            [
-              -16.167819,
-              66.5267923
-            ],
-            [
-              -17.7986238,
-              65.9938533
-            ],
-            [
-              -19.0568416,
-              66.2766009
-            ],
-            [
-              -20.5762837,
-              65.7321121
-            ],
-            [
-              -22.1349225,
-              66.4104687
-            ],
-            [
-              -23.6505147,
-              66.262519
-            ],
-            [
-              -24.326184,
-              65.6111893
-            ],
-            [
-              -22.2274233,
-              65.3785937
-            ],
-            [
-              -22.1844026,
-              65.0849682
-            ],
-            [
-              -23.9550439,
-              64.8911299
-            ],
-            [
-              -21.7784843,
-              64.4021158
-            ],
-            [
-              -22.762972,
-              63.9601789
-            ],
-            [
-              -19.9727547,
-              63.643635
-            ],
-            [
-              -18.6562459,
-              63.496383
-            ],
-            [
-              -17.794438,
-              63.6787491
-            ],
-            [
-              -14.9098337,
-              64.3640819
-            ],
-            [
-              -13.6097322,
-              65.126671
-            ],
-            [
-              -14.7396374,
-              65.8087483
-            ],
-            [
-              -14.5086954,
-              66.4558922
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for europe/iceland.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE51US2vbQBC++1csOrvDzmPnkWtpodBDoccSinHUYHAk4ygHE/zfi+XYOJGgbHVYZvfb+fTNa18XKTXDYdc2d6n52q6Gl337ud9u2/Ww6btmeYL/nI+fm7v0a5FSSq/jOnUcr4/Abt/v2v2wGZ0u11NqutXT6PBt3W5X3cPVIaVm89z/XtEI/pyc8/n8+y2w7rth07XdcMK+vJz+2Lyhx6uQx7Z/aof94b2Mi+4f/fbw+BbmlbXfP2y61XAT7/m7tT/uUvqEAiW7RpHlB0gVpBQPonfA/fIfhAqo5hgzfIXUgriOz8DCldgnhAUi2AtXEgbkoi6oMwrJVHOOKkLKUEzJ2WYUGhMiYR0hAbIEUZmrCWZRtzpCBi25oEwVKpBSwcqIBZgUfdozBRQRPepKQgREJsQ8Q8jmJbgyYAJ0kUzTGhfILqFe19XEEKVk4WlbC3ggUlSmEMHMxWUasoBkQixeG7IphdGEjyE0o3mdQAwIIyszPcOgwsqljs9Bi5KUaQYZJJT9P94FkZlngUHNTaJu6FAgcjjPTLEAq2SvHBJk0BzGNK1IASRVqxZoHMo2N3We3aQ2g9VP/2LOvljHxWW9XxwXfwFmWWlFogcAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for europe/iceland.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get europeIceland110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

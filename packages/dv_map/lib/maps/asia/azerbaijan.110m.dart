@@ -2,219 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/azerbaijan.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Azerbaijan",
-        "iso_a2": "AZ",
-        "iso_a3": "AZE",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [
-                46.4049508,
-                41.8606752
-              ],
-              [
-                46.1454318,
-                41.7228024
-              ],
-              [
-                46.6379082,
-                41.1816727
-              ],
-              [
-                46.5016374,
-                41.0644447
-              ],
-              [
-                45.9626005,
-                41.1238726
-              ],
-              [
-                45.2174264,
-                41.4114519
-              ],
-              [
-                44.9724801,
-                41.2481286
-              ],
-              [
-                45.1794959,
-                40.9853539
-              ],
-              [
-                45.5603512,
-                40.8122895
-              ],
-              [
-                45.3591748,
-                40.5615038
-              ],
-              [
-                45.8919072,
-                40.2184757
-              ],
-              [
-                45.6100122,
-                39.8999938
-              ],
-              [
-                46.0345341,
-                39.6280207
-              ],
-              [
-                46.483499,
-                39.4641548
-              ],
-              [
-                46.5057198,
-                38.7706054
-              ],
-              [
-                47.6850794,
-                39.508364
-              ],
-              [
-                48.0600952,
-                39.5822354
-              ],
-              [
-                48.3555294,
-                39.288765
-              ],
-              [
-                48.0107443,
-                38.7940148
-              ],
-              [
-                48.6343754,
-                38.2703775
-              ],
-              [
-                48.8832491,
-                38.3202453
-              ],
-              [
-                48.8565324,
-                38.8154864
-              ],
-              [
-                49.2232284,
-                39.0492189
-              ],
-              [
-                49.3952592,
-                39.3994817
-              ],
-              [
-                49.5692021,
-                40.176101
-              ],
-              [
-                50.3928211,
-                40.2565612
-              ],
-              [
-                50.0848295,
-                40.5261571
-              ],
-              [
-                49.6189148,
-                40.5729243
-              ],
-              [
-                49.1102637,
-                41.2822867
-              ],
-              [
-                48.5843534,
-                41.8088688
-              ],
-              [
-                47.9872832,
-                41.4058192
-              ],
-              [
-                47.8156657,
-                41.1514161
-              ],
-              [
-                47.3733155,
-                41.2197324
-              ],
-              [
-                46.6860706,
-                41.8271372
-              ],
-              [
-                46.4049508,
-                41.8606752
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                46.1436231,
-                38.7412015
-              ],
-              [
-                45.7353793,
-                39.3197191
-              ],
-              [
-                45.7399785,
-                39.4739991
-              ],
-              [
-                45.298145,
-                39.4717512
-              ],
-              [
-                45.0019873,
-                39.7400036
-              ],
-              [
-                44.7939897,
-                39.7130026
-              ],
-              [
-                44.952688,
-                39.3357647
-              ],
-              [
-                45.4577218,
-                38.8741391
-              ],
-              [
-                46.1436231,
-                38.7412015
-              ]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/azerbaijan.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE51Xy4pbRxDd6ysuWpui3g/vQkh2gawTTFAc2SiMpUEjLyZm/j1IkzHzKC1SWlxud3Wfe9R1qvv0t9WyrE/3t9v1+2X983Zz+nrc/ni4udl+PO0O+/W7c/jTY/fd+v3y+2pZluXb5fl24mX4JXB7PNxuj6fdZdLT8GVZ7zdfLhN++Gd7/HOz+3uz/z5nWda7u8MfG77Ef3vTL4/9Pz0PfDzsT7v9dn+6xO52m/V/sYfvTD5vD1+2p+P9Sx5PxH/5enPa/Xq4uf982L8EPhz/2u03p2f/+vH3/P116217WdRBUcsw372NEaSjh/Gr0IfXY1tcUlOhHjeYE1lHuC5RmNziUpIHxwjXkFxCW1x0VdUJrkE5O6L1fFky2Ee4TKHsPV8lUqMa4CpUsCZSi8uaxDnjS1FaVg0uQqWJyYSvgTmKUacHhCTmLBvhihWFdvpFMCdDyRFuFhVGz5cpNWymMydE4gZXCrKqasTXAUVNtNGDFPi5jHFWb5qi1chBCtSVTGd0DS2omrRJQgQ62mTbCfA0jGrKTQoMU3wCm4COWNZnzZJZRnQTxMz4Cl3ODJ8URQIShqr0q1uKNMpagotKWEc3gQMlYsY3U1irE2+CMLKazHDNTbjnm2ftjuRQwCzM2acNtZhyskkWSBlb9TKTKk2aFHGBeTFyd1ggUDgh/X9YQ5DiZOph2dycBp7EEDA1ubqzGMHYyWLAVwucsujaWRFcrBOZFRAhu0R/Fidz+iRtCZYqJr13SMz0nJRxQGVwSu/NFC2pJl4yziXlbv06kJGST/IWICFC1nszpgqZetR0DPR+fTlIYuapB159da314ouDewOpOEu/tYYSI818V4hJVHfEFAhVUE1yfcatimxyfTYc5+AQlytJr8FS2GSrUgNEqox+GUIRUSY2XCFKKqsppTMuCeLoOqJQxp6d7SoQsfDh7Uktgrtb5PmgDSUZZW2k3uuVtHr99rB6en5YPaz+BVgw7hTGEAAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/azerbaijan.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaAzerbaijan110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

@@ -2,177 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for europe/czechia.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Czechia",
-        "iso_a2": "CZ",
-        "iso_a3": "CZE",
-        "continent": "Europe"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              15.0169959,
-              51.1066741
-            ],
-            [
-              14.5707182,
-              51.0023394
-            ],
-            [
-              14.3070134,
-              51.1172678
-            ],
-            [
-              14.0562277,
-              50.9269176
-            ],
-            [
-              13.338132,
-              50.7332344
-            ],
-            [
-              12.9668368,
-              50.4840764
-            ],
-            [
-              12.2401111,
-              50.2663378
-            ],
-            [
-              12.4151909,
-              49.9691208
-            ],
-            [
-              12.5210242,
-              49.5474153
-            ],
-            [
-              13.031329,
-              49.3070682
-            ],
-            [
-              13.5959457,
-              48.8771719
-            ],
-            [
-              14.3388977,
-              48.5553053
-            ],
-            [
-              14.9014474,
-              48.9644018
-            ],
-            [
-              15.2534156,
-              49.0390742
-            ],
-            [
-              16.0296473,
-              48.733899
-            ],
-            [
-              16.4992827,
-              48.785808
-            ],
-            [
-              16.9602881,
-              48.5969823
-            ],
-            [
-              17.1019849,
-              48.8169689
-            ],
-            [
-              17.545007,
-              48.800019
-            ],
-            [
-              17.8864848,
-              48.9034752
-            ],
-            [
-              17.9135116,
-              48.9964928
-            ],
-            [
-              18.1049728,
-              49.0439835
-            ],
-            [
-              18.1704985,
-              49.2715148
-            ],
-            [
-              18.3999935,
-              49.3150005
-            ],
-            [
-              18.5549711,
-              49.4950154
-            ],
-            [
-              18.8531442,
-              49.4962298
-            ],
-            [
-              18.3929139,
-              49.9886286
-            ],
-            [
-              17.649445,
-              50.0490384
-            ],
-            [
-              17.5545671,
-              50.3621459
-            ],
-            [
-              16.8687692,
-              50.4739737
-            ],
-            [
-              16.7194759,
-              50.2157466
-            ],
-            [
-              16.1762533,
-              50.4226073
-            ],
-            [
-              16.2386267,
-              50.6977327
-            ],
-            [
-              15.4909721,
-              50.7847299
-            ],
-            [
-              15.0169959,
-              51.1066741
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for europe/czechia.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5VWTWsbSRC961cMOpuivj9yDcl5zwkhCO9sVuBIRlEO3uD/HiTHxkk3CzWHoadr+s2rV2+q+8dmWbbnh/t1+2bZvl935++n9e3x7m69Pe+Ph+3NJfzP0/S37Zvl42ZZluXH9T4uvL5+Ddyfjvfr6by/Lnp+fVm2h93X64K3/623/+53LwuWZbv/dvy842vwwzAvT/PvXgduj4fz/rAezpfYu++XL25/RR9fiHxZj1/X8+nhdxrPvP863j18+ZXmC+rx9Pf+sDu/yvfpej3+82lZyADJq6xu/ogYAaF7KP0W+HTz/3gKFhiUPMFDZJHSJp5gIInO+FGwRzbx0Jw5YsBDKPai8BaegEiSjOkihAiL9tJlKPcUzwmepmJ4F48ViYgmeOwu0pSPQcmocLCLFpQXMXbxjAlZB/20wDSUTJrlQCHhGb2Ljzy5CWdlpTa4RRMygoKq62bJrNF9mmBmgs10FQpJNYa/QxPKVZF65TBgEyXziX4ohaE9/RyQyzVkwi9EsnryOWgVJ8/ki7Rsms+hHDlz+Dku1Siv5F41AgipUkf3JSR5efbSDTA1xKn5ELHpvYBM19ShtVy8gqJhvdoGFIkRjV5JqHIt7lUjgVAreORXgCqVYl28QK20CR4HGWmXn1RVyQxPyBCxy89MK8bWrAVahmS9Vp+QJqTTVqrlzNXPl4tk2uoznbO3Uwa4luognyGgFkr20o2LfOYx29nEmdS6vSU9w2u2k2tIhUQTL6g0JgcrBCYL9Z58DhTOJkMrvfBjdoxes3JgSWefHYS8IoR7+RpoYQXP6hGpwc1e3z6Ybmbj59Hj5vn+afO4+Qn+FwwuPwwAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for europe/czechia.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get europeCzechia110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

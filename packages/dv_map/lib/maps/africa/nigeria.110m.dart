@@ -2,269 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for africa/nigeria.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Nigeria",
-        "iso_a2": "NG",
-        "iso_a3": "NGA",
-        "continent": "Africa"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              2.6917017,
-              6.2588172
-            ],
-            [
-              3.5741801,
-              6.2583005
-            ],
-            [
-              4.3256071,
-              6.2706511
-            ],
-            [
-              5.0335743,
-              5.6118025
-            ],
-            [
-              5.3628048,
-              4.8879707
-            ],
-            [
-              5.8981726,
-              4.2624533
-            ],
-            [
-              6.6980721,
-              4.2405942
-            ],
-            [
-              7.0825965,
-              4.464689
-            ],
-            [
-              7.4621082,
-              4.4121083
-            ],
-            [
-              8.5002877,
-              4.7719829
-            ],
-            [
-              8.757533,
-              5.4796658
-            ],
-            [
-              9.2331629,
-              6.4444907
-            ],
-            [
-              9.5227059,
-              6.4534824
-            ],
-            [
-              10.1182768,
-              7.0387696
-            ],
-            [
-              10.4973751,
-              7.0553578
-            ],
-            [
-              11.0587879,
-              6.6444268
-            ],
-            [
-              11.7457744,
-              6.981383
-            ],
-            [
-              11.8393087,
-              7.3970423
-            ],
-            [
-              12.0639462,
-              7.7998085
-            ],
-            [
-              12.2188721,
-              8.3058241
-            ],
-            [
-              12.7536715,
-              8.7177628
-            ],
-            [
-              12.955468,
-              9.4177717
-            ],
-            [
-              13.1675997,
-              9.6406263
-            ],
-            [
-              13.3086764,
-              10.160362
-            ],
-            [
-              13.5729497,
-              10.798566
-            ],
-            [
-              14.4153789,
-              11.5723689
-            ],
-            [
-              14.4681922,
-              11.9047517
-            ],
-            [
-              14.5771778,
-              12.0853608
-            ],
-            [
-              14.1813363,
-              12.4836569
-            ],
-            [
-              13.9953528,
-              12.4615653
-            ],
-            [
-              13.3187016,
-              13.5563563
-            ],
-            [
-              13.0839873,
-              13.5961472
-            ],
-            [
-              12.3020712,
-              13.037189
-            ],
-            [
-              11.5278032,
-              13.32898
-            ],
-            [
-              10.9895931,
-              13.3873227
-            ],
-            [
-              10.7010319,
-              13.2469178
-            ],
-            [
-              10.1148145,
-              13.2772519
-            ],
-            [
-              9.524928,
-              12.8511022
-            ],
-            [
-              9.0149333,
-              12.8266592
-            ],
-            [
-              7.8046713,
-              13.3435269
-            ],
-            [
-              7.3307467,
-              13.098038
-            ],
-            [
-              6.8204419,
-              13.1150913
-            ],
-            [
-              6.4454261,
-              13.4927685
-            ],
-            [
-              5.4430583,
-              13.865924
-            ],
-            [
-              4.3683435,
-              13.7474816
-            ],
-            [
-              4.107946,
-              13.5312157
-            ],
-            [
-              3.9672827,
-              12.9561087
-            ],
-            [
-              3.6806336,
-              12.5529033
-            ],
-            [
-              3.6111805,
-              11.6601671
-            ],
-            [
-              3.5722164,
-              11.3279394
-            ],
-            [
-              3.7971123,
-              10.7347456
-            ],
-            [
-              3.60007,
-              10.3321862
-            ],
-            [
-              3.7054383,
-              10.0632104
-            ],
-            [
-              3.2203516,
-              9.4441525
-            ],
-            [
-              2.9123084,
-              9.1376079
-            ],
-            [
-              2.7237928,
-              8.5068454
-            ],
-            [
-              2.7490625,
-              7.8707344
-            ],
-            [
-              2.6917017,
-              6.2588172
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for africa/nigeria.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5VYy2obWRDd6ysarU1R70d2ITDZhdkPYRAexQgcySiahQn+9+HKsXF8m4HSoml19T2quufU4+rnZlm2l8eH/fbDsv1jv7v8e95/Ot3f728vh9NxezPM354f/9h+WP7aLMuy/Lxe54XX16+Gh/PpYX++HK6LXl5flu1x9/264Mvhbn8+7F4XLMv28OP0946vxs/Tc3l+/vGt4fZ0vByO++Nl2D5+Ox9ud9tf1qdXR+72p+/7y/nxdzde/P7zdP949yvMV9TT+Z/DcXd5E+/z5+39+2/LwuBFgRQ37wwObJkU/Nvzrzf/iyZgoZRIq2iCaB00BWFzjDW0QDeiDpoBiliovEczcKJEbvlmIM6Jmu/RFDKjAqOHljX22mc0dlYT6aA5eCUGT/umwIpW2uI0AJOt3GY0dfWsHpg6EyavgNEwtAJNMETOmMSrEEGV3PItISxMVvShUe6WHbACFiHnmrWrqlo9fRQYc6CtoZlosnbQCIEoOXwSbwBKhpc34bRCwia9BaCZWLR2jgjQMjJWgnVVZe/ChVqE6gxXSdJTHBGklGBOkguQClTuwTGgS6lP+RAQVYnZKkrEwJS5kvkJgpasrYpJDGHiQVPqJwRFOPeYYCgznVVXoBQR1EoJEiAPq5qYKHBFZ+8xISCYHj7JZGSLo3iraNLohFw6e0cIUWneS7FRHk0ip5wgGj8kzTI88DypeNIdERRqWJMMBRsExsTtUHiaOPakokBJIj4VY2LQFDfvxStQZWK85p86mVtbLZSBNDXsQby5WFt9mFIZc7wCVk7am8OIQZAxaOZXACWoKRcC40iUNTjhrB65CJVlJVOVGmgZwtwTH0IgodCcHAKsY77t+kekSTqVvYEXwUat3RvNW2tVemlEyC1qC5C0ZB5TBhy7WzWnu0T1oDXhiYpxL9ECRDDU57IngJUoLSYcklF1lVgiw6LmXKxqyr6mO60xDzWPAKqjq65tXQ4eWkOZgniOHV9BCw1NanUMBcIoXa1PQkzWSjGB8uDkmdbR050wm3Ce6CKzdwxmXNg778g4wFHivHUE7kgerbHn2rqZViYBAuEoqRaxAlFBxLNMEEI01FrECjgiro0VIkzZG1MEAk1lRcI4BlMmbIbKjGJzV6xx6CHrHbEZilgwJx4KSMIxWpWJIVhipQyPQ6SnWitShtBC50lyARkYok203p8wm7X7l7unzcv16+Zp8x8BMGsTKRMAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for africa/nigeria.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get africaNigeria110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

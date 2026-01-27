@@ -2,181 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for oceania/niue.10m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Niue",
-        "iso_a2": "NU",
-        "iso_a3": "NIU",
-        "continent": "Oceania"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -169.851145,
-              -18.9651018
-            ],
-            [
-              -169.8637182,
-              -18.9640439
-            ],
-            [
-              -169.8958227,
-              -18.9651018
-            ],
-            [
-              -169.916005,
-              -19.0031064
-            ],
-            [
-              -169.9218237,
-              -19.0070126
-            ],
-            [
-              -169.926381,
-              -19.0074195
-            ],
-            [
-              -169.9302465,
-              -19.0083961
-            ],
-            [
-              -169.9337052,
-              -19.0136044
-            ],
-            [
-              -169.9343969,
-              -19.0209286
-            ],
-            [
-              -169.9315893,
-              -19.0265439
-            ],
-            [
-              -169.9279679,
-              -19.0318336
-            ],
-            [
-              -169.9262589,
-              -19.0375302
-            ],
-            [
-              -169.9477026,
-              -19.0694312
-            ],
-            [
-              -169.9504288,
-              -19.0873349
-            ],
-            [
-              -169.9262589,
-              -19.0949033
-            ],
-            [
-              -169.9240617,
-              -19.0993792
-            ],
-            [
-              -169.919423,
-              -19.1159807
-            ],
-            [
-              -169.9247941,
-              -19.1193173
-            ],
-            [
-              -169.9279679,
-              -19.1228167
-            ],
-            [
-              -169.9305314,
-              -19.1263974
-            ],
-            [
-              -169.9337052,
-              -19.1296526
-            ],
-            [
-              -169.9210913,
-              -19.128025
-            ],
-            [
-              -169.9099829,
-              -19.1285947
-            ],
-            [
-              -169.9020483,
-              -19.1329892
-            ],
-            [
-              -169.8989152,
-              -19.1427548
-            ],
-            [
-              -169.8809708,
-              -19.1290829
-            ],
-            [
-              -169.8729956,
-              -19.1259091
-            ],
-            [
-              -169.8654272,
-              -19.1296526
-            ],
-            [
-              -169.8238419,
-              -19.1023089
-            ],
-            [
-              -169.805979,
-              -19.0819638
-            ],
-            [
-              -169.7968644,
-              -19.0739072
-            ],
-            [
-              -169.7829077,
-              -19.068943
-            ],
-            [
-              -169.7942602,
-              -19.0471331
-            ],
-            [
-              -169.8226212,
-              -18.9725888
-            ],
-            [
-              -169.8253068,
-              -18.9679501
-            ],
-            [
-              -169.851145,
-              -18.9651018
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for oceania/niue.10m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE62WS2sbMRDH7/4UYs+umZfmkWuh0EvbS08lFONuw4KzG5zNIYR89+JNnCa1FroiPiyyRvrxn4dGelil1Iz3N21zkZpP7Xa8O7Qfh/2+3Y3d0Dfro/n30/Rtc5F+rFJK6WH6nm+clk+Gm8Nw0x7Gbtp0Wp5S02+vpw1furu/q1Nqutvh55Ymy/ezeZ7mP78x7IZ+7Pq2H4+2r7t223fb5tn8+CLjqh2u2/Fw/1bESfW3YX9/9ezkC3Y4/Or67fjK26ff6/G//1L6gBobz4iS12cm34RmBPQ3lsv1fxCVDZ3KSAHhWI6M7ET2nioDFaDgd2wAGEFlOZHQiQsij0gDJK1AKjvOEAUjLycykOiM386hWIFkg1zId2wAWUEqQsnCoVFEEgR5RSgZsweXkZprqjLIQq2sktGZqxJO2WeQlhloOVLMgLSI1BDGCmQGIfci0o1ZamI573hIAHMFUkCxfB4j2KLCcQyhYg0h5nCwGpEWUjziiMFoNX7PliUSOWqFSobMKGWkcljNEZ/tGkihuapbIgSW00MOVNEtIcJpJpSeQypCCQTiZZFM4RVV6eGBM6EUsiwVd7hDGBRPOFKAU8UdbhSRi30IKQfE8pvHNQvZu9aQE7tgOeNADF7hOOSYuSUcQ3l5dizUVYrHEYwDbHkNmVOAlZulesjyNmQhpFB+Foghc0W+iZSw/LI0yu4VhU6ZQQuFfnxZWmSoULnsRb0qjU+jx9Xpe7l6XP0B3LZ0KfgMAAA=';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for oceania/niue.10m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get oceaniaNiue10m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

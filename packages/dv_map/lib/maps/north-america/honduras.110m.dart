@@ -2,265 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for north-america/honduras.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Honduras",
-        "iso_a2": "HN",
-        "iso_a3": "HND",
-        "continent": "North America"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -83.147219,
-              14.9958292
-            ],
-            [
-              -83.4103812,
-              15.2709028
-            ],
-            [
-              -83.7739766,
-              15.4240718
-            ],
-            [
-              -84.0630546,
-              15.6482441
-            ],
-            [
-              -84.3682556,
-              15.8351578
-            ],
-            [
-              -84.5269797,
-              15.8572236
-            ],
-            [
-              -84.9837219,
-              15.9959232
-            ],
-            [
-              -85.1824436,
-              15.9091584
-            ],
-            [
-              -85.4440039,
-              15.885749
-            ],
-            [
-              -85.6833174,
-              15.9536518
-            ],
-            [
-              -86.0019543,
-              16.0054058
-            ],
-            [
-              -86.119234,
-              15.8934488
-            ],
-            [
-              -86.4409456,
-              15.7828354
-            ],
-            [
-              -86.9031913,
-              15.756713
-            ],
-            [
-              -87.3677624,
-              15.84694
-            ],
-            [
-              -87.5229209,
-              15.797279
-            ],
-            [
-              -87.6156801,
-              15.8787985
-            ],
-            [
-              -87.9018125,
-              15.8644583
-            ],
-            [
-              -88.1211531,
-              15.6886551
-            ],
-            [
-              -88.2250228,
-              15.7277225
-            ],
-            [
-              -88.6806797,
-              15.3462471
-            ],
-            [
-              -89.154811,
-              15.0664192
-            ],
-            [
-              -89.2252201,
-              14.8742862
-            ],
-            [
-              -89.145535,
-              14.6780191
-            ],
-            [
-              -89.353326,
-              14.4241328
-            ],
-            [
-              -89.0585119,
-              14.3400294
-            ],
-            [
-              -88.8430729,
-              14.1405067
-            ],
-            [
-              -88.5412308,
-              13.9801547
-            ],
-            [
-              -88.503998,
-              13.8454859
-            ],
-            [
-              -88.0653426,
-              13.964626
-            ],
-            [
-              -87.8595153,
-              13.8933125
-            ],
-            [
-              -87.723503,
-              13.7850504
-            ],
-            [
-              -87.7931111,
-              13.3844805
-            ],
-            [
-              -87.4894087,
-              13.2975349
-            ],
-            [
-              -87.3166544,
-              12.9846858
-            ],
-            [
-              -87.005769,
-              13.0257944
-            ],
-            [
-              -86.880557,
-              13.2542042
-            ],
-            [
-              -86.7338218,
-              13.2630926
-            ],
-            [
-              -86.7550866,
-              13.7548455
-            ],
-            [
-              -86.5207082,
-              13.7784875
-            ],
-            [
-              -86.3121421,
-              13.7713561
-            ],
-            [
-              -86.0962638,
-              14.0381874
-            ],
-            [
-              -85.8012947,
-              13.836055
-            ],
-            [
-              -85.6986653,
-              13.9600784
-            ],
-            [
-              -85.514413,
-              14.0790117
-            ],
-            [
-              -85.1653645,
-              14.3543696
-            ],
-            [
-              -85.1487506,
-              14.5601968
-            ],
-            [
-              -85.0527874,
-              14.551541
-            ],
-            [
-              -84.9245007,
-              14.7904929
-            ],
-            [
-              -84.8200368,
-              14.8195867
-            ],
-            [
-              -84.6495821,
-              14.6668053
-            ],
-            [
-              -84.4493359,
-              14.6216143
-            ],
-            [
-              -84.2283416,
-              14.7487641
-            ],
-            [
-              -83.9757214,
-              14.7494359
-            ],
-            [
-              -83.628585,
-              14.880074
-            ],
-            [
-              -83.4899888,
-              15.0162672
-            ],
-            [
-              -83.147219,
-              14.9958292
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for north-america/honduras.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WYTWvbaBDH7/4UwufsMO8vvZWWZU9l70spJnVbQ2IFxz2Eku++yGlCWj1Qxgcha6QfM8/MM/+RfmymaXt+uNtv30zbv/e78/fT/t18c7O/Ph/m4/ZqMX95uny/fTP9t5mmafpxOa4fvNx+Mdyd5rv96Xy4PPR8+zRtj7vbywP/zMfP30+7+5cnpml7uJ8/7fhi/bC6Lk/X3782XM/H8+G4P54X24f5dP42vb3dnw7Xu+3Pmx5fHPq6n2/359PDr+48+//vfPPw9We4L/D59Plw3J1fxf30e33++79p+isFSIOprn6zkEKVJRf/Yvh49UeeEkoSr4AGHFjI2QVGSIX7AKisGNQEKqALmo6Arsmq1AWKJ5uNgClGFm0Pjb2iYgS0YBbvAitlmGVbslwszSwb0LJQMgq5sMhSu0BVRZSRh5kWWl2epwiFjhw0cetWjQMilamsgIvFFK0NJCqWkYNZopptniqWDqswklOsmRKHQqGidcQGYR4kPV6AeITzMGL1aroXYMzFOKqYqOBoVkyAk3kijdyLjErrAgspiW0EdFXL5gImEBOZjDz0TDdrNq4EZkPmHC0hRzA3Q07wRB83LlFnjaaHBWSaNIoY3ZW66lRLxMyDJCtkKKe3gaRmss6xgkciVTtgMRFeb2JdxI6kq54FaGk01HdRRO5uu4RUweARkBQNPbpAU2LBdREKVCKZ9oEoVSNeqmlaszEkoJvoICcC5ercFOOAtDKydV+VpfMLdXddQLAYjniRhobtzholRINdJyCpmth2ULMUc90WBLjCpKvuAULupmspYahUz64Yx6Lh4euiFkC2KG1rZyaaDQM2ZdRmm3EIkWQaFTW7YHWL0CHMMAdTtUCYplozxw7GGJjruX8Z4FMz2kAhJuVRFUaQmDdbqwOWs8t6DRWWN5aM9syaSFw6ynKKY3cJDbzSfdgYyhGjP1QbqQ4GOAWMQqJmZzUgN3EdqZ2YilezCg1oKQwcyZ05UnlzHxugceRg7FcwI+u/2hWrIa5TrBCFWtzsXArJiOKjIkwqy658Krgu7+mjicbdE605ZSqoloiNBN6ZnLQNZE5RGiU5NMO7SRGosGAaJTm0VLoKL+CclqOyzkTs9gVZ5K4yR2M1krNH+5tK7xvNZnT+fPa4eT5+3Dxu/geBfjUsUhMAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for north-america/honduras.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get northAmericaHonduras110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

@@ -2,121 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for europe/kosovo.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Kosovo",
-        "iso_a2": "-99",
-        "iso_a3": "-99",
-        "continent": "Europe"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              20.5902465,
-              41.8554089
-            ],
-            [
-              20.71731,
-              41.84711
-            ],
-            [
-              20.76216,
-              42.05186
-            ],
-            [
-              21.3527,
-              42.2068
-            ],
-            [
-              21.576636,
-              42.2452244
-            ],
-            [
-              21.54332,
-              42.32025
-            ],
-            [
-              21.66292,
-              42.43922
-            ],
-            [
-              21.77505,
-              42.6827
-            ],
-            [
-              21.63302,
-              42.67717
-            ],
-            [
-              21.43866,
-              42.86255
-            ],
-            [
-              21.27421,
-              42.90959
-            ],
-            [
-              21.143395,
-              43.068685
-            ],
-            [
-              20.95651,
-              43.13094
-            ],
-            [
-              20.81448,
-              43.27205
-            ],
-            [
-              20.63508,
-              43.21671
-            ],
-            [
-              20.49679,
-              42.88469
-            ],
-            [
-              20.25758,
-              42.81275
-            ],
-            [
-              20.0707,
-              42.58863
-            ],
-            [
-              20.2837545,
-              42.3202595
-            ],
-            [
-              20.52295,
-              42.21787
-            ],
-            [
-              20.5902465,
-              41.8554089
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for europe/kosovo.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WUzWrrMBCF934K4XUqpBnNj7ot7eZu7r6UElq3GBIrOO6FUPLul7hNaGtBGS+E5CN9PjOe0XvjXDsddl177dq7bj29jd1N2Wy6p6kvQ7s6yS8fr/fttbtvnHPufR6XB+fts7Aby64bp34+dN7uXDust/OBP2Vf/pXLfufafl8e13DSrnJeCFgRnsow9UM3TCft9u30xfZTPV6MvHZl203j4buNs++/ZXN4/QzzQi3jcz+spy/xfjxf5z9XzkHwlAMkptUPJUWvRClo/iY8rH7jSRSMNVqSGK0shsgLFvhAUdnEih4JpIKCwGokkTBjzRYkAkjJikuIUKEhBCAjixlyjZUwAxhZIhSWZQGeFcRqCzHUbLFItLISKteSrwxkTRdIgmWtgs8hk63uo48JMS/zhT6wstqcBZ+JaekMfcSQbQUWvMaUtMICgWD1xUihyoos1u5OmSXX/qQmtt46QEJLX+A1glhjDBJqNwWpMlptKQqlWhfN3Z2t1gigUmPgIYraGsl88Te1+Xl2bM7jQ3Ns/gPpIOC2nwcAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for europe/kosovo.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get europeKosovo110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

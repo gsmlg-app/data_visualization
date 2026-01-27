@@ -2,89 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for africa/bir-tawil.10m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Bir Tawil",
-        "iso_a2": "-99",
-        "iso_a3": "-99",
-        "continent": "Africa"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              33.1811356,
-              21.9954095
-            ],
-            [
-              33.303681,
-              21.9030222
-            ],
-            [
-              33.4395771,
-              21.8005699
-            ],
-            [
-              33.558442,
-              21.7109574
-            ],
-            [
-              33.7172637,
-              21.7309466
-            ],
-            [
-              33.8664565,
-              21.749724
-            ],
-            [
-              33.9991176,
-              21.7673527
-            ],
-            [
-              34.0841794,
-              21.9954544
-            ],
-            [
-              34.0761273,
-              21.9954544
-            ],
-            [
-              33.8577055,
-              21.9954544
-            ],
-            [
-              33.6250582,
-              21.9954544
-            ],
-            [
-              33.3923593,
-              21.9954544
-            ],
-            [
-              33.1811356,
-              21.9954095
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for africa/bir-tawil.10m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE62Ty2rDMBBF9/4KoXVq9BqNJru20HUX3ZVQTKoGgWMFR6WEkH8vcR7koVIU4oUY+2gOd2x5XTHG02rh+ZjxF9+k794/x7b10xRix0db/LV7vORj9l4xxth6WK8bh+0DWPRx4fsUhqbDdsZ418yHhqfQs7fmJ7THFsZ4WMaPRm3xA9EV0BkwjV0Kne/Slj1+9WHa8D3dHLPMfJz71K/Okxyiv8Z2NdtPerTG/jN0TToZeXed1pd3jGldSyelBju6IErWRGAEwRmYjP7zaaGtkzmd0EIpVagzmgAx53NCgCUq9AE4Y1RGh1IQoCnUoURlNeZ8WpCxttDnrDVgIeczhKo0HhFJibmPixY1KCzymVo4I5HMH4cFTFk+Uwu0UqG+k0/XDhAF5F7fbT6rQIDLHZfbfJqUBrrfvIU/b5WrD9WmOqyTalP9AumnM95mBQAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for africa/bir-tawil.10m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get africaBirTawil10m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

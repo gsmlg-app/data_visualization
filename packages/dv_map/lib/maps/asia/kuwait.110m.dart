@@ -2,73 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/kuwait.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Kuwait",
-        "iso_a2": "KW",
-        "iso_a3": "KWT",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              47.9745191,
-              29.9758192
-            ],
-            [
-              47.3026221,
-              30.0590699
-            ],
-            [
-              46.5687134,
-              29.0990252
-            ],
-            [
-              47.4598218,
-              29.0025194
-            ],
-            [
-              47.7088505,
-              28.5260627
-            ],
-            [
-              48.4160942,
-              28.5520043
-            ],
-            [
-              48.0939433,
-              29.3062993
-            ],
-            [
-              48.1831885,
-              29.5344766
-            ],
-            [
-              47.9745191,
-              29.9758192
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/kuwait.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WSTWsCMRCG7/srQs4SJpPP8VYKvfTSQ6GHImWxqQTWjayRIuJ/L66uqLtQksMwmXfm4Z2QQ8UYz/tN4HPGX0Kdd114Tk0Tljmmls9O8s+5vOVz9lkxxtihj+PBvr0XNl3ahC7HfmhoZ4y39bofeN391jFf+xnjcZu+auy1j1Fdnevvt8IytTm2oc0n7Wkba37RjlcXq5DWIXf7ew+D6bfU7FeXHa/M1H3Hts43y57Pbf54Y0w7QU4bSXL2oCAJcsZLwjthMfuPpwAt4oinQIAhsERFPCuM9U4qPeEPiABNqT9tyKP0UzxAI0kX8hx4b8CMeF4YtGDRFfG80NICaZziGQTQqpAHpEgrNbGvAotEpTzplfR+vC8Jo7R21ha+X+H/q6byITtWQ1xUx+oP75AJBiMEAAA=';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/kuwait.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaKuwait110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

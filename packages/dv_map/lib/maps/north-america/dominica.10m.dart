@@ -2,337 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for north-america/dominica.10m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Dominica",
-        "iso_a2": "DM",
-        "iso_a3": "DMA",
-        "continent": "North America"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -61.3628637,
-              15.201809
-            ],
-            [
-              -61.3507381,
-              15.2051456
-            ],
-            [
-              -61.3463842,
-              15.2116967
-            ],
-            [
-              -61.3459367,
-              15.2123477
-            ],
-            [
-              -61.3426814,
-              15.2196719
-            ],
-            [
-              -61.3287247,
-              15.225572
-            ],
-            [
-              -61.3235978,
-              15.2385928
-            ],
-            [
-              -61.318186,
-              15.2433943
-            ],
-            [
-              -61.311879,
-              15.2445336
-            ],
-            [
-              -61.3033748,
-              15.2425805
-            ],
-            [
-              -61.2932023,
-              15.2438826
-            ],
-            [
-              -61.289296,
-              15.2435977
-            ],
-            [
-              -61.2844132,
-              15.2448184
-            ],
-            [
-              -61.2772111,
-              15.2502302
-            ],
-            [
-              -61.2566626,
-              15.2853458
-            ],
-            [
-              -61.2537329,
-              15.3246931
-            ],
-            [
-              -61.2540584,
-              15.3326684
-            ],
-            [
-              -61.2555232,
-              15.3645694
-            ],
-            [
-              -61.249257,
-              15.4010684
-            ],
-            [
-              -61.2542212,
-              15.4029809
-            ],
-            [
-              -61.2583715,
-              15.4063175
-            ],
-            [
-              -61.2629288,
-              15.4079044
-            ],
-            [
-              -61.2560115,
-              15.4359398
-            ],
-            [
-              -61.2576798,
-              15.4726016
-            ],
-            [
-              -61.2671606,
-              15.5077986
-            ],
-            [
-              -61.2686255,
-              15.5099145
-            ],
-            [
-              -61.284047,
-              15.5313988
-            ],
-            [
-              -61.2896215,
-              15.540961
-            ],
-            [
-              -61.2995499,
-              15.5571964
-            ],
-            [
-              -61.3058976,
-              15.5724551
-            ],
-            [
-              -61.307688,
-              15.5792504
-            ],
-            [
-              -61.3573299,
-              15.5982934
-            ],
-            [
-              -61.3697404,
-              15.5959333
-            ],
-            [
-              -61.3846329,
-              15.588365
-            ],
-            [
-              -61.3975724,
-              15.5966251
-            ],
-            [
-              -61.4137264,
-              15.6195743
-            ],
-            [
-              -61.4259334,
-              15.6284854
-            ],
-            [
-              -61.4372452,
-              15.6326358
-            ],
-            [
-              -61.4492081,
-              15.6330834
-            ],
-            [
-              -61.4689835,
-              15.6338565
-            ],
-            [
-              -61.4806209,
-              15.5910098
-            ],
-            [
-              -61.488881,
-              15.5792504
-            ],
-            [
-              -61.4811906,
-              15.5785587
-            ],
-            [
-              -61.4690649,
-              15.5742862
-            ],
-            [
-              -61.4621476,
-              15.5729841
-            ],
-            [
-              -61.4672745,
-              15.5629744
-            ],
-            [
-              -61.4839982,
-              15.5515811
-            ],
-            [
-              -61.488881,
-              15.5450707
-            ],
-            [
-              -61.4889217,
-              15.535712
-            ],
-            [
-              -61.4848527,
-              15.5303409
-            ],
-            [
-              -61.4793595,
-              15.5254581
-            ],
-            [
-              -61.4752091,
-              15.5177676
-            ],
-            [
-              -61.4742732,
-              15.4934757
-            ],
-            [
-              -61.472076,
-              15.4813907
-            ],
-            [
-              -61.4655656,
-              15.4761417
-            ],
-            [
-              -61.4600317,
-              15.4728865
-            ],
-            [
-              -61.4542537,
-              15.4648298
-            ],
-            [
-              -61.4497778,
-              15.4546573
-            ],
-            [
-              -61.4478654,
-              15.4451358
-            ],
-            [
-              -61.4442033,
-              15.436835
-            ],
-            [
-              -61.4212133,
-              15.4147403
-            ],
-            [
-              -61.4180802,
-              15.4059512
-            ],
-            [
-              -61.4156795,
-              15.3876407
-            ],
-            [
-              -61.4137264,
-              15.3805606
-            ],
-            [
-              -61.3995662,
-              15.3511417
-            ],
-            [
-              -61.3950089,
-              15.3330753
-            ],
-            [
-              -61.3932186,
-              15.308295
-            ],
-            [
-              -61.3909399,
-              15.2962914
-            ],
-            [
-              -61.3782853,
-              15.2820499
-            ],
-            [
-              -61.3727921,
-              15.2706973
-            ],
-            [
-              -61.3732804,
-              15.2664249
-            ],
-            [
-              -61.3727921,
-              15.2372094
-            ],
-            [
-              -61.3761287,
-              15.212836
-            ],
-            [
-              -61.3740942,
-              15.2048201
-            ],
-            [
-              -61.3628637,
-              15.201809
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for north-america/dominica.10m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE61Yy2ocVxDd6yuaWSumHqde3pmE7BKyDyYIZ+IMSDNiPFkIo38PI1lCtkuEajKLpufevod6nHrc+nyxLJvT3e1283bZ/Ly9Ov1z3P54uL7efjjtDvvN5Xn7r8flT5u3y+8Xy7Isnx+e3x98+Pxh4/Z4uN0eT7uHQ0+fL8tmf3XzcOCnw81uv/tw9XxiWTa7T4c/ruRh95fv1vVx/d3LjQ+H/Wm33+5P571fD8fT38u7m+3xDPvlo/tngT5uDzfb0/Hua3Ge5P/tcH338Yu6z+CH45+7/dXphd6Pv5fv3/5blh+c36hLusblN1tsb4Q4qb5af3/533hGocktnjHMx4BwTUgHyOzlMQe0Um81ZlHECkDxZLSA5cFzG0qGoJVQzELmeGoV2eFpWkmOATk5vcODakHneJxRLR5Mdc4ZUg20CkMsyaaAUiok2mucKWMJJUvqFQtazTkoCbC2UQIkJ8aAEcLcxrGRKI1JKObu0qqcprAxCcU0VDrWqMBLeQ4IsuziWFXcV9jQzKR1ijrMaw6IEuvyAohplYAQ4U5AkNSK7C+WGmwtoCvHPPBcSrKLZFAUYYXKTtxLqFZaK2gYHtVKGOLE89TgwU5doBhFVK4ATBfrVDaqYsydkqC2PJmyVs5NmOXS+sRA5fNArjJUlxnMgsvHpFGyrGhdEgKzsYRK4S2rLUqM5gLaORW2GldK6RzQK0BdLrSyUp2X+IT32doy1ccc1Iqz7VsB3WXuErCGeAfoXBbzpgZyNlQLKIm0sU+gZ7J12dpVXOcVFCihtld3Vco5a+BZqV0gu2ra3MtIcqGe10w0z9bIzFbjlYGHZK4+WUea5biRgxc5Wo0Dkj7uu+DCeC13VWIeKB4SaLO1S8W8JCO1Kjtem7ElzyV81ckwCpr7JLOE+4JnwXOXnMNfejxSzNsuRKlV6xIxWM4tGCZUrQk5wmPcgyAg0bbCKEXY3Cch1LIayVorfOxmbi1gOINXABJpSxqEZK7IhYbzlacDdKSsyIWoiHYsAINbzCseIt26igcYrypQENLu2g311LkJhYV7PEaA5hpzUlJ/gbKyFamBzaONZM1wrOD1q22NJpnTfLZSZe7tpdZ4TaBoGVG293hVCpu3mqXSj6eUUmpFq0mlbXMt5VI8b64jzzOPdhQihJoPDEOipB3WBHnNI/k8Wcm2/Rd3CP5PCTWE5qMQDWfJV6a4uWJkGKDqx8yEFJpf8UaD9Yvu/ent/uLp+f7i/uJfZpqFbwcZAAA=';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for north-america/dominica.10m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get northAmericaDominica10m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

@@ -2,233 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for africa/madagascar.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Madagascar",
-        "iso_a2": "MG",
-        "iso_a3": "MDG",
-        "continent": "Africa"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              49.5435189,
-              -12.4698329
-            ],
-            [
-              49.1946513,
-              -12.0405567
-            ],
-            [
-              48.8635087,
-              -12.4878679
-            ],
-            [
-              48.8450603,
-              -13.0891749
-            ],
-            [
-              48.2938278,
-              -13.7840679
-            ],
-            [
-              47.8690475,
-              -13.6638685
-            ],
-            [
-              48.0052149,
-              -14.0912326
-            ],
-            [
-              47.7051298,
-              -14.5943027
-            ],
-            [
-              46.8821827,
-              -15.2101824
-            ],
-            [
-              46.3122433,
-              -15.7800184
-            ],
-            [
-              45.8729936,
-              -15.7934543
-            ],
-            [
-              45.502732,
-              -15.9743735
-            ],
-            [
-              44.9449366,
-              -16.1793739
-            ],
-            [
-              44.4465174,
-              -16.2162192
-            ],
-            [
-              44.3124687,
-              -16.8504957
-            ],
-            [
-              43.9630843,
-              -17.4099448
-            ],
-            [
-              44.0429761,
-              -18.3313872
-            ],
-            [
-              44.2324219,
-              -18.9619947
-            ],
-            [
-              44.4643974,
-              -19.4354542
-            ],
-            [
-              44.3743254,
-              -20.0723662
-            ],
-            [
-              43.8963701,
-              -20.8304595
-            ],
-            [
-              43.8936829,
-              -21.1633074
-            ],
-            [
-              43.4332976,
-              -21.3364751
-            ],
-            [
-              43.254187,
-              -22.057413
-            ],
-            [
-              43.3456543,
-              -22.776904
-            ],
-            [
-              43.6977775,
-              -23.5741163
-            ],
-            [
-              43.7637683,
-              -24.4606772
-            ],
-            [
-              44.0397205,
-              -24.9883452
-            ],
-            [
-              44.8335738,
-              -25.3461012
-            ],
-            [
-              45.4095077,
-              -25.6014344
-            ],
-            [
-              46.2824777,
-              -25.1784628
-            ],
-            [
-              47.0957613,
-              -24.9416297
-            ],
-            [
-              47.5477234,
-              -23.7819589
-            ],
-            [
-              47.9307491,
-              -22.3915012
-            ],
-            [
-              48.5485409,
-              -20.4968881
-            ],
-            [
-              49.0417924,
-              -19.118781
-            ],
-            [
-              49.4356185,
-              -17.9530641
-            ],
-            [
-              49.4986121,
-              -17.1060357
-            ],
-            [
-              49.7745642,
-              -16.875042
-            ],
-            [
-              49.8633444,
-              -16.4510369
-            ],
-            [
-              49.6726066,
-              -15.7102035
-            ],
-            [
-              49.8606055,
-              -15.4142526
-            ],
-            [
-              50.2002747,
-              -16.0002634
-            ],
-            [
-              50.3771114,
-              -15.7060694
-            ],
-            [
-              50.4765369,
-              -15.2265121
-            ],
-            [
-              50.2174313,
-              -14.7587888
-            ],
-            [
-              50.0565109,
-              -13.5557614
-            ],
-            [
-              49.8089807,
-              -12.8952849
-            ],
-            [
-              49.5435189,
-              -12.4698329
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for africa/madagascar.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WXS4sbRxDH7/spBp03Rb0fvpmE5BTIPZgg1vIiWEuLVjksZr97GNm72FZBKB2GUdf0j393dT36y82ybM7Pj7vNu2Xz+257/ve0+/X48LC7O++Ph83tav70dfhp8275+2ZZluXL5Xk98fL5xfB4Oj7uTuf9ZdLr58uyOWw/Xyb8uf24vd8+3W1Pb3OWZbN/Ov6z5Yv9j6txuYz/9oPh7ng47w+7w3m1vf902t9tN9+sL29a7nfHz7vz6flHJa/S/zo+PN9/W+kb9Xj6uD9sz98t+evv+/ef/y2LFpiKUdbtT5ZfiEG9Urh+sHy4/T8glbqRdEBUNPMYARPSxTCjVZiRHjOFCamGjo1CAcyi0CmQS5IjO2Ck4lRhQHqhhnVAd0lPGypENCZtvKyARSzsQ4WBRlzNkhWsVJBnXnbIZEpuvGzAhJSsQ6AQs0rjZYNIRMoZ0CCDq8RbYImayhBoyCHc8SpUQmZOVijVEm8EOlCUhMyOoYKukRzaAZmcqXgIFGL1LpQd0lDLZqdGoFwwtXFygGKVag4VonKF0zUwQYQkY7pkFlamJvISyqlKZ0tWUFepzikFKqamY6eECts1kBEwWNxnQIEsl8DrPWSEFFSr2cFegeLJ13vIBOQiGLNQFlCR1c0dUMQ1jIZANqXmXDMDWijNMoOAqLk1x5oZItbaMOR5RURTT1hglUc+FRgu4dkIXM8neozDBKWCsVGoUJmiNgWmiIVcFyg2EHVCmgFtzSeG0fjYwJFUdFqgOFmjB1KkOs9yVwCWhTed17qHSs41SzUBphEsTWZY+xoqy2lfU2usVpMZGKTIpk5JME1TbDIDgpZn5iyQC1ApitvsSpQx5qmYUzadXECZoOsYWOnETYEKoLWrHZbQggg116YNccgwHJaTWtt1UW2bBjVC8emFwoMdu7bGIAgZh33SqhAdrfGJgZKyzZphQ2BEDm3bGkRkl1FqMASJIKJmDw0CHb2mQA038aYLMWB2Ix4dw3XJFCrdLU8hLCNzlLwMAc2NmkgmAbM1r83Sa0FiVmJ7bcwyzuEtb35TvuneX99ebl6fH25ebv4DxaoIO9QQAAA=';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for africa/madagascar.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get africaMadagascar110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

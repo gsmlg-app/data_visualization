@@ -2,289 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for africa/morocco.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Morocco",
-        "iso_a2": "MA",
-        "iso_a3": "MAR",
-        "continent": "Africa"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -2.1699137,
-              35.1683963
-            ],
-            [
-              -2.6043058,
-              35.1790933
-            ],
-            [
-              -3.6400565,
-              35.399855
-            ],
-            [
-              -4.5910062,
-              35.330712
-            ],
-            [
-              -5.1938635,
-              35.7551822
-            ],
-            [
-              -5.9299943,
-              35.7599881
-            ],
-            [
-              -6.244342,
-              35.1458654
-            ],
-            [
-              -6.9125441,
-              34.1104764
-            ],
-            [
-              -7.6541784,
-              33.6970649
-            ],
-            [
-              -8.6574764,
-              33.2402453
-            ],
-            [
-              -9.3006929,
-              32.5646793
-            ],
-            [
-              -9.4347933,
-              32.0380964
-            ],
-            [
-              -9.8147184,
-              31.1777355
-            ],
-            [
-              -9.5648112,
-              29.9335737
-            ],
-            [
-              -10.3995923,
-              29.0985859
-            ],
-            [
-              -10.900957,
-              28.8321422
-            ],
-            [
-              -11.6889192,
-              28.1486439
-            ],
-            [
-              -12.6188366,
-              28.0381855
-            ],
-            [
-              -13.1216134,
-              27.6541477
-            ],
-            [
-              -13.1399418,
-              27.6401478
-            ],
-            [
-              -13.7738049,
-              26.6188923
-            ],
-            [
-              -14.4399399,
-              26.2544184
-            ],
-            [
-              -14.8009257,
-              25.636265
-            ],
-            [
-              -14.8246451,
-              25.1035326
-            ],
-            [
-              -15.0893318,
-              24.5202607
-            ],
-            [
-              -15.4260038,
-              24.3591336
-            ],
-            [
-              -15.9826106,
-              23.7233585
-            ],
-            [
-              -16.3264139,
-              23.0177685
-            ],
-            [
-              -16.2619218,
-              22.6793395
-            ],
-            [
-              -16.5891369,
-              22.1582344
-            ],
-            [
-              -16.9732478,
-              21.8857445
-            ],
-            [
-              -17.0204284,
-              21.4223103
-            ],
-            [
-              -17.0029618,
-              21.4207342
-            ],
-            [
-              -14.7509546,
-              21.5006001
-            ],
-            [
-              -14.6308327,
-              21.8609398
-            ],
-            [
-              -14.2211678,
-              22.3101631
-            ],
-            [
-              -13.8911104,
-              23.691009
-            ],
-            [
-              -12.5009627,
-              24.7701163
-            ],
-            [
-              -12.0307588,
-              26.0308662
-            ],
-            [
-              -11.7182198,
-              26.1040917
-            ],
-            [
-              -11.3925549,
-              26.883424
-            ],
-            [
-              -10.5512626,
-              26.9908076
-            ],
-            [
-              -10.1894242,
-              26.8609447
-            ],
-            [
-              -9.7353434,
-              26.8609447
-            ],
-            [
-              -9.4130375,
-              27.0884761
-            ],
-            [
-              -8.794884,
-              27.1206963
-            ],
-            [
-              -8.8178283,
-              27.6564259
-            ],
-            [
-              -8.6655896,
-              27.6564259
-            ],
-            [
-              -8.6741162,
-              28.841289
-            ],
-            [
-              -7.0592277,
-              29.5792284
-            ],
-            [
-              -6.0606323,
-              29.7316997
-            ],
-            [
-              -5.2421293,
-              30.000443
-            ],
-            [
-              -4.8596462,
-              30.5011876
-            ],
-            [
-              -3.690441,
-              30.8969516
-            ],
-            [
-              -3.6474979,
-              31.637294
-            ],
-            [
-              -3.0689803,
-              31.724498
-            ],
-            [
-              -2.6166048,
-              32.0943462
-            ],
-            [
-              -1.3078991,
-              32.2628889
-            ],
-            [
-              -1.1245512,
-              32.6515215
-            ],
-            [
-              -1.3880493,
-              32.864015
-            ],
-            [
-              -1.7334546,
-              33.9197128
-            ],
-            [
-              -1.7929858,
-              34.5279186
-            ],
-            [
-              -2.1699137,
-              35.1683963
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for africa/morocco.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE52YS2scRxCA7/srhj0rRb0fvplAboGQazBBKGuzIO+I9eYgjP57mJUlZHdDKO9hmJ2a/qjqenTVfN0ty/7y+HDYv1v2vx1uL/+eD7+u9/eHu8txPe1vNvHH58df9u+Wv3bLsixfr9dx4fX1q+DhvD4czpfjddHL68uyP91+vi74fT2vd3fr64Jl2R+/rH/f8lX4fnguz8//fCu4W0+X4+lwumyy9x/Px7vb/Tfp06sinw7r58Pl/Pi9Gi96/7HeP376ZuYrdT3/czzdXt7Y+/x7e//jv2X5hYG8iiRufpCIAXlKuXwn+HDzfzxHFbSc8aKwpMcTcEU0twlPqtKshVOwIkTnGU4wiFs4AypJl5l2YUbJXV5xValMeVWZ1OI5sKrozFpSSzdt4orYVGngKRChhvd4AW5KkTrwBLwCXavFS3CLTYsJjxVZrRd8BYLoxTXwGMzVo7o8FY2S0b0MKInV3L+CJA2a7B8BRYQ0s6M2q5JoiBcuKBELiRaPcMtRKx4M5gKstLSegwmhEMuGasUJKUzazDci8MyiGi1OIE1XaSrI4JQp7hMgSlK3YJEAMTnJ4GN+zh6Npk8ESKqUhgq9ARVJI7vACEnUIUvYr5tR3MsSUlCpkpoBr+Une2lCColYPAkbAxdnb/pEIVldbaiDbEAoJuw9oAFmiUx8omCM7Nh0soGyI8oMKFYk0tawkp1wjGuBYBHL5h46CLuSjE4WQIrwPpCdiid7yLBVaqk20LJIfNSQgSxZtBmGDhXCGqOGBJkWqk0NA5BReaz/TKDMQtjMvABELp/s4QbEEG3WV4UwLNMxbAgM0RF7DQ0puGAKj6lMkI4l1axeCsxEPnEKgxCSS1NDgSzauqFJYPvWfLZPFEMsn1isEIFEzQ6dtl4Dw3K02DdJurcP0aBkqhmQULGoWb0IpNhseqJkinIz8RDMiJ3HKHSowsRoVkMEylIeG+tNQcdS7VlcEGKik0P+Z3lKghLDXMIBmKnhvaBOiNKc1JkAYvTukJiQFMk5toVbT+PKzbYwwd0sa/TvT/NCicYpcWszlTh7uAC0Yo4xgwssirnZzzigo8u0qw7Z5vletBiwMnGNYwkCIqr2vKuQVq6TGRvBkCib2baVTZwNnQhZXkZtnIZWjEMdgUtw9ZwhgJ6VOG4eQbBq8zza5gd31PH7CQOWinaLMwhGVo27x8DOmc1YJiDWrZpOeG5kTM0eBiS32WE2Euc2jnRxIaKTfkMEiiqIm+0BRPE2qE6+eBhHUfaCr/25bTe7f7l72r1cP+yedv8BCf0hwRUVAAA=';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for africa/morocco.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get africaMorocco110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

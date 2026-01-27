@@ -2,325 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for europe/kosovo.50m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Kosovo",
-        "iso_a2": "-99",
-        "iso_a3": "-99",
-        "continent": "Europe"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              20.3443359,
-              42.8279297
-            ],
-            [
-              20.2151367,
-              42.7988281
-            ],
-            [
-              20.1925781,
-              42.7546387
-            ],
-            [
-              20.1299805,
-              42.7597656
-            ],
-            [
-              20.0542969,
-              42.7600586
-            ],
-            [
-              20.0294922,
-              42.7320312
-            ],
-            [
-              20.0657227,
-              42.6858398
-            ],
-            [
-              20.0892578,
-              42.631543
-            ],
-            [
-              20.0703125,
-              42.5570801
-            ],
-            [
-              20.0639648,
-              42.5472656
-            ],
-            [
-              20.1035156,
-              42.5246582
-            ],
-            [
-              20.1857422,
-              42.4258789
-            ],
-            [
-              20.2405273,
-              42.3389648
-            ],
-            [
-              20.3482422,
-              42.3087891
-            ],
-            [
-              20.4083008,
-              42.2749512
-            ],
-            [
-              20.4854492,
-              42.2233887
-            ],
-            [
-              20.5228516,
-              42.1714844
-            ],
-            [
-              20.5753906,
-              42.0130859
-            ],
-            [
-              20.5814453,
-              41.9174316
-            ],
-            [
-              20.5662109,
-              41.8736816
-            ],
-            [
-              20.5785156,
-              41.8662109
-            ],
-            [
-              20.6949219,
-              41.8538086
-            ],
-            [
-              20.725,
-              41.8735352
-            ],
-            [
-              20.7441406,
-              41.9042969
-            ],
-            [
-              20.7503906,
-              42.0183594
-            ],
-            [
-              20.778125,
-              42.0710449
-            ],
-            [
-              21.0597656,
-              42.1712891
-            ],
-            [
-              21.1424805,
-              42.175
-            ],
-            [
-              21.2060547,
-              42.1289551
-            ],
-            [
-              21.2563477,
-              42.0995117
-            ],
-            [
-              21.2866211,
-              42.1003906
-            ],
-            [
-              21.2975586,
-              42.1300781
-            ],
-            [
-              21.3317383,
-              42.1871582
-            ],
-            [
-              21.3895508,
-              42.2198242
-            ],
-            [
-              21.5608398,
-              42.2476562
-            ],
-            [
-              21.5625,
-              42.2475098
-            ],
-            [
-              21.5416016,
-              42.2808105
-            ],
-            [
-              21.5189453,
-              42.328418
-            ],
-            [
-              21.5299805,
-              42.35
-            ],
-            [
-              21.6098633,
-              42.3874512
-            ],
-            [
-              21.619043,
-              42.4232422
-            ],
-            [
-              21.7306641,
-              42.595459
-            ],
-            [
-              21.7521484,
-              42.6515137
-            ],
-            [
-              21.7529297,
-              42.6698242
-            ],
-            [
-              21.7238281,
-              42.6819824
-            ],
-            [
-              21.6625,
-              42.6814941
-            ],
-            [
-              21.390625,
-              42.751416
-            ],
-            [
-              21.4030273,
-              42.831543
-            ],
-            [
-              21.3231445,
-              42.874707
-            ],
-            [
-              21.2371094,
-              42.9132324
-            ],
-            [
-              21.2226562,
-              42.9562012
-            ],
-            [
-              21.1270508,
-              43.0430176
-            ],
-            [
-              21.0570313,
-              43.0916992
-            ],
-            [
-              20.9676758,
-              43.1160156
-            ],
-            [
-              20.8907227,
-              43.1516602
-            ],
-            [
-              20.8444336,
-              43.1734375
-            ],
-            [
-              20.8238281,
-              43.2139648
-            ],
-            [
-              20.8238281,
-              43.2379395
-            ],
-            [
-              20.8005859,
-              43.261084
-            ],
-            [
-              20.7633789,
-              43.2585937
-            ],
-            [
-              20.7005859,
-              43.2263672
-            ],
-            [
-              20.6231445,
-              43.1986328
-            ],
-            [
-              20.609668,
-              43.178418
-            ],
-            [
-              20.6375977,
-              43.1303711
-            ],
-            [
-              20.6576172,
-              43.0998535
-            ],
-            [
-              20.6485352,
-              43.0709473
-            ],
-            [
-              20.6240234,
-              43.0341797
-            ],
-            [
-              20.4750977,
-              42.9530273
-            ],
-            [
-              20.4583984,
-              42.9245605
-            ],
-            [
-              20.4868164,
-              42.8790527
-            ],
-            [
-              20.4688477,
-              42.8579102
-            ],
-            [
-              20.3443359,
-              42.8279297
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for europe/kosovo.50m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE52Yy24bVwyG93qKgdbuAe+XbItm0033RVAYqRoIcDSGrQQwAr97ccaxkUR0C0YLYaQz8w1nSP4kz5fdsuzPD7eH/Ztl//Zwff50d/h1vbk5vD8f19P+ai7/8/T3/f7N8uduWZbly/Z9eeF2+rZwe7feHu7Ox+2i59OXZX+6/rhd8Pt6v35eX85flv3xfv3rmubaL5kXC1wsvF9P5+PpcDrPtd8+zTvuv64+vhjy4bB+PJzvHr4349nuP9abhw9fH/OFut79fTxdn7953qfPt8c//loWgsEizJpXP6wIjSBPSv9u4d3V//EIFdm84HlGUGCTh0nqgRVPxTi69iFlBmjJSze1Jg9UKK16f24AGm0epSRRxWMCRuryTJ2o8oeFBmd0ebE5pOIxqnAX5/OZKneoOgR0wwWM06QyT8Wp714EVlSreCSm0XUHhrqU7hXS8MhuugkoORc85phvosljCartY5jmdf0hEAxQ+YNcUtvhLKEiWdlHxBxtOVCiUKz8i44SIl2eKydUPECG0K5/NVBEL/2LI9GFsRvPakYIl3KFI5wt+jyPMj9wxNOdmjyb6oelfcoBbTn1Qlu2Z1XWbuy5CErhWxwJWxHo8hRejZVgzW7suUctpeAIIj3zcMBTPaxTg7pSgAOFpK686NpkERioVFVtWqbatY3UWLziQaYi9mQFB23RX3UtCJvTu7x01Sh9wQDe7KpwMKNzVGUDw7Fb1nDwfOm1zGPOitLkqcHsTSqezKDs88rEIHGFZguEQwUNyppBAYHQDWbFyErjaTCFYNu8Vztc7lpmkGFcWhYu3eqNwzBBKpwQz7ajiXMGM6myTFOlWWtxuNIs+VVrq3Oq6YqAK80BquLZzySFE88BqmzltyzreqNOCguUlLaiJNQ4V5RmW4FDgKFua6M/ZeBg4tlGVTgXh7a6syNkFSiJPCO5y6M5mVRNbaoRtNMMyaFSYx4gDOhdb4DOKe3SGzwg0TK7jVSam2tlH05lbQ9pkVDOuDxQ0Qy69oXMTZFLgeeBzsLNbgVGvJK4PAj5J4a0/+CxJ2fbvrlRUewB8SBDiHYfasweJW7epqmjMPx188jYvOtee0UNeOAsd9R1h0GaldHs7fINw3huRJXBzMCO3Qnc1A39Ulxm8mZosyeAYTIvKnkOKd7dATISIL4UUx7Agt7egNxaurKVT92KSpe37ZKVYk+i1uz25g7GHLMrXnjOzZwuzyLq0SXUE9vi19wQ3lXHz0ePu+fvd7vH3b8wk60TtxcAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for europe/kosovo.50m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get europeKosovo50m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

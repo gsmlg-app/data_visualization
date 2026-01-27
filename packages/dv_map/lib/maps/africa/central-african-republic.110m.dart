@@ -2,285 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for africa/central-african-republic.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Central African Republic",
-        "iso_a2": "CF",
-        "iso_a3": "CAF",
-        "continent": "Africa"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              27.3742261,
-              5.2339444
-            ],
-            [
-              27.2134091,
-              5.5509535
-            ],
-            [
-              26.4659095,
-              5.9467174
-            ],
-            [
-              26.2134184,
-              6.5466033
-            ],
-            [
-              25.796648,
-              6.9793159
-            ],
-            [
-              25.1241309,
-              7.5000852
-            ],
-            [
-              25.1149325,
-              7.8251041
-            ],
-            [
-              24.567369,
-              8.2291879
-            ],
-            [
-              23.8058134,
-              8.6663189
-            ],
-            [
-              23.4590129,
-              8.9542858
-            ],
-            [
-              23.3947791,
-              9.2650679
-            ],
-            [
-              23.5572498,
-              9.6812182
-            ],
-            [
-              23.5543042,
-              10.0892553
-            ],
-            [
-              22.9775436,
-              10.7144626
-            ],
-            [
-              22.8641655,
-              11.1423951
-            ],
-            [
-              22.2311292,
-              10.9718887
-            ],
-            [
-              21.7238216,
-              10.5670556
-            ],
-            [
-              21.0008684,
-              9.4759852
-            ],
-            [
-              20.0596855,
-              9.012706
-            ],
-            [
-              19.094008,
-              9.0748469
-            ],
-            [
-              18.8120097,
-              8.9829145
-            ],
-            [
-              18.9110218,
-              8.6308947
-            ],
-            [
-              18.3895549,
-              8.2813036
-            ],
-            [
-              17.9649296,
-              7.890914
-            ],
-            [
-              16.7059884,
-              7.5083275
-            ],
-            [
-              16.4561845,
-              7.7347737
-            ],
-            [
-              16.2905616,
-              7.7543074
-            ],
-            [
-              16.1062317,
-              7.4970879
-            ],
-            [
-              15.2794605,
-              7.4219245
-            ],
-            [
-              14.7765454,
-              6.408498
-            ],
-            [
-              14.5365601,
-              6.2269587
-            ],
-            [
-              14.4594072,
-              5.4517606
-            ],
-            [
-              14.558936,
-              5.0305976
-            ],
-            [
-              14.4783724,
-              4.7326055
-            ],
-            [
-              14.9509534,
-              4.2103893
-            ],
-            [
-              15.0362195,
-              3.8513673
-            ],
-            [
-              15.4053959,
-              3.3353006
-            ],
-            [
-              15.8627324,
-              3.0135373
-            ],
-            [
-              15.9073808,
-              2.5573894
-            ],
-            [
-              16.0128524,
-              2.2676397
-            ],
-            [
-              16.5370581,
-              3.1982547
-            ],
-            [
-              17.1330424,
-              3.7281965
-            ],
-            [
-              17.8099003,
-              3.5601964
-            ],
-            [
-              18.4530652,
-              3.5043859
-            ],
-            [
-              18.5429822,
-              4.2017852
-            ],
-            [
-              18.9323125,
-              4.7095061
-            ],
-            [
-              19.4677836,
-              5.0315278
-            ],
-            [
-              20.2906792,
-              4.6916778
-            ],
-            [
-              20.9275912,
-              4.3227855
-            ],
-            [
-              21.6591228,
-              4.2243419
-            ],
-            [
-              22.4051237,
-              4.0291601
-            ],
-            [
-              22.7041236,
-              4.6330508
-            ],
-            [
-              22.8414795,
-              4.7101262
-            ],
-            [
-              23.297214,
-              4.6096931
-            ],
-            [
-              24.410531,
-              5.1087841
-            ],
-            [
-              24.8050289,
-              4.8972466
-            ],
-            [
-              25.1288334,
-              4.9272448
-            ],
-            [
-              25.2787985,
-              5.1704082
-            ],
-            [
-              25.6504554,
-              5.2560878
-            ],
-            [
-              26.4027609,
-              5.1508745
-            ],
-            [
-              27.0440654,
-              5.1278527
-            ],
-            [
-              27.3742261,
-              5.2339444
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for africa/central-african-republic.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5VYTWsbSRC961cMOpuivj9yC4Gcl70uISheJQgcySjKwQT/96Xl2MTugaV0EKPpmaeq6qpXr/rXZlm2l4f7/fbdsv24311+nvcfTnd3+9vL4XTc3ozlr0+3f2zfLf9slmVZfl2/5xevj18X7s+n+/35cri+9Pz4smyPu+/XFz7sj5fz7m55//V8uN0dl7/39z+/3B1uXxCWZXv4cfq84+vTH6f7cr3//tXC7el4ORz3x8tYe0Le/l59fLHs2/70fX85P7y269mRv053D99++/2Cejr/ezjuLn8E4Onz5/XbX8vCARLK7HTzZsWARUpVX93/dPN/cEyiWCtwZlgm1oJzULfCshmu1IOiZ51fraPUt3AOpu4o0oIziHLXnNEqSsiqiUasJFhv4QIMEdO4C0dawlPoApKNUKkFp2Ae4pNxCcxFGT1fBRItSaaNSHB3oezCqRUSr1hXppyWTTgpjZiTuIDd0NvOmgVrTXlS4ElM2dvYAaeCym/hCAGz2KyXxQwVYSq+ghek6uxNvHQltynxiICUpayXeQwsRFxr/lZQZkYLjyBYkmnNX/NAs56/BKM6fSaVAg2rbt0ioJXnHL4CJA5sGUcFWIq4knoYmuqtTKaEJEasWKmz5CJtsTslFBEyTdYluGCWtjaWEiTLTNc4KklQeqELKNfimvIkIAuLWq2HHAKtcs6Swe4pHL3QOag5pa6we4hGSC90DlxoPtdEwKAG7PVZciB0FpryJEArsNktyICj1HHFWWUqbqadQoSb2ooKUEytVrMgBRM3x6lZODB7WY+dSEcrU4yJ7QzUKLxZ/wpmWTO3G6CgVXTRNFKCp8gphLCjdTeirppwBY4JJavVyGj45EyzWBRII/HowimalE10IiBigs2dMEjnkDl2Akhi0rauMCRnZuehNiSrW7FInDZbx8AeLtXlE5MYCm92lirZmsweQDIUz0rsgpPKe3kXkFiFKDPcKOTyXuwS1ATdppIVMFTJ3hxACaZcyROcAiNFU0+MJissNM8BCoFl6C01RgXqEbnOKGQcPamNo/F4zOJOwYvGPzXhisOKVuCEObJHUEzgA4ynIlNgVlHqDQI8GIVYpraogFzk2BXGgUo8b4WCi6BhL3YMqaQx06dCEBJ7d0zhCqYVbncsL+mOn0posnKsQJiR7WE20ZBzonaFrGD13gQwJvdMWetjxcGqvY0YciejcuXQgwIVm/OigRuqzXLHgM1H9FpwQyRx+HxMYUCGGT0xxgGoir5mHY2C5d5w1z3O2qxdP189bp6/P20eN/8B/qywFIUUAAA=';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for africa/central-african-republic.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get africaCentralAfricanRepublic110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

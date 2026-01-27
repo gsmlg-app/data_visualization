@@ -2,137 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for africa/benin.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Benin",
-        "iso_a2": "BJ",
-        "iso_a3": "BEN",
-        "continent": "Africa"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              2.6917017,
-              6.2588172
-            ],
-            [
-              2.7490625,
-              7.8707344
-            ],
-            [
-              2.7237928,
-              8.5068454
-            ],
-            [
-              2.9123084,
-              9.1376079
-            ],
-            [
-              3.2203516,
-              9.4441525
-            ],
-            [
-              3.7054383,
-              10.0632104
-            ],
-            [
-              3.60007,
-              10.3321862
-            ],
-            [
-              3.7971123,
-              10.7347456
-            ],
-            [
-              3.5722164,
-              11.3279394
-            ],
-            [
-              3.6111805,
-              11.6601671
-            ],
-            [
-              2.848643,
-              12.2356359
-            ],
-            [
-              2.4901636,
-              12.2330521
-            ],
-            [
-              2.1544735,
-              11.9401501
-            ],
-            [
-              1.9359855,
-              11.6411502
-            ],
-            [
-              1.4471782,
-              11.5477192
-            ],
-            [
-              1.2434697,
-              11.1105108
-            ],
-            [
-              0.899563,
-              10.9973394
-            ],
-            [
-              0.7723356,
-              10.4708082
-            ],
-            [
-              1.077795,
-              10.1756066
-            ],
-            [
-              1.4250607,
-              9.8253954
-            ],
-            [
-              1.4630428,
-              9.3346243
-            ],
-            [
-              1.6644776,
-              9.1285904
-            ],
-            [
-              1.6189506,
-              6.8320381
-            ],
-            [
-              1.8652405,
-              6.1421577
-            ],
-            [
-              2.6917017,
-              6.2588172
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for africa/benin.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WVTWvcQAyG7/srBp8XoW/N5JaW9tBD6b2EsmydYNjYYeMeQsh/L3G6IbtjKOPDMJZmHiTrlfy8Sambnx767ip1X/vd/OfYf54Oh34/D9PYbV/dt2/mx+4q/dyklNLzstYXl+OL4+E4PfTHeVgunY6n1I27++XCp34cxvfjKXXD4/Rrx4vrW2WXxf7l+0fHfhrnYezH+dV3fXsc9rvun/flPYy7frrv5+PTeRCnqH9Mh6e7aTynTsffw7ibP2T79nzcX76lxOCFAim2Fw4Htpwp+Mx+s/0PLbSgs13SAnJgiGojjSUK50taBkPPao20QiyY9ZJWgCQco7TQBJhRjLymqSoZWxst0FSyXNIIAV2YsClVAUfEqqSEIMKUvammAlGCiNdiC9FQ8zacBTN5VQYiEI4ipTVVIspYKY4I3JE8qE0kWbNrnSsDi7lYk0gYtCC5VCJZcILGjcGRqYas5VoUybAJR1DESrbVT6dEhk06IVANiswrONMIKo04VlEvtYoJiNAIcwsOIZdivibiUkIaVYcQwSJWFxZBAzPmxlwxIkpdCAQKc/SmDiNQNvS6/wtkNiltY5NAXVDrIVxARJ1V2mjuqhErY5M4W2mbcwROuRhWNIcsjJIb+yG7sdajxIGUySLamrXtx7pZ2592L5vTerN52fwFVPCVpvsIAAA=';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for africa/benin.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get africaBenin110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

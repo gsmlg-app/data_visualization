@@ -2,137 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for africa/ghana.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Ghana",
-        "iso_a2": "GH",
-        "iso_a3": "GHA",
-        "continent": "Africa"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              0.0238025,
-              11.0186817
-            ],
-            [
-              -0.4387015,
-              11.098341
-            ],
-            [
-              -0.7615759,
-              10.9369296
-            ],
-            [
-              -1.2033577,
-              11.0098192
-            ],
-            [
-              -2.9404093,
-              10.9626903
-            ],
-            [
-              -2.9638962,
-              10.3953348
-            ],
-            [
-              -2.8274963,
-              9.6424608
-            ],
-            [
-              -2.5621895,
-              8.2196278
-            ],
-            [
-              -2.983585,
-              7.3797049
-            ],
-            [
-              -3.2443701,
-              6.2504715
-            ],
-            [
-              -2.8107015,
-              5.3890512
-            ],
-            [
-              -2.856125,
-              4.9944758
-            ],
-            [
-              -1.9647066,
-              4.7104621
-            ],
-            [
-              -1.0636246,
-              5.0005478
-            ],
-            [
-              -0.5076379,
-              5.3434726
-            ],
-            [
-              1.0601217,
-              5.9288374
-            ],
-            [
-              0.8369312,
-              6.2799787
-            ],
-            [
-              0.5703841,
-              6.9143586
-            ],
-            [
-              0.4909575,
-              7.4117443
-            ],
-            [
-              0.7120292,
-              8.3124645
-            ],
-            [
-              0.4611918,
-              8.6772226
-            ],
-            [
-              0.3659005,
-              9.465004
-            ],
-            [
-              0.36758,
-              10.1912129
-            ],
-            [
-              -0.0497847,
-              10.7069178
-            ],
-            [
-              0.0238025,
-              11.0186817
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for africa/ghana.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WVTWsbMRCG7/4VYs/pMF+a0eQWCm2PvZdQlnSTGJJd42wPJvi/FztxcKyloD0IrUZ6eEejV3pdpdTNu83QXafu29DPf7fD1+npabib19PYXR3C92/DL911+rVKKaXXY1svPE4/BjbbaTNs5/Vx0Wl6St3YPx8XfH/sx/5jekrd+mX63fMx9KMal7fxm/PA3TTO63EY50Ps5n67vuu79+j+Q8bDMD0P83b3WcRJ9c/paffwnuQHddr+WY/9fJbt23fev/xLCQFZCnK+uggQAVKxQv4pcHv1X9wXBJXiSIu8KKLUiHOj7DkqHEKIBYc18QgYRbL7kjyMQsFNPIZQVAxZ0mdsgdLKMylhvMCTyCJaGnmFXcMqfQGmrIatuGxMJarqFmAKY2/FRZFcKpqDeDhqNNEEWFUc6RJnwBnVKbduHeHSSc4gJTBT60kp2aj2mUKEque2nSMIU0ezGueEatxmMwI0MdYKlwERszbWFSGjm3jl2gyios5Npj2IQ2KqPJshuBRxbaEhFLEQqhxmwB7hpem+Q8iOUnThzAWp5NKUKYIGRvYFQyiRqzZdJghOjBxVpgWEWE2b/ICgRhRUapq5M7fVFEEsB2KVaYBaRmwsqZjnShghUBATt10jCKjhResnAsHRgtrM0PzArpb6p95+dWpvV/vVP7olW6AECQAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for africa/ghana.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get africaGhana110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

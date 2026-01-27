@@ -2,185 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for europe/austria.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Austria",
-        "iso_a2": "AT",
-        "iso_a3": "AUT",
-        "continent": "Europe"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              16.9796668,
-              48.123497
-            ],
-            [
-              16.8799829,
-              48.4700133
-            ],
-            [
-              16.9602881,
-              48.5969823
-            ],
-            [
-              16.4992827,
-              48.785808
-            ],
-            [
-              16.0296473,
-              48.733899
-            ],
-            [
-              15.2534156,
-              49.0390742
-            ],
-            [
-              14.9014474,
-              48.9644018
-            ],
-            [
-              14.3388977,
-              48.5553053
-            ],
-            [
-              13.5959457,
-              48.8771719
-            ],
-            [
-              13.2433574,
-              48.4161148
-            ],
-            [
-              12.8841028,
-              48.2891458
-            ],
-            [
-              13.0258513,
-              47.6375835
-            ],
-            [
-              12.932627,
-              47.4676456
-            ],
-            [
-              12.6207597,
-              47.6723876
-            ],
-            [
-              12.1413575,
-              47.7030834
-            ],
-            [
-              11.426414,
-              47.5237662
-            ],
-            [
-              10.544504,
-              47.5663992
-            ],
-            [
-              10.4020838,
-              47.3024877
-            ],
-            [
-              9.8960681,
-              47.5801968
-            ],
-            [
-              9.5942261,
-              47.5250581
-            ],
-            [
-              9.6329318,
-              47.3476012
-            ],
-            [
-              9.4799695,
-              47.10281
-            ],
-            [
-              9.9324484,
-              46.9207281
-            ],
-            [
-              10.4427015,
-              46.8935463
-            ],
-            [
-              11.0485559,
-              46.7513585
-            ],
-            [
-              11.1648279,
-              46.9415795
-            ],
-            [
-              12.153088,
-              47.1153932
-            ],
-            [
-              12.3764852,
-              46.7675591
-            ],
-            [
-              13.8064755,
-              46.5093061
-            ],
-            [
-              14.6324716,
-              46.4318173
-            ],
-            [
-              15.1370919,
-              46.6587027
-            ],
-            [
-              16.0116639,
-              46.6836107
-            ],
-            [
-              16.2022982,
-              46.852386
-            ],
-            [
-              16.5342676,
-              47.496171
-            ],
-            [
-              16.3405843,
-              47.7129019
-            ],
-            [
-              16.9037541,
-              47.7148656
-            ],
-            [
-              16.9796668,
-              48.123497
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for europe/austria.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WWTWsbMRCG7/4Vi89hmO+P3Eppzz20pxKKad1gSOzgbA6h5L8Xu0louoIyexBazerZGb2jkX6tpmk9P95t15fT+uN2Mz8ct+8PNzfb7/PusF9fnMw//wzfry+nr6tpmqZf53Y58fz52XB3PNxtj/PuPOnl82la7ze35wnvHu7n427zOmGa1rv7w7cNn42fF+NyHv/yxvD9sJ93++1+Ptk+PJz+uH62Pr06cr093G7n4+NbN178/nS4ebx+DvOVejj+2O0381/x/nn+7v/7Nk3kUFHunhf/WDSBWLTizfjVxf9wGVXJNcBpIJJIk1eOnEkDnpVXcpenVZwcA16kJWYTh1yuISOcSFa1cAZsomS+wBWgFIZyi6dQSKqhA/fKVZF64SqIZFaMVs/MBK2nhoCVldqIlxEU1Fs/AVYRG8ar5ETai5chUwl5tDk4i9R6PAFkS6NlugS4hKVY078S9kEyB6iHq3kT54xhNeJ5sGR0eaQkFjbgBQqmaItHoOxKS3UDjCXce7sDwVQNhzh3qeriFBlTlskSIMia0SqlBVmOPqh8AZZI5a3cK7BSZh/i2NCSejgXLqFhsBqO1Fq8Ao0qr1GmnPZf07cSVs2lsA7FGE3cSVjlQFo655Alpt6regSoaWbLM9IhjMSyVwUIyDU5RrxSsqhuVSETzJG0RCYlvX3BIOGaxqNwPcyqJ4dAomvYSA7DEvQeT0+prEHLQ9dBhZKiJ68BSWDRSA63DOTulQqJTvVoxEtxwi6PkblypEcaS/aKvIOJssdy+QK0nKKnhoMoWuroiAziwuaVwKFQwnRU94I0vXlGdu/Lq1H/pfe0emmvVk+r38uQn27VDAAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for europe/austria.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get europeAustria110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

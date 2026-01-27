@@ -2,89 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for oceania/new-caledonia.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "New Caledonia",
-        "iso_a2": "NC",
-        "iso_a3": "NCL",
-        "continent": "Oceania"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              165.7799899,
-              -21.080005
-            ],
-            [
-              165.4600094,
-              -20.8000221
-            ],
-            [
-              165.0200362,
-              -20.4599911
-            ],
-            [
-              164.4599671,
-              -20.1200119
-            ],
-            [
-              164.0296057,
-              -20.1056458
-            ],
-            [
-              164.1679952,
-              -20.4447466
-            ],
-            [
-              164.8298153,
-              -21.1498198
-            ],
-            [
-              165.4743754,
-              -21.6796066
-            ],
-            [
-              166.1897323,
-              -22.1297083
-            ],
-            [
-              166.7400346,
-              -22.3999761
-            ],
-            [
-              167.1200114,
-              -22.1599907
-            ],
-            [
-              166.5999915,
-              -21.7000188
-            ],
-            [
-              165.7799899,
-              -21.080005
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for oceania/new-caledonia.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WTTWvDMAyG7/kVJucuSP6S1Wthp7HtPsoInVcCaVxSj1FK//tI2pR+GIZzMIpe6eFVrBwKIcq43/pyLspnX8ef3i9C2/pVbEJXzgb5+5TelXPxUQghxGE8HxvH8lHY9mHr+9iMTVO5EGVXb8aGV/8rFnXrv0LX1Jc2IcpmFz5rOZYsHvLqlH+5Flahi03nuzhobytfD8CzfLz4Wfuw8bHf37qZ7L+Hdr8+T3vBhv6r6ep4NfbpuY7v34RAayoiZsc8u5OeJFbgAMDcCMvZv0BtAYD1IxCqgScl5hJBAigrU0RtmBkziXpss4QpIkoARM4lgmQLhpJEMFYbl0tES8wmPbXWpK3NJTrJDo1KXTVqdsiZHk2lSSsyibvGyhJbyPVoK3RMSiY8ygolEziVSyQNoLRNERUzk83cHjqvSGJqWeGwj0C5HocuRpP6jgQA6LJvJvO3LlLxFB2L6VwWx+IPbJJ63YUFAAA=';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for oceania/new-caledonia.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get oceaniaNewCaledonia110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

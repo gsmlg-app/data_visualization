@@ -2,225 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for europe/jersey.10m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Jersey",
-        "iso_a2": "JE",
-        "iso_a3": "JEY",
-        "continent": "Europe"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -2.0826717,
-              49.26024
-            ],
-            [
-              -2.0975643,
-              49.2596703
-            ],
-            [
-              -2.1038712,
-              49.2582055
-            ],
-            [
-              -2.1106665,
-              49.253404
-            ],
-            [
-              -2.1219783,
-              49.2582869
-            ],
-            [
-              -2.1437882,
-              49.2618676
-            ],
-            [
-              -2.1516821,
-              49.2670352
-            ],
-            [
-              -2.1627091,
-              49.2604027
-            ],
-            [
-              -2.1723527,
-              49.2562523
-            ],
-            [
-              -2.1827286,
-              49.2540551
-            ],
-            [
-              -2.1962784,
-              49.253404
-            ],
-            [
-              -2.2151993,
-              49.26024
-            ],
-            [
-              -2.2293595,
-              49.2630069
-            ],
-            [
-              -2.2411189,
-              49.26024
-            ],
-            [
-              -2.2420141,
-              49.2479516
-            ],
-            [
-              -2.2332251,
-              49.2285017
-            ],
-            [
-              -2.2264705,
-              49.2060001
-            ],
-            [
-              -2.233632,
-              49.1845157
-            ],
-            [
-              -2.2233781,
-              49.1847191
-            ],
-            [
-              -2.2029516,
-              49.1904158
-            ],
-            [
-              -2.2001033,
-              49.191962
-            ],
-            [
-              -2.1896867,
-              49.1891137
-            ],
-            [
-              -2.1771541,
-              49.1801619
-            ],
-            [
-              -2.1686906,
-              49.1782901
-            ],
-            [
-              -2.1606339,
-              49.1907413
-            ],
-            [
-              -2.1529435,
-              49.1999372
-            ],
-            [
-              -2.1448462,
-              49.2056339
-            ],
-            [
-              -2.1379288,
-              49.2056339
-            ],
-            [
-              -2.1288956,
-              49.2030704
-            ],
-            [
-              -2.1202286,
-              49.1991641
-            ],
-            [
-              -2.0969946,
-              49.1836612
-            ],
-            [
-              -2.0799861,
-              49.178697
-            ],
-            [
-              -2.0492244,
-              49.1782901
-            ],
-            [
-              -2.0400284,
-              49.1757266
-            ],
-            [
-              -2.031158,
-              49.1714542
-            ],
-            [
-              -2.0245255,
-              49.1713321
-            ],
-            [
-              -2.021962,
-              49.1813826
-            ],
-            [
-              -2.0220434,
-              49.1924503
-            ],
-            [
-              -2.0209855,
-              49.200751
-            ],
-            [
-              -2.0169979,
-              49.2072208
-            ],
-            [
-              -2.0082902,
-              49.2124698
-            ],
-            [
-              -2.0118709,
-              49.2152774
-            ],
-            [
-              -2.0173234,
-              49.2213809
-            ],
-            [
-              -2.021962,
-              49.2254906
-            ],
-            [
-              -2.02066,
-              49.2352563
-            ],
-            [
-              -2.0678605,
-              49.2506778
-            ],
-            [
-              -2.0826717,
-              49.26024
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for europe/jersey.10m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE61XyWobQRC96ysGnR1T++JrcA455RqCCSKZGIEtGXl8EMb/HkZe8FIhlLEOQ09X91NV16tXPbeLYVhO+6txeTIsv4yr6WY3ft5eXIy/pvV2szyazX/up6+XJ8OPxTAMw+3h+XbjYfnBcLXbXo27aX3Y9Lh8GJab1eVhw9dxdz3un9YPw3J9vf25ooPt9M08389/f274td1M6824mWbb6c38h8sH692TH+fj9nKcdvuXXjy6/W17sT9/iPIJdbv7vd6spmfh3v+ej1+/DcMnOoYgc/SjVxbJYzIgeTF9dvRftHQ14QpN0xy4iYfA4UglXhCodvEQzExLPBbohouE6VGHGxSWXTxhjyjDNQxz6+IpWhCWeA6s1MUzcsgaDwTIu3hOrFSST42U2nQJcgor8QRUsYuXRh7yUXQhVMws6fKOWiNK1iy5bAzQJh8JIkZ+lHdCgFJSRTwVu1QmZiIt8SgUsEs9IhOH8vTAAKBLFWI2rioXQxS17x6zRxUuhjhm2z2g+dArvARBjTYeIHBFZcy5atqFmxZWCQFGInJfWBy1ZB8GoGFbmC0soTw+D8o2W9DAmKtawwQXbAufUgpXbMbMZG/nQyTEykYEOnvexWNPivg4PIpILYUeGPwdjRyobhyYiSbd/EJappR4wWbYzQd4ZljJZw/LbnmAJJFUfe19dAYBoLJPoquTdcUeGFErtqCjqLRPj0RJy+pwZKZ2uDRLXJlc5KB2tEQgXJ5ekmj70gwEGWW4BODtSxCgZXp5LwAngm7rAJgpVmoLkli28RDDofQPldzb3zDoTGU6iJADulr1T7YQqST02QJWCh8rqbW5Yh5WX4MUzL2djM7n5KIaP47uFo/Ps8Xd4i95pJJq8g8AAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for europe/jersey.10m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get europeJersey10m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

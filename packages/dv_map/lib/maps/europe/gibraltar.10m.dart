@@ -2,65 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for europe/gibraltar.10m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Gibraltar",
-        "iso_a2": "GI",
-        "iso_a3": "GIB",
-        "continent": "Europe"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -5.3583868,
-              36.1411094
-            ],
-            [
-              -5.3502498,
-              36.1192895
-            ],
-            [
-              -5.3420304,
-              36.1105004
-            ],
-            [
-              -5.33906,
-              36.1238467
-            ],
-            [
-              -5.3399145,
-              36.1298282
-            ],
-            [
-              -5.3387735,
-              36.1411197
-            ],
-            [
-              -5.3583868,
-              36.1411094
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for europe/gibraltar.10m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WRTWvDMAyG7/4Vwues+Cup3ePGNnbbfZThdW4xpHZw3UMo+e8jThPS1jDig5D1So9f4QsCwLFtDN4AfjM6noN58XVtdtF6h4te3g/lE97AFwIAuKT4OJjak9AE35gQbRoa2wGw08c08G5/gq6jDtMIALYn/61Zkj8e6nyoP8+FnXfROuNir72e+zfxVe0mKwfjjyaG9tbI6PzT1+3huuhE9eHXOh1nGw9nnt/fAJ7KFS8ll5Us7hReraiglChxI2yL/3mECZXlUcWkKpfyBCOciCyPlIQs9scVqXI0xqWo1stpiooyy1OSSbaYJ9drnuUJSqla7G/Z76JcPmYdGuMWdegPSGyCwIYDAAA=';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for europe/gibraltar.10m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get europeGibraltar10m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

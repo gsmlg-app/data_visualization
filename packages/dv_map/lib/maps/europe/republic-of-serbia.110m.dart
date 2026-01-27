@@ -2,229 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for europe/republic-of-serbia.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Republic of Serbia",
-        "iso_a2": "RS",
-        "iso_a3": "SRB",
-        "continent": "Europe"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              18.8298248,
-              45.9088724
-            ],
-            [
-              19.072769,
-              45.5215111
-            ],
-            [
-              19.3904757,
-              45.2365156
-            ],
-            [
-              19.0054846,
-              44.8602345
-            ],
-            [
-              19.00548,
-              44.86023
-            ],
-            [
-              19.36803,
-              44.863
-            ],
-            [
-              19.11761,
-              44.42307
-            ],
-            [
-              19.59976,
-              44.03847
-            ],
-            [
-              19.454,
-              43.5681
-            ],
-            [
-              19.21852,
-              43.52384
-            ],
-            [
-              19.48389,
-              43.35229
-            ],
-            [
-              19.63,
-              43.21378
-            ],
-            [
-              19.95857,
-              43.10604
-            ],
-            [
-              20.3398,
-              42.89852
-            ],
-            [
-              20.25758,
-              42.81275
-            ],
-            [
-              20.49679,
-              42.88469
-            ],
-            [
-              20.63508,
-              43.21671
-            ],
-            [
-              20.81448,
-              43.27205
-            ],
-            [
-              20.95651,
-              43.13094
-            ],
-            [
-              21.143395,
-              43.068685
-            ],
-            [
-              21.27421,
-              42.90959
-            ],
-            [
-              21.43866,
-              42.86255
-            ],
-            [
-              21.63302,
-              42.67717
-            ],
-            [
-              21.77505,
-              42.6827
-            ],
-            [
-              21.66292,
-              42.43922
-            ],
-            [
-              21.54332,
-              42.32025
-            ],
-            [
-              21.576636,
-              42.2452244
-            ],
-            [
-              21.91708,
-              42.30364
-            ],
-            [
-              22.3805258,
-              42.3202595
-            ],
-            [
-              22.5450118,
-              42.461362
-            ],
-            [
-              22.4365947,
-              42.5803212
-            ],
-            [
-              22.6048015,
-              42.8985188
-            ],
-            [
-              22.9860185,
-              43.2111612
-            ],
-            [
-              22.5001567,
-              43.6428144
-            ],
-            [
-              22.4104464,
-              44.0080635
-            ],
-            [
-              22.6571497,
-              44.234923
-            ],
-            [
-              22.4740084,
-              44.4092276
-            ],
-            [
-              22.7057255,
-              44.5780028
-            ],
-            [
-              22.4590223,
-              44.7025172
-            ],
-            [
-              22.1450879,
-              44.4784223
-            ],
-            [
-              21.5620227,
-              44.7689473
-            ],
-            [
-              21.4835262,
-              45.1811702
-            ],
-            [
-              20.8743128,
-              45.4163754
-            ],
-            [
-              20.7621749,
-              45.7345731
-            ],
-            [
-              20.2201925,
-              46.127469
-            ],
-            [
-              19.5960445,
-              46.1717298
-            ],
-            [
-              18.8298381,
-              45.9088777
-            ],
-            [
-              18.8298248,
-              45.9088724
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for europe/republic-of-serbia.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE52XS2sbSRCA7/oVg86mqHdV55iwew72cQmL4h0HgaMxinwwxv89jPzASfcu1OowzExNf6p3Vz9upml7eribtx+m7Z/z7nR/nD8tt7fz9Wm/HLYXq/jm+fWP7Yfpr800TdPj+dovPH9+Ftwdl7v5eNqfF71+Pk3bw+77ecHlfHf/9XZ/PS0309V8/Lrfva2dpu3+x/L3js/fXXXvZX1/dfnxveB6OZz2h/lwWmV/3K9/vn2RPr3p9G1evs+n48OvGr2a8Hm5ffj2YvEbdTn+sz/sTu9Mf/69v//9aZooIbkla178JlGDhpnB+ovgy8V/8xpgcHgb4IzJiKiIk4YaFgMeixuZV9VD01TveArpyKL2f3j/Rqva6okyZFVJROE0ICkLRpFlrcXIXyipVZaadiQB86ymBVMaj1AsWc1YTck+YQXEmFuR5X38BJgksghqloOsFyB0LBnICCKtT1GGbGlcRLGFDVnEUSodRtDm0fudIVO95HdGcDHs9Vpd71HKLUZI0kFJC3AwVm1s5tYXogAJtloYCUhFmg1g6OlZ04yAQ7nXjKFhs5r3CVTS+xbBkM5W1ctFsK9sBo+gUrthggjD3mEMnlxFuXMbqaXSuFZEBKYiI5YwctVdFu4y8j2rMWs1xxrFoI4YBMVrLAZJNB52i7OhrWYqg6kh0YinTuK1KKyRc2va91gGSxSmKs9RE2mUbmujpSztAMzQ0pFyVO9MRF7WzxDJfLSnuPLa86r+I1T1fj9XQEx0qYbXLUhbr58Ci7baMLWqF4qYI/UUG3OUBkdmCLRg68OhYJGIXA2vWkPm0bgXyEZRDS+pYQ72UwWNVC76j8CckXkUjvBsGlWephh73/YMKIkCq5NIhgrx6Nyi5BJWHZLCmUJHB5cQtZDqFMGM1LjPFwfiKA445yncUXWICwputfny+dgn2Q8AL8e+qE325WPkZnT/eve0eb1+2TxtfgJ3EFoB+A8AAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for europe/republic-of-serbia.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get europeRepublicOfSerbia110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

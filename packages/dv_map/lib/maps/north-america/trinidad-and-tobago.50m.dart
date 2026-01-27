@@ -2,195 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for north-america/trinidad-and-tobago.50m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Trinidad and Tobago",
-        "iso_a2": "TT",
-        "iso_a3": "TTO",
-        "continent": "North America"
-      },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [
-                -60.7562988,
-                11.1785156
-              ],
-              [
-                -60.5464844,
-                11.2637207
-              ],
-              [
-                -60.5254883,
-                11.3253906
-              ],
-              [
-                -60.562793,
-                11.3235352
-              ],
-              [
-                -60.7089355,
-                11.2772461
-              ],
-              [
-                -60.8042969,
-                11.2083984
-              ],
-              [
-                -60.8106445,
-                11.1686035
-              ],
-              [
-                -60.7562988,
-                11.1785156
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                -61.0121094,
-                10.1343262
-              ],
-              [
-                -61.0041016,
-                10.1678223
-              ],
-              [
-                -60.9996094,
-                10.2614746
-              ],
-              [
-                -60.968457,
-                10.3233887
-              ],
-              [
-                -61.0164062,
-                10.386377
-              ],
-              [
-                -61.0375,
-                10.4822754
-              ],
-              [
-                -61.0193359,
-                10.5581055
-              ],
-              [
-                -61.0337402,
-                10.669873
-              ],
-              [
-                -60.9967285,
-                10.7161621
-              ],
-              [
-                -60.917627,
-                10.8402344
-              ],
-              [
-                -61.0785156,
-                10.8319336
-              ],
-              [
-                -61.1737305,
-                10.8033203
-              ],
-              [
-                -61.3700195,
-                10.7968262
-              ],
-              [
-                -61.4648438,
-                10.7644531
-              ],
-              [
-                -61.5918457,
-                10.7479492
-              ],
-              [
-                -61.6511719,
-                10.7180664
-              ],
-              [
-                -61.6353027,
-                10.6993652
-              ],
-              [
-                -61.540918,
-                10.6644531
-              ],
-              [
-                -61.4988281,
-                10.6388672
-              ],
-              [
-                -61.4782715,
-                10.6033691
-              ],
-              [
-                -61.4647461,
-                10.5389648
-              ],
-              [
-                -61.4993164,
-                10.2685547
-              ],
-              [
-                -61.5288574,
-                10.253125
-              ],
-              [
-                -61.6327148,
-                10.2434082
-              ],
-              [
-                -61.6614746,
-                10.1916992
-              ],
-              [
-                -61.9061035,
-                10.0691406
-              ],
-              [
-                -61.7716797,
-                10.0850586
-              ],
-              [
-                -61.5966797,
-                10.0646484
-              ],
-              [
-                -61.1742676,
-                10.0780273
-              ],
-              [
-                -61.0121094,
-                10.1343262
-              ]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for north-america/trinidad-and-tobago.50m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE6VWu27cMBDs7yuIqx1hH+Q+3AUB0uVRuAuM4OJTHAHnkyHLhWH43wPpbMO+o4psVAgilxyNRrO7fFyltB4fbtv1eVp/bjfj/dB+6ne79mrs+v36bAr/Pkzfrc/Tj1VKKT3O99ON8/I5cDv0t+0wdvOml+Uprfebm3nDxdDtu+1mmzb7bbrof22u+9fNKa27u/7nhuaFFyfzfJj/9jZw1e/Hbt/uxyn2tR/GP+njTTt0V5v186KnV27XbX/TjsPDe2Yvn/Llfjd23/vdw/Xz57++oR+23X4zvtHhcL19Ph6djlP6INBoEXKzs5MgYoNqBYschS6P19aBS5ZsOVeBSVgJNAhMJZtxFZipsEOUsZD6Ei4XLhTDVTDnUupKqFIWjAEbZHLxOjAYu+UgMILkXGeMYgJcglL8u9tWS6N3r/x362MDSAhecyg0yJlJQj8cG4CMgFIHFjUijsnn7rLEmASz5qD1XSwXreIyMZuFcnWSWDII1YFNWKO4rDV3QpONSEvI9hNbZy61fIKmFEMoIdtPdFkz1GUQcdOwH0TJ6kooCgoFK4ujCtX9YBmIc1ThQ47XgXmSP2TgqXiwMtSVMGAmCEmMDSsA+oLELhYuEnN75FophEan6suhf4dNcVxMZs3q2YOMpSAq1tND0UAk6ArhwrBgN3FniXVebEoGx7rE8j8SZzcjwzowm4lGTaFGinW3CTCLRxnL1BzqjAubS7aoFM4oSy3JSsnBEl/IrOgCcGGkYC0WJsVcNwVlzmDR9Dg04HrXdxSP5p2DIHDdFCCOOXbgxUYVRb2ed2AFigWBi8sysMyVL1rmM4nWNQY1oFgnDZ0Flw+mq+Onp9XL/XL1tPoLfVFF3eoOAAA=';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for north-america/trinidad-and-tobago.50m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get northAmericaTrinidadAndTobago50m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

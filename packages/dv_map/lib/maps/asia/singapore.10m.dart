@@ -2,197 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/singapore.10m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Singapore",
-        "iso_a2": "SG",
-        "iso_a3": "SGP",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              103.9607854,
-              1.3910994
-            ],
-            [
-              103.932465,
-              1.4011091
-            ],
-            [
-              103.8571883,
-              1.4387068
-            ],
-            [
-              103.8315536,
-              1.4470889
-            ],
-            [
-              103.8049423,
-              1.4486352
-            ],
-            [
-              103.7900497,
-              1.4442813
-            ],
-            [
-              103.7622176,
-              1.4309757
-            ],
-            [
-              103.7397567,
-              1.4281273
-            ],
-            [
-              103.7179468,
-              1.4309757
-            ],
-            [
-              103.7083439,
-              1.4293887
-            ],
-            [
-              103.695079,
-              1.4213321
-            ],
-            [
-              103.6838485,
-              1.4098982
-            ],
-            [
-              103.6788843,
-              1.3992374
-            ],
-            [
-              103.6745712,
-              1.3803165
-            ],
-            [
-              103.6447046,
-              1.3380395
-            ],
-            [
-              103.6403915,
-              1.3222517
-            ],
-            [
-              103.6476343,
-              1.3084171
-            ],
-            [
-              103.6652938,
-              1.3041039
-            ],
-            [
-              103.7087508,
-              1.3052432
-            ],
-            [
-              103.7301538,
-              1.3029239
-            ],
-            [
-              103.7551376,
-              1.2971052
-            ],
-            [
-              103.7758895,
-              1.2875837
-            ],
-            [
-              103.7844344,
-              1.2738712
-            ],
-            [
-              103.7895614,
-              1.2678897
-            ],
-            [
-              103.8016057,
-              1.2647973
-            ],
-            [
-              103.8260197,
-              1.264309
-            ],
-            [
-              103.8388778,
-              1.2662621
-            ],
-            [
-              103.8440861,
-              1.2685001
-            ],
-            [
-              103.8469344,
-              1.271918
-            ],
-            [
-              103.8527124,
-              1.2772891
-            ],
-            [
-              103.8877059,
-              1.3012556
-            ],
-            [
-              103.9072372,
-              1.3087426
-            ],
-            [
-              103.9318954,
-              1.3114688
-            ],
-            [
-              103.9543563,
-              1.3181013
-            ],
-            [
-              103.9748641,
-              1.3344587
-            ],
-            [
-              103.9918726,
-              1.3549258
-            ],
-            [
-              104.0034286,
-              1.3741723
-            ],
-            [
-              103.9995223,
-              1.3803165
-            ],
-            [
-              103.9856877,
-              1.3854434
-            ],
-            [
-              103.9607854,
-              1.3910994
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/singapore.10m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE62XTWvbQBCG7/4VQucQ5nNnJrdSaK+BHksoJlWDILGMox5CyH8vcuLgJFPKmPog1jvah3d3Z99ZPa66rp8ftkN/0fVfhvX8ezd8nm5vh+t5nDb92RL+9dx9319031dd13WP++fHgfvX94HtbtoOu3ncDzq83nX9Zn23H/Bt3Nyst9PRkK7rx/vpx5r24a8f+vm5//I4cD1t5nEzbOYl9ul+XPcvsadXITfDdDfMu4e3Mg66L6fbh5uXab4yp93PcbOej+b7/Dtuv//XdQh8Hg3MVc7eh845ECLkTf/V2b95TNL0I04AEQKrOFdDd0547AbNyzxGVW4JTwzco8wDCaFMn3hjpSrPAkDCMp6QI5d5jQgtmy9DmFqZx2HaMn3kSFbXhxbS/P/pA2fhyPQFu5d5LRQsxSEzldO5Obt4ejzCw8vp0szdJUk/jiC28ultJmpICc+BsWmZtxwrSdKPF2CcwAMOTNaPiUixvr1ijdP1Axe0+v42XfIs4wkCl+3FwE0h5SkJ1+2FATXXR0En6FNFzuyFwhBOsD9T90j2l9zUuW4HLsKSVDcydsO6Pg9tmPGWkxhlfQ7YQBM7pSYWdTt1aoBZ+aC2GGq9WrqbJelCrVGr25+LgDfMeK4AJ/Ba/GV7MbB+OVAypBRn5CdcXtwMNKkeDEiqrXy3AiO2zJ3BTajOY/RI736I0ry8fqHC2jI3RUeoX17CxJsk6cIsovViHoFulFUjlSAtzlfOAVjIM54JGtXnG6GUXSZPrL7h2twSN2DXxRfLvNK3wiprH1pPq8PzavW0+gNLd9TB0g0AAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/singapore.10m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaSingapore10m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

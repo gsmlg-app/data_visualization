@@ -2,107 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for europe/malta.50m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Malta",
-        "iso_a2": "MT",
-        "iso_a3": "MLT",
-        "continent": "Europe"
-      },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [
-                14.5662109,
-                35.8527344
-              ],
-              [
-                14.5370117,
-                35.8862793
-              ],
-              [
-                14.4483398,
-                35.9574219
-              ],
-              [
-                14.3512695,
-                35.978418
-              ],
-              [
-                14.3523438,
-                35.8722656
-              ],
-              [
-                14.4364258,
-                35.8216797
-              ],
-              [
-                14.5327148,
-                35.8202148
-              ],
-              [
-                14.5662109,
-                35.8527344
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                14.3134766,
-                36.0275879
-              ],
-              [
-                14.3208984,
-                36.0362305
-              ],
-              [
-                14.3037109,
-                36.0623047
-              ],
-              [
-                14.2632813,
-                36.0757812
-              ],
-              [
-                14.1803711,
-                36.0604004
-              ],
-              [
-                14.1942383,
-                36.0422363
-              ],
-              [
-                14.2536133,
-                36.0121582
-              ],
-              [
-                14.3134766,
-                36.0275879
-              ]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for europe/malta.50m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE52Uu2rDMBSGdz+F0ByMzkW3rKWdGujQrYRiWjcYHDs4yhBC3r3YuZDY8iINQtJ/9OnX0UGnTAgZjrtSLoV8K4tw6MqXtq7Ln1C1jVz08t9leS+X4isTQojT0E83DuGDsOvaXdmFath0CxdCNsV22LAq6lDcw4WQ1b79LnCQPifrNKy/Pwk/bROqpmxCr70e+vPkVT3fbWzKdluG7vhs4uZ6dahD9dHWx831pnd02/1WTREernxpj+PxbDoXAjjXxiAov5hopHOn0RLzSFqPY+NcsgrAxrnOoPWUxGV2RN5FuV5bRvBJXNKAxus41zoGl4hFYorbdRbRaJOWBjKMeoaLYKy3ic+GFniOqxA4LQ8JZZbNzZ5OTCh5AmJrTMSLyRVa7WxiCaFy3nGcSwZJ6TSuIhvPnclVj+W0t0ZD6IDiXKutA0zigusNw4xfxUqlfSngGcnN+GVEMmlfCmoyQDNcQNAuLQ8JdTZf89l4dM5u/To7Z/8aoQeUKAcAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for europe/malta.50m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get europeMalta50m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

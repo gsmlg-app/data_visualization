@@ -2,169 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for south-america/ecuador.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Ecuador",
-        "iso_a2": "EC",
-        "iso_a3": "ECU",
-        "continent": "South America"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -75.3732232,
-              -0.1520318
-            ],
-            [
-              -75.8014658,
-              0.0848013
-            ],
-            [
-              -76.2923144,
-              0.4160473
-            ],
-            [
-              -76.5763798,
-              0.2569355
-            ],
-            [
-              -77.4249843,
-              0.3956868
-            ],
-            [
-              -77.6686128,
-              0.8258931
-            ],
-            [
-              -77.8550614,
-              0.809925
-            ],
-            [
-              -78.8552588,
-              1.3809238
-            ],
-            [
-              -79.542762,
-              0.9829377
-            ],
-            [
-              -80.0906097,
-              0.7684289
-            ],
-            [
-              -80.0208982,
-              0.3603401
-            ],
-            [
-              -80.3993247,
-              -0.2837033
-            ],
-            [
-              -80.5833703,
-              -0.9066627
-            ],
-            [
-              -80.933659,
-              -1.0574545
-            ],
-            [
-              -80.7648063,
-              -1.9650477
-            ],
-            [
-              -80.9677655,
-              -2.2469426
-            ],
-            [
-              -80.3687839,
-              -2.6851588
-            ],
-            [
-              -79.9865592,
-              -2.2207944
-            ],
-            [
-              -79.7702933,
-              -2.6575119
-            ],
-            [
-              -80.3025606,
-              -3.4048565
-            ],
-            [
-              -80.1840149,
-              -3.8211618
-            ],
-            [
-              -80.4692946,
-              -4.0592868
-            ],
-            [
-              -80.442242,
-              -4.4257244
-            ],
-            [
-              -80.028908,
-              -4.346091
-            ],
-            [
-              -79.6249792,
-              -4.4541981
-            ],
-            [
-              -79.2052891,
-              -4.9591285
-            ],
-            [
-              -78.6398972,
-              -4.5477841
-            ],
-            [
-              -78.450684,
-              -3.8730966
-            ],
-            [
-              -77.8379048,
-              -3.0030205
-            ],
-            [
-              -76.6353943,
-              -2.6086777
-            ],
-            [
-              -75.5449957,
-              -1.5616098
-            ],
-            [
-              -75.2337227,
-              -0.9114169
-            ],
-            [
-              -75.3732232,
-              -0.1520318
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for south-america/ecuador.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WWTWsbQQyG7/4Vy54TodHXSLmV0J4LpacSinG2qcHxBmdzCCH/vawThySzUOTDMh6NHl59rGafVl3XT493Q3/R9d+G9fRwGC7H3W7YTNtx35/N5j8v2/f9Rfdr1XVd93R8to7H40fD3WG8Gw7T9uh0Ot51/X59e3T4unlYX4+HN4eu67f34+81HY2XzT6/7P98b9iM+2m7H/bTbPsxPkx/uy+3w2G7Wfevh57f9NwM4+0wHR4/qjnJ/z7uHm9eo32Dj4fr7X49vQv75fd+/flf151XBa5MxHT22YRQlJCLfzBcnf0X6FjE1D8DEdDFsXCOZ0BBXERanhRDqWmeVuMaC/pILVg1x6sgJOHCLY9DzS2ZvwpmboUW9DmpB5csz1XRykL+HCMoGa7POFJv5BVgxyBOhhugQtWa9kMIp+BaUzhHwEDDqC2vmgt5pHmEHr6gjw1ZMFcNn5simKTRd45AzhU5186OoM6z3wIw0MwoncFgNo2GVwC1ikquYXxOvDhaK7BAmKLkSxxWq6k2QAISCyFL18S8OrchE5hrUU/3dLipRjtTCYiwhkgWWCtScJtDAtOqpaTbmpHU0Bogg6C4WrrKxQWLtDlkcCrFkteII4gFhbQKBVCDsnN1BgqRtDURENJKyZocJ4MHNnPwXIDFMJJjOsBIoi70jIColPA0kFDJoywAQ6OQpye/cXjUJYUqtbokFTqIonlzMc0tUxnDcu/xfNNxDZS2JAyIjITJiA2MlaO92ufXDt1qcnRVBRWJ0Hb6F1ArhpH+2CLmSrR0nUQpUiw3GPKfg6ul9Wn1vDo9r1bPq3/lIt2pvQsAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for south-america/ecuador.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get southAmericaEcuador110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

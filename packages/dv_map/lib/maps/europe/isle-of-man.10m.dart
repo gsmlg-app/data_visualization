@@ -2,329 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for europe/isle-of-man.10m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Isle of Man",
-        "iso_a2": "IM",
-        "iso_a3": "IMN",
-        "continent": "Europe"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -4.6121313,
-              54.0569522
-            ],
-            [
-              -4.5989477,
-              54.0838891
-            ],
-            [
-              -4.5909318,
-              54.0910505
-            ],
-            [
-              -4.5795792,
-              54.0944278
-            ],
-            [
-              -4.5638322,
-              54.0968285
-            ],
-            [
-              -4.5497941,
-              54.1006534
-            ],
-            [
-              -4.5437719,
-              54.1084659
-            ],
-            [
-              -4.5292863,
-              54.119086
-            ],
-            [
-              -4.4745988,
-              54.1408145
-            ],
-            [
-              -4.4754939,
-              54.1531436
-            ],
-            [
-              -4.4468888,
-              54.1691348
-            ],
-            [
-              -4.412587,
-              54.1800805
-            ],
-            [
-              -4.3907771,
-              54.1947289
-            ],
-            [
-              -4.3991593,
-              54.2220727
-            ],
-            [
-              -4.3718156,
-              54.2312686
-            ],
-            [
-              -4.3656307,
-              54.2350528
-            ],
-            [
-              -4.3597713,
-              54.242255
-            ],
-            [
-              -4.3543595,
-              54.2515323
-            ],
-            [
-              -4.348256,
-              54.2595076
-            ],
-            [
-              -4.3408097,
-              54.2630069
-            ],
-            [
-              -4.3267309,
-              54.2803409
-            ],
-            [
-              -4.3209529,
-              54.2835147
-            ],
-            [
-              -4.3119197,
-              54.2871768
-            ],
-            [
-              -4.3132218,
-              54.2955997
-            ],
-            [
-              -4.3194067,
-              54.3045922
-            ],
-            [
-              -4.3246964,
-              54.3102074
-            ],
-            [
-              -4.3321834,
-              54.3134219
-            ],
-            [
-              -4.3504939,
-              54.3147647
-            ],
-            [
-              -4.3582251,
-              54.317613
-            ],
-            [
-              -4.3637589,
-              54.3242862
-            ],
-            [
-              -4.3702286,
-              54.3408878
-            ],
-            [
-              -4.3755997,
-              54.3483341
-            ],
-            [
-              -4.3775529,
-              54.3618839
-            ],
-            [
-              -4.3570857,
-              54.3994001
-            ],
-            [
-              -4.3513077,
-              54.4138044
-            ],
-            [
-              -4.3677872,
-              54.4190128
-            ],
-            [
-              -4.3857316,
-              54.4157169
-            ],
-            [
-              -4.404449,
-              54.409654
-            ],
-            [
-              -4.442006,
-              54.4043643
-            ],
-            [
-              -4.4953507,
-              54.385891
-            ],
-            [
-              -4.5309952,
-              54.3661156
-            ],
-            [
-              -4.5545955,
-              54.3391788
-            ],
-            [
-              -4.5983781,
-              54.2765974
-            ],
-            [
-              -4.6124568,
-              54.2654483
-            ],
-            [
-              -4.6430558,
-              54.2494164
-            ],
-            [
-              -4.6639705,
-              54.2335473
-            ],
-            [
-              -4.6881404,
-              54.2237816
-            ],
-            [
-              -4.7102758,
-              54.2206485
-            ],
-            [
-              -4.7122697,
-              54.2166202
-            ],
-            [
-              -4.7110896,
-              54.2099063
-            ],
-            [
-              -4.7144669,
-              54.2003441
-            ],
-            [
-              -4.723785,
-              54.1854516
-            ],
-            [
-              -4.7276505,
-              54.1725935
-            ],
-            [
-              -4.7281388,
-              54.1425642
-            ],
-            [
-              -4.737172,
-              54.1249047
-            ],
-            [
-              -4.7708634,
-              54.0968285
-            ],
-            [
-              -4.7696834,
-              54.07746
-            ],
-            [
-              -4.777089,
-              54.0762393
-            ],
-            [
-              -4.7813208,
-              54.0747745
-            ],
-            [
-              -4.7848201,
-              54.0730655
-            ],
-            [
-              -4.7901505,
-              54.0712344
-            ],
-            [
-              -4.7901505,
-              54.0637882
-            ],
-            [
-              -4.7662247,
-              54.0592309
-            ],
-            [
-              -4.7455949,
-              54.0673689
-            ],
-            [
-              -4.7259822,
-              54.0790063
-            ],
-            [
-              -4.7044979,
-              54.0848656
-            ],
-            [
-              -4.6896867,
-              54.081529
-            ],
-            [
-              -4.6710099,
-              54.0670434
-            ],
-            [
-              -4.6564021,
-              54.0637882
-            ],
-            [
-              -4.6432186,
-              54.0665958
-            ],
-            [
-              -4.6312557,
-              54.0706241
-            ],
-            [
-              -4.6207576,
-              54.0696475
-            ],
-            [
-              -4.6121313,
-              54.0569522
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for europe/isle-of-man.10m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE51YTWtbVxDd61c8tHbDfJz5yra00EVK9yUUkypB4EjGVhYm+L+XJ9fBTsYtYy3E07vvHc2dc+brft0sy/Z0d73bvl22v+4uT19udj8fr652H07742F7sS5/fLh9u327/LlZlmX5ev7+8cXz4+eF65vj9e7mtD+/9Pj4smwPl5/PL/x2e7Vbjh+Xd5eHby8ty3Z/e/zrUs4PvPvhvj7c//3pwofj4bQ/7A6nde2XL+u/bv9dvf9mzKfd8fPudHP33JRH2/84Xt19Oh6eox5v/t4fLk9P9vzweXr9/a9l+QlvnIWV9eK7FcMbMi8Tebbw/uL/8KyyENHhpWYWj/GolLPDKyYjm+JFWZS0eIBETvFcU6XH85Qc24eKAjd4TOSmGONpBFeLl3CrKZ6UpHd6YS5KH8IhYJUdvQxKxtR9CENpu11Tho7tg2f29nmxYioXsFh20cFJlGM1a1FEtGophOSUXa1iq45dEaGQmOIFJ5t3eMriY7momyt1/hM1MpnSoVYRbfYTiNiYDoNaWQdnbCo6xUNK7z0roxh7D5RUrfdciXysFvFQ6oJNkhQ0x6My6fHUGGP1MRf3+83g8LFaWEXaWiRlVjW3r0De2acEq3HtVYGXo8NjEopp7VAVTu3xFMJjfo1eSM7KCJ/zayliXfZTDudxtLmGZWueQNLHdASJZBe+ayDmuNXQOIusxUtVTFsrjbA+3NQ5U+f0BqW19lWBaGyfsVLbSoI1CWM5e0RG16qBi3hePNJCueMXbMHjdAoC0NEBKrfpbgEhao0jqGMaHChTayuvpr2irVeqso4LdWe2aWkzg5V1lVe1OHLc1ldqZJdaJNxqnEqdBeZt6XADckqHQ8msxUOBfWyfawW1nYuqIcb2ZTKoKx0iq2On/AaTRL9fIcd4zAoW8b41YHehaa4PZspqWzWqIp/6Lxhwb1shIsU418fq9Y5eToPN6VijoJULh1jpmA5J1hfGQDHHmA4NbjM9C4rGjUYEpbeN0OuG/PDyvrGiCIzJWM3rpELhojWWXrIKtScugYjxSB6JFOpSKYWSj4esKOJeexQsOm4L/gPPNTLH2nMXQXsCZiU6nooCZtX2BeShPp7x1wDN/sQqil6RqgjrmVV74of0cSn3LM92KqJkk+l2PZioXnAfYXyg5uYgaeX8Krk41imrqxzkbmXTzsWVxdounIJcxpXDhcKit68cMQ3f4YHzprt+vLrfPH6/39xv/gFS21alGxgAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for europe/isle-of-man.10m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get europeIsleOfMan10m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

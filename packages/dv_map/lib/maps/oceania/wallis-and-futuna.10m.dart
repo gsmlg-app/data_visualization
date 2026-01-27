@@ -2,195 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for oceania/wallis-and-futuna.10m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Wallis and Futuna",
-        "iso_a2": "WF",
-        "iso_a3": "WLF",
-        "continent": "Oceania"
-      },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [
-                -178.1423234,
-                -14.2435849
-              ],
-              [
-                -178.1780493,
-                -14.2325986
-              ],
-              [
-                -178.1857397,
-                -14.2482236
-              ],
-              [
-                -178.1752417,
-                -14.2770322
-              ],
-              [
-                -178.1566056,
-                -14.3051083
-              ],
-              [
-                -178.1469214,
-                -14.3101539
-              ],
-              [
-                -178.1214493,
-                -14.3138974
-              ],
-              [
-                -178.1088354,
-                -14.3194312
-              ],
-              [
-                -178.1000464,
-                -14.3160133
-              ],
-              [
-                -178.0467423,
-                -14.3194312
-              ],
-              [
-                -178.0467423,
-                -14.3125953
-              ],
-              [
-                -178.092478,
-                -14.288995
-              ],
-              [
-                -178.1050919,
-                -14.2852516
-              ],
-              [
-                -178.1081437,
-                -14.2789853
-              ],
-              [
-                -178.1423234,
-                -14.2435849
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                -176.1554663,
-                -13.2089169
-              ],
-              [
-                -176.1703995,
-                -13.2214495
-              ],
-              [
-                -176.1840307,
-                -13.2378883
-              ],
-              [
-                -176.1901749,
-                -13.2570126
-              ],
-              [
-                -176.18281,
-                -13.2779273
-              ],
-              [
-                -176.1995743,
-                -13.2906227
-              ],
-              [
-                -176.1947729,
-                -13.3067359
-              ],
-              [
-                -176.1839087,
-                -13.3238258
-              ],
-              [
-                -176.18281,
-                -13.339288
-              ],
-              [
-                -176.1732072,
-                -13.3464495
-              ],
-              [
-                -176.1594946,
-                -13.3502743
-              ],
-              [
-                -176.1471655,
-                -13.3477516
-              ],
-              [
-                -176.1418351,
-                -13.33587
-              ],
-              [
-                -176.1476538,
-                -13.3104794
-              ],
-              [
-                -176.1444799,
-                -13.3008766
-              ],
-              [
-                -176.1281632,
-                -13.2982724
-              ],
-              [
-                -176.1305639,
-                -13.2911923
-              ],
-              [
-                -176.1321508,
-                -13.2885068
-              ],
-              [
-                -176.1356095,
-                -13.2847633
-              ],
-              [
-                -176.1255997,
-                -13.2640927
-              ],
-              [
-                -176.1305639,
-                -13.2476539
-              ],
-              [
-                -176.1430151,
-                -13.2307268
-              ],
-              [
-                -176.1554663,
-                -13.2089169
-              ]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for oceania/wallis-and-futuna.10m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE61WTWvcQAy9768YfE6NRh8jKddCTi3trYcSikncYNjYYeM9hJD/Xtb5INl4WlDqg/GMZp41T0/S3G9Saua7m745Tc1Z3837Xf952m77i3mYxubkYP79OH3bnKafm5RSul/e7zcuyxfDzW666XfzsGx6Xp5SM3bXy4Yf3XY73KZuvExn+3k/di9bU2qG2+lXh8uys3fztMx/eWO4mMZ5GPtxPti+XfTdOHTNk/nhxaerfrru593dW4+ej/B1v52H79P27urp2C/Y0+5yGLv51fkfn9ffx6P345Q+ZbU2MxISn6xYuUUmMfYj2/nx4hq0GrBTBZpQ3EoU2kTJtea1IVIYWgU516BVgRCj0FIKSFmHJpAMRlFoLo65EkbKkIXCYcTM1TBSJnPlKDSYkVS9dqYc5hoAuFShC2SKcg1clLFKyEe8/gc0ikvYa0dWq8jazF3CTAt49hqyoORwLoJlpmoumluYjkjd29RGb34aKMOlzSJcymrgqUUwzyWWv6XNCuQuFegluWOhL202BoLV+FCLpGbBglba7JCVV1VFLYpCxpiqDl6j5QqwqqPGfXZRrgXRoSBqGJpVsUIHQVGSsD6MHKwSREIyFPv/TBM5WhhXCUGxgszlI5IWZ+fVHk0tCaByWB6suUglEYlVo4XyAJ2NpEq1WFh3rEVotW3Q4V7B6rHmf4BmVq9KGkxLmA60XKiiD3RDxbDXBFKoVpc8Z8ewPgizQIVrNBMo4YQhKVDtAcZagrehA9civn4VpxYLg8eL3l+5XpQZLnpMkGsJgwSKca4Drbx+s9gcfz1snt/nm4fNHxf/Tx4vDwAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for oceania/wallis-and-futuna.10m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get oceaniaWallisAndFutuna10m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

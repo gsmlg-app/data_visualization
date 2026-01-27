@@ -2,113 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for europe/andorra.50m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Andorra",
-        "iso_a2": "AD",
-        "iso_a3": "AND",
-        "continent": "Europe"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              1.7060547,
-              42.5033203
-            ],
-            [
-              1.7139648,
-              42.5256348
-            ],
-            [
-              1.7402344,
-              42.5567383
-            ],
-            [
-              1.7394531,
-              42.5759277
-            ],
-            [
-              1.7098633,
-              42.6044434
-            ],
-            [
-              1.5681641,
-              42.6350098
-            ],
-            [
-              1.5013672,
-              42.6427246
-            ],
-            [
-              1.4588867,
-              42.6216797
-            ],
-            [
-              1.4283203,
-              42.5958984
-            ],
-            [
-              1.4148438,
-              42.5483887
-            ],
-            [
-              1.4219727,
-              42.5308105
-            ],
-            [
-              1.4302734,
-              42.4978516
-            ],
-            [
-              1.428125,
-              42.4613281
-            ],
-            [
-              1.4488281,
-              42.4374512
-            ],
-            [
-              1.4862305,
-              42.4344727
-            ],
-            [
-              1.534082,
-              42.4416992
-            ],
-            [
-              1.5864258,
-              42.455957
-            ],
-            [
-              1.6785156,
-              42.4966797
-            ],
-            [
-              1.7060547,
-              42.5033203
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for europe/andorra.50m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WUTUvkQBCG7/kVTc6DdNdXV3tbVve47F1EgkYJjOkhxsMg89+XRGdwtEAqh6ZTb9eTt7uq89aE0M77Xd9ehvZP382vU/+7brf9/TzUsd0s8uN7+KW9DDdNCCG8reP3xHX5KuymuuuneViTjstDaMfueU34NT7UaepOCSG0w0u962AVr77FcY3/PRPu6zgPYz/Oi3b9unyx/VAPJyNPfX3u52l/buPo+1/d7p8+tnmi1ulhGLv5037fn8/zr28hpIscJTLlzReB4IIjIkQ8E243P+ESFiG1cMCCpE4cRUAiC8eSUb3usBBjsnCZC+TsxMWigmjgJBIRkg/HoknIcifIMRbn2XFMKBksHEEGEh+OWFXFahSBJLk4z45Al+6ySlFYizrPjhIpodl3pKjqdpdKBvNWYNQU2YnDCBmtNqaSlZO3FKAJ2KJJQtDkpJEqqNV2hJk4gROnAhhNd0iUwVkJRopqNTFRklKc5liFgK02IebCTm+y1I7FLKv4r4TzV9xY8+Ps0BzH2+bQ/AcFtFicMAcAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for europe/andorra.50m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get europeAndorra50m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

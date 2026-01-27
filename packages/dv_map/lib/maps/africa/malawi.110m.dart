@@ -2,149 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for africa/malawi.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Malawi",
-        "iso_a2": "MW",
-        "iso_a3": "MWI",
-        "continent": "Africa"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              32.7593754,
-              -9.2305991
-            ],
-            [
-              33.231388,
-              -9.6767217
-            ],
-            [
-              33.4856877,
-              -10.5255588
-            ],
-            [
-              33.3153105,
-              -10.79655
-            ],
-            [
-              33.1142892,
-              -11.6071982
-            ],
-            [
-              33.3064222,
-              -12.4357781
-            ],
-            [
-              32.9917644,
-              -12.7838705
-            ],
-            [
-              32.6881653,
-              -13.7128578
-            ],
-            [
-              33.2140247,
-              -13.97186
-            ],
-            [
-              33.7897001,
-              -14.4518307
-            ],
-            [
-              34.0648255,
-              -14.35995
-            ],
-            [
-              34.4596334,
-              -14.6130095
-            ],
-            [
-              34.517666,
-              -15.0137086
-            ],
-            [
-              34.3072913,
-              -15.4786415
-            ],
-            [
-              34.3812919,
-              -16.1835597
-            ],
-            [
-              35.0338103,
-              -16.8012997
-            ],
-            [
-              35.3390629,
-              -16.1074403
-            ],
-            [
-              35.7719047,
-              -15.8968588
-            ],
-            [
-              35.6868453,
-              -14.6110458
-            ],
-            [
-              35.2679562,
-              -13.8878342
-            ],
-            [
-              34.9071513,
-              -13.5654249
-            ],
-            [
-              34.559989,
-              -13.5799977
-            ],
-            [
-              34.2800061,
-              -12.2800253
-            ],
-            [
-              34.559989,
-              -11.52002
-            ],
-            [
-              34.28,
-              -10.16
-            ],
-            [
-              33.9408377,
-              -9.6936738
-            ],
-            [
-              33.73972,
-              -9.41715
-            ],
-            [
-              32.7593754,
-              -9.2305991
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for africa/malawi.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WWTWvcMBCG7/srjM/pMB+ar9xKodBDobceSihL6gTDZh02LiWE/PeyTjYksVqQD0LWKz280oxHfth0XT/f3w79edd/Hrbz78Pwadrthst5nPb92VG+ehq+68+7H5uu67qHpV0vXKYvwu1huh0O87gsOk3vun6/vVkWfN3utn/Gl/ld1493088tL9r31bg8jX95LVxO+3ncD/v5qH28OoyX2/5ZfXzxcT1MN8N8uH/r4mT727S7v37e5Qt1Ovwa99v51Xafntf9929dJwyuKa7l7J3yIYEFNZPeCBdn/+cJsJBEVHDm5kzeiCuhFu4rHiEoq2pEI1BIhVBrQE9TbcQRFY7kNY7A0CmDW/2hFeYKkKGIukdbQBgyya2sA0wMHhKObVtmsAgylTVQwIlDvTUkTAW5VGIskE5hjTiPdERa4woUpRBsy8ECaCVYKylTQDSz7fyOJtJEKgEpYCSIzUAlN7M1TwFJHBsPsICgc1IlwArFwwq1GpQgTso10IBCVLMtIgooEoQVhwaBxNkMFEk0rjtELwWlEehOibWcVoi0aK1bChYWpfbVHbOGsGgrkM1TrVJoBCI8pLRVrgKJTlpLGwE1LVyyNa81MyoxEVDPTG/9jjkQ0SqFgReJtS3I/zZIoIzYen68vjUJgVrLXxYMqdyYCZZiLq3V2SV9nSUJhbyxEDT/bGxq/VPvcXNqLzaPm7/t8gzXEgoAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for africa/malawi.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get africaMalawi110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

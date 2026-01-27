@@ -2,297 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/baykonur-cosmodrome.10m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Baykonur Cosmodrome",
-        "iso_a2": "-99",
-        "iso_a3": "-99",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              63.3839136,
-              45.5658245
-            ],
-            [
-              63.4435482,
-              45.5679691
-            ],
-            [
-              63.5014775,
-              45.5742219
-            ],
-            [
-              63.5573914,
-              45.5843763
-            ],
-            [
-              63.6109282,
-              45.5982514
-            ],
-            [
-              63.6618811,
-              45.6156147
-            ],
-            [
-              63.7099402,
-              45.6362853
-            ],
-            [
-              63.7548987,
-              45.6600048
-            ],
-            [
-              63.7963432,
-              45.686644
-            ],
-            [
-              63.8339637,
-              45.7159445
-            ],
-            [
-              63.8675533,
-              45.7476997
-            ],
-            [
-              63.8966989,
-              45.7817028
-            ],
-            [
-              63.9212968,
-              45.8177729
-            ],
-            [
-              63.9409339,
-              45.8557034
-            ],
-            [
-              63.9552999,
-              45.8951842
-            ],
-            [
-              63.9640849,
-              45.9361636
-            ],
-            [
-              63.9671338,
-              45.9783316
-            ],
-            [
-              63.9640849,
-              46.0204996
-            ],
-            [
-              63.9552999,
-              46.0614273
-            ],
-            [
-              63.9409339,
-              46.1009856
-            ],
-            [
-              63.9212968,
-              46.1388903
-            ],
-            [
-              63.8966989,
-              46.1749604
-            ],
-            [
-              63.8675533,
-              46.2089635
-            ],
-            [
-              63.8339637,
-              46.2407187
-            ],
-            [
-              63.7963432,
-              46.2700192
-            ],
-            [
-              63.7548987,
-              46.2966584
-            ],
-            [
-              63.7099402,
-              46.3203779
-            ],
-            [
-              63.6618811,
-              46.3410485
-            ],
-            [
-              63.6109282,
-              46.3584118
-            ],
-            [
-              63.5573914,
-              46.372261
-            ],
-            [
-              63.5014775,
-              46.3824413
-            ],
-            [
-              63.4435482,
-              46.3886942
-            ],
-            [
-              63.3839136,
-              46.3908387
-            ],
-            [
-              63.324279,
-              46.3886942
-            ],
-            [
-              63.2663497,
-              46.3824413
-            ],
-            [
-              63.2104875,
-              46.372261
-            ],
-            [
-              63.156899,
-              46.3584118
-            ],
-            [
-              63.1059461,
-              46.3410485
-            ],
-            [
-              63.0578353,
-              46.3203779
-            ],
-            [
-              63.0129285,
-              46.2966584
-            ],
-            [
-              62.971484,
-              46.2700192
-            ],
-            [
-              62.9338636,
-              46.2407187
-            ],
-            [
-              62.9002739,
-              46.2089635
-            ],
-            [
-              62.871025,
-              46.1749604
-            ],
-            [
-              62.8464787,
-              46.1388903
-            ],
-            [
-              62.8268934,
-              46.1009856
-            ],
-            [
-              62.8125273,
-              46.0614273
-            ],
-            [
-              62.803639,
-              46.0204996
-            ],
-            [
-              62.8006417,
-              45.9783316
-            ],
-            [
-              62.803639,
-              45.9361636
-            ],
-            [
-              62.8125273,
-              45.8951842
-            ],
-            [
-              62.8268934,
-              45.8557034
-            ],
-            [
-              62.8464787,
-              45.8177729
-            ],
-            [
-              62.871025,
-              45.7817028
-            ],
-            [
-              62.9002739,
-              45.7476997
-            ],
-            [
-              62.9338636,
-              45.7159445
-            ],
-            [
-              62.971484,
-              45.686644
-            ],
-            [
-              63.0129285,
-              45.6600048
-            ],
-            [
-              63.0578353,
-              45.6362853
-            ],
-            [
-              63.1059461,
-              45.6156147
-            ],
-            [
-              63.156899,
-              45.5982514
-            ],
-            [
-              63.2104875,
-              45.5843763
-            ],
-            [
-              63.2663497,
-              45.5742219
-            ],
-            [
-              63.324279,
-              45.5679691
-            ],
-            [
-              63.3839136,
-              45.5658245
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/baykonur-cosmodrome.10m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE61YyWobQRC96ysGnZ2mtq4ltySQc+7BBGErRsTWGFk+GON/D5KXJHY1oRvrIEaq6Ud1La+W+8U0Lfd31+vlx2n5db3a3+7WX+bLy/XZfjNvlycH8c/Hv2+WH6fvi2mapvvj99uDx9ePguvdfL3e7TfHQ8+vT9Nyu7o6Hvi8uvs1b29305f55mo+381Xfw5P03JzM/9Y0eHFDxFvBJwIzubtfrNdb/cH2aebzWr5JHt40eliPV+t97u7fzV6vsK3+fLu4unGL5jz7nyzXe3/uvrj5+/n17+mSbmwcyDrySuJ1FK1Okn9R3B68j88Ea7ilOJZaGAnXgUUs5rhmRBh9OJV40DJ8FzYlDvxFCEov284VZRePEV3xARPsSqKdeIZRAhk+ikree29r1XxcMvwFADEe/FCWTjVz1Wl13zOHMqZeoY1pDucXa1W5gxPTCN63eGhGh4ZnqMB9ZovCCnUEzxHM6Pe9AiBYM7081oNuNcfUStFpHhR0YV68VTAJcMLVlTWbjxD5sx+Yc6M/Xi5flqAQCK68Rr20wKKQtabvi3/akGA8NqtXyP+tCC7B/Tq18oPLWgSCt180MhfLQQeyt180OAXLSRg6N303KA/LWQAGL350aJnLRSq1Xvt1yofWpiAzXr5pVXetLAgiPf6o1V+tXB1Qezl01Z7oIWNSN+re9HCTiLYmx6t7uqA5xrddNrq/rRwgHN3ODMJWZa9Y+qRKktk0TxmPjqEWO6OEe9iVU+5eSz2EGqIvl9uQDXnmnHfWO4CUpBn1hvhFiphKJ6l2gj1UQlm1zSWR6iZSgCQpaVypHRQcUOgzHojlY2Ki4qlTD9Seak4qQdn7hjpDKg4UiXLom+kc6HiwJp6Y6SxOsCBCmaDwkjj11RvrC9tW2+sb257d6yvb0ff2NzRTI6xsaidu2NjW5tbxsbKJvUNDr0tYh6dyVuFY3Rn0CpsozuNRt0dXbm0uoLRlVCraxldWTWaqtGNWufGb5E9Pz89LJ6/TxcPi981K6TMoxUAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/baykonur-cosmodrome.10m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaBaykonurCosmodrome10m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

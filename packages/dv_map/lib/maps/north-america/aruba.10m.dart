@@ -2,141 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for north-america/aruba.10m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Aruba",
-        "iso_a2": "AW",
-        "iso_a3": "ABW",
-        "continent": "North America"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -69.9969376,
-              12.5775821
-            ],
-            [
-              -70.0071508,
-              12.5855167
-            ],
-            [
-              -70.0487361,
-              12.6321475
-            ],
-            [
-              -70.0611059,
-              12.625393
-            ],
-            [
-              -70.0596411,
-              12.6142439
-            ],
-            [
-              -70.0526424,
-              12.6000023
-            ],
-            [
-              -70.0487361,
-              12.5837263
-            ],
-            [
-              -70.0510962,
-              12.5740421
-            ],
-            [
-              -70.0603735,
-              12.5569522
-            ],
-            [
-              -70.062408,
-              12.5468204
-            ],
-            [
-              -70.0580949,
-              12.5371768
-            ],
-            [
-              -70.0480851,
-              12.5311547
-            ],
-            [
-              -70.0276587,
-              12.5229353
-            ],
-            [
-              -69.9585669,
-              12.4632022
-            ],
-            [
-              -69.924672,
-              12.447211
-            ],
-            [
-              -69.924672,
-              12.4403751
-            ],
-            [
-              -69.9451391,
-              12.4403751
-            ],
-            [
-              -69.9305314,
-              12.4259708
-            ],
-            [
-              -69.9088029,
-              12.4177921
-            ],
-            [
-              -69.8880916,
-              12.41767
-            ],
-            [
-              -69.8768204,
-              12.4273949
-            ],
-            [
-              -69.8801977,
-              12.4535587
-            ],
-            [
-              -69.9157609,
-              12.4970157
-            ],
-            [
-              -69.924672,
-              12.5192325
-            ],
-            [
-              -69.9363908,
-              12.5317244
-            ],
-            [
-              -69.9969376,
-              12.5775821
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for north-america/aruba.10m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE52VTW/bMAyG7/4Vgs9ZwE9R7K0bsOOw2w5DMXid1xlI7MB1D0GR/z7YbYKmVQsoPgiyKD0gxZfUYxVCPe13bX0V6q9tMz2M7Zdhs2lvp27o69Vs/vu0fF9fhZ9VCCE8LuPbg8v2xbAbh107Tt1y6Lg9hLpvtsuB6/Hhd3PaHkLd3Q+/GlpMP96s87L++cxwO/RT17f9NNu+DeP0L1xv27G7bernTYeTN3ftsG2ncX/uy9H578Nmf/cc6wk+jH+6vpleBP30vZy//gvhU/S1e3S2uHplQlqrmSbCM8PN6mOgwRrAUCHlgEkVoxUDJRlHzAAjE4ppMTAignoOSMrOxTz1KJh1EIWEvRxIUUhyQAAAKvfw3SvUxEbxgpARPFJWNQJygWoisLHmgBpdicqBJHkVSkwEUh5xApecaJQNLaYLcgJJszlhRJXyOiGLmiwHJHLWsiTPrUGTxpgLWSITFOZkBpJEy4lGxAjLNPMxDti0nCeK7LmMXApkUMZcHQupG5RpZgZCSkDZjKCZF5Zd9HVKCRxz3V/QClv1jLOltrIBG7uUdcLFP0C3nKZFWTUVe+ioFiF7g26AWg58T4SKTkxlj9Oimcieb1yMRlLWuMof+Co3P84O1XG8qQ7Vf7/fwP6NCQAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for north-america/aruba.10m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get northAmericaAruba10m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

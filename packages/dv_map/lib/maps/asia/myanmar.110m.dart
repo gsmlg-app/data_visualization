@@ -2,317 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/myanmar.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Myanmar",
-        "iso_a2": "MM",
-        "iso_a3": "MMR",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              100.1159876,
-              20.4178496
-            ],
-            [
-              100.3291012,
-              20.7861217
-            ],
-            [
-              101.1800053,
-              21.436573
-            ],
-            [
-              101.150033,
-              21.8499844
-            ],
-            [
-              100.4165377,
-              21.5588394
-            ],
-            [
-              99.9834892,
-              21.7429367
-            ],
-            [
-              99.2408989,
-              22.1183143
-            ],
-            [
-              99.5319922,
-              22.9490388
-            ],
-            [
-              98.8987492,
-              23.1427221
-            ],
-            [
-              98.6602625,
-              24.063286
-            ],
-            [
-              97.6047197,
-              23.8974047
-            ],
-            [
-              97.724609,
-              25.0836372
-            ],
-            [
-              98.671838,
-              25.9187025
-            ],
-            [
-              98.7120939,
-              26.7435359
-            ],
-            [
-              98.6826901,
-              27.5088122
-            ],
-            [
-              98.2462309,
-              27.7472214
-            ],
-            [
-              97.9119877,
-              28.3359451
-            ],
-            [
-              97.3271139,
-              28.2615827
-            ],
-            [
-              97.4025615,
-              27.8825361
-            ],
-            [
-              97.0519886,
-              27.6990589
-            ],
-            [
-              97.1339991,
-              27.0837735
-            ],
-            [
-              96.4193657,
-              27.2645893
-            ],
-            [
-              95.1247677,
-              26.5735721
-            ],
-            [
-              95.1551534,
-              26.0013073
-            ],
-            [
-              94.6032491,
-              25.1624954
-            ],
-            [
-              94.5526579,
-              24.6752383
-            ],
-            [
-              94.106742,
-              23.8507409
-            ],
-            [
-              93.3251876,
-              24.0785564
-            ],
-            [
-              93.2863269,
-              23.0436584
-            ],
-            [
-              93.0602942,
-              22.7031107
-            ],
-            [
-              93.1661276,
-              22.2784596
-            ],
-            [
-              92.672721,
-              22.0412389
-            ],
-            [
-              92.6522571,
-              21.3240476
-            ],
-            [
-              92.3032345,
-              21.4754853
-            ],
-            [
-              92.3685535,
-              20.6708833
-            ],
-            [
-              93.0782776,
-              19.855145
-            ],
-            [
-              93.6632548,
-              19.7269616
-            ],
-            [
-              93.5409884,
-              19.3664926
-            ],
-            [
-              94.3248165,
-              18.2135139
-            ],
-            [
-              94.533486,
-              17.2772403
-            ],
-            [
-              94.1888042,
-              16.0379361
-            ],
-            [
-              94.8084046,
-              15.8034543
-            ],
-            [
-              95.3693522,
-              15.71439
-            ],
-            [
-              96.5057687,
-              16.4272405
-            ],
-            [
-              97.1645398,
-              16.9287344
-            ],
-            [
-              97.5970716,
-              16.1005679
-            ],
-            [
-              97.7777324,
-              14.8372859
-            ],
-            [
-              98.103604,
-              13.6404597
-            ],
-            [
-              98.509574,
-              13.1223776
-            ],
-            [
-              98.4283387,
-              12.0329868
-            ],
-            [
-              98.7645455,
-              11.4412916
-            ],
-            [
-              98.4571741,
-              10.675266
-            ],
-            [
-              98.5535507,
-              9.9329599
-            ],
-            [
-              99.0381206,
-              10.9605458
-            ],
-            [
-              99.587286,
-              11.8927628
-            ],
-            [
-              99.1963538,
-              12.8047484
-            ],
-            [
-              99.2120118,
-              13.2692937
-            ],
-            [
-              99.0977552,
-              13.8275025
-            ],
-            [
-              98.4308191,
-              14.6220277
-            ],
-            [
-              98.192074,
-              15.1237025
-            ],
-            [
-              98.5373759,
-              15.3084974
-            ],
-            [
-              98.9033484,
-              16.1778242
-            ],
-            [
-              98.493761,
-              16.8378356
-            ],
-            [
-              97.8591228,
-              17.5679461
-            ],
-            [
-              97.3758964,
-              18.4454377
-            ],
-            [
-              97.7977828,
-              18.6270804
-            ],
-            [
-              98.253724,
-              19.708203
-            ],
-            [
-              98.9596757,
-              19.7529807
-            ],
-            [
-              99.5433094,
-              20.1865976
-            ],
-            [
-              100.1159876,
-              20.4178496
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/myanmar.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE51Yy2ocVxDd6yuaWYui3g/vQiA7Q8g2mDA4EyOQZoQ0WQijfw89soTsagjlWTQ9ffse6nHuqar+erUsu/PT/WH3Ydn9dtif/304/Hq6vT18Pt+cjrvrdfmfl8ePuw/Ln1fLsixfL9e+8fL6ZeH+4XR/eDjfXDa9vr4su+P+7rLh49P+eLd/eNuwLLubx9Nfe74sfmzP5eX5H+8XPp+O55vj4Xhe1355vNnvvq09v5nx5XC6O5wfnr434tXq30+3T1++OfmGeXr4++a4P7/z9uX3/v7Hf8tCiEBkleHXPywxglKkln+38On6fwGFi5B4AzDSiSlmgASUiGjSAAlU3ELGeIYoW3CpVak6dVjJTSI2AM0ypUaAVVApmtUDSBDKJT4KYBWwYlZWw2MgSiEdBbAKTKiKu30MpYWSOcJLyMrQDX8FSDmYaYjnjuxsDU8BXThHhK4ARw2qnl6BrFDUWToCgtWxZ8MAU1yCp94GpeQGXFEGsg3hghhLunkOoWJiNTUv2Qup4QUYZhJP3WV1lo3wBYSuXJkdtoAiqtw4vAkiVmoz8gUIB9FG/BLYyZKnbFFkc+pkDshkE5/ah0aV2eU+wKvQcpbfABKpqq38YkqEzPjnoFSrqG/gsatlzcTKgFjDN/LrYCEWQ3ExIDMy0Q08RBKcVaNScBTWjfgZkLOWzfisYMZu0fmn4GEsObWP0EO3tDkNQ3FGFwFho61uQwEjzXzmrgCnC3t3VwDX5iCneOjIteEvQ6AQ4ez4CpA78Ya/DBypNuuuisGDgztbGFCJZXh6GdyYLToegfBa2qbmCQqLdrUi0DBNm7GPQTzNpOMheGCmzPBkJRlHTwcVpBnpTKwE3IVNW/GlgmAvp1n4BEyxMpu4UIG4a/EMT9ckJnkLHyUwiZHM6KJgItprBwVwBCuOtSUzsR82ckCJmtY2hcRU1G6fQaKoDRtdA/ES640uGQTpMHgOhhaerRKRw9rlKs7IF0CuJtXJ51CcIbM5pgKsAoN69BwI0TymnUFEhHAns0JKcI47SUJx7HACrqhWM2VOMCyLLThilhgqX4JyimxklwGFK306FIWrqfWjS6BKXENpSVALCm1KT3jpC3wKt6qyYXO3oITLapbbApQkxs49hHI0tVn0CiyDN4SKIIvDeQpH5WJ9yCKGRA0ddhkFTIxEHU+AvbhkOuFjRZh1oRJIDpsPgSqY1JtSUnBm5JieNSrGjbO2dufyEzOqSUhYa/rIQDC1YpaOhMK1rnX7HCgiWaczqpaE9+j5KnwpNv0AkVbE3NkSsKqyjkdACcvy7m6CrkVymN2AqDVK3b4E58DEaTrYJDbqRkFg8rDJSCgrjz5QrnDGlcOOvsBUBKsPgAiUbjUrHD/xAfZq6/717vnq9frp6vnqPwfYGb4mFwAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/myanmar.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaMyanmar110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

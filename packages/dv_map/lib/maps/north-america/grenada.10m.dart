@@ -2,299 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for north-america/grenada.10m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Grenada",
-        "iso_a2": "GD",
-        "iso_a3": "GRD",
-        "continent": "North America"
-      },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [
-                -61.6129451,
-                12.2144229
-              ],
-              [
-                -61.6066788,
-                12.2202823
-              ],
-              [
-                -61.6060278,
-                12.2233747
-              ],
-              [
-                -61.6276749,
-                12.2367211
-              ],
-              [
-                -61.6505021,
-                12.2397322
-              ],
-              [
-                -61.6714575,
-                12.2360701
-              ],
-              [
-                -61.7296443,
-                12.1666527
-              ],
-              [
-                -61.7302954,
-                12.1493188
-              ],
-              [
-                -61.7510473,
-                12.1100935
-              ],
-              [
-                -61.7564184,
-                12.087836
-              ],
-              [
-                -61.7537736,
-                12.0741641
-              ],
-              [
-                -61.7488501,
-                12.0626488
-              ],
-              [
-                -61.7459611,
-                12.0509301
-              ],
-              [
-                -61.7495011,
-                12.0363223
-              ],
-              [
-                -61.7558488,
-                12.0302595
-              ],
-              [
-                -61.7905167,
-                12.0083682
-              ],
-              [
-                -61.7755428,
-                12.0043399
-              ],
-              [
-                -61.7569474,
-                12.003404
-              ],
-              [
-                -61.7399796,
-                12.0069034
-              ],
-              [
-                -61.7296443,
-                12.0158145
-              ],
-              [
-                -61.7217505,
-                12.0110538
-              ],
-              [
-                -61.7132462,
-                12.0072696
-              ],
-              [
-                -61.7042537,
-                12.0045434
-              ],
-              [
-                -61.6949357,
-                12.0028344
-              ],
-              [
-                -61.6934301,
-                12.0122745
-              ],
-              [
-                -61.6893611,
-                12.0197615
-              ],
-              [
-                -61.6829728,
-                12.0253767
-              ],
-              [
-                -61.6744279,
-                12.0294864
-              ],
-              [
-                -61.6744279,
-                12.0220401
-              ],
-              [
-                -61.6315812,
-                12.0440941
-              ],
-              [
-                -61.6260473,
-                12.053046
-              ],
-              [
-                -61.6257218,
-                12.0612247
-              ],
-              [
-                -61.6245011,
-                12.0690372
-              ],
-              [
-                -61.6215714,
-                12.0749372
-              ],
-              [
-                -61.6163631,
-                12.0772973
-              ],
-              [
-                -61.6138403,
-                12.0803897
-              ],
-              [
-                -61.6194555,
-                12.0967471
-              ],
-              [
-                -61.6197811,
-                12.1045596
-              ],
-              [
-                -61.6131079,
-                12.1198591
-              ],
-              [
-                -61.6087133,
-                12.1267764
-              ],
-              [
-                -61.6063126,
-                12.1337751
-              ],
-              [
-                -61.6027726,
-                12.1829288
-              ],
-              [
-                -61.604563,
-                12.1974551
-              ],
-              [
-                -61.6129451,
-                12.2144229
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                -61.4280493,
-                12.4546573
-              ],
-              [
-                -61.4273982,
-                12.4754092
-              ],
-              [
-                -61.4233292,
-                12.4951846
-              ],
-              [
-                -61.4216202,
-                12.5133731
-              ],
-              [
-                -61.4280493,
-                12.5297305
-              ],
-              [
-                -61.4434708,
-                12.5165469
-              ],
-              [
-                -61.4543351,
-                12.4928246
-              ],
-              [
-                -61.4672745,
-                12.475572
-              ],
-              [
-                -61.488881,
-                12.482001
-              ],
-              [
-                -61.4947811,
-                12.4723168
-              ],
-              [
-                -61.4962459,
-                12.4683292
-              ],
-              [
-                -61.4857479,
-                12.4688175
-              ],
-              [
-                -61.4826554,
-                12.4683292
-              ],
-              [
-                -61.4860734,
-                12.4622257
-              ],
-              [
-                -61.4927872,
-                12.4464786
-              ],
-              [
-                -61.4962459,
-                12.4403751
-              ],
-              [
-                -61.4792374,
-                12.4467227
-              ],
-              [
-                -61.4625545,
-                12.4551456
-              ],
-              [
-                -61.4456681,
-                12.4597842
-              ],
-              [
-                -61.4280493,
-                12.4546573
-              ]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for north-america/grenada.10m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE6VYy47bVgzd+ysEr9OAj0PyMruiRbtqUXRbBIWRqKmBGXvgOItBMP9eyMkMMjPiAGG9ECzx3qMjPg4pfd5M0/Z8ezNv30zbX+bd+dNp/ul4dTW/O++Ph+2rxfzPl8sft2+mvzbTNE2fL8fnGy/LL4ab0/FmPp33l033y6dpe9hdXzb8epoPu/e7hw3TtN1/PP69k4vx52fX9XL9z0eGd8fDeX+YD+fF9vvxdP53+vF6Pu3f7bZfF9098PkwH6/n8+n2MZt7+r99ujrv/zhe3X74+sgPdzie3u8Pu/M3z/7l9+3/p2fPz6fpB+fXzpIwfvXMyPJaGBDJJ6a3T9cWwOQeY6wDC8kQbQOTRAWsGogmsIQHch1YPYS5CWxkJIWPNUNFmsDBsLCKMQU1GYekA7oKzO5u0vRxKEka1oGRymM0gY0JUTBmolTrAjt4rDOmEUO9i6sR6uu4AXZ0Y4cxjNazjVwcbRfD0rkANkptZxvSqAJWV+lKRZgNFBpESmLZTYokY491YBrqo1nREWaQgjFBNZtyHOaJKNKYFIRuQWdGFmlMnqRd4BckiNgGoxs74TBaF01iJtNufbAKXApXhHh2pYIgplW2wdD1sSdSrQKWoWgDK7TSIBaJbvB8pJYaxBnObWDJqApv8b53p4oAJNanCpLE8K6PXwQWQleOXZfyKvIYoOx2JhcvezSZEpr14WIhXMTOWaQ/EaJuTIu2RXdwE7bgQo0D2QdmV9eCcYRkdKdu1gEqYjdIR3Z9zAmzQo7TA9HNNs4YRfCYYNaVY2dlKgqPOYdllzGNYC1mWPGItlSQK8t6k2bVCGszlogKeEhKd9Z0gnnhiQxYm/D3v+5uqrNHt+y8e0MGIdefEga3brFCQnOsKzjCQNmUF4iqZAGcxqMr4RB2oXVgW1JUmwF/yce2yCE1BwZAEbTedIzd4M1JfZnntEhRpAxp+9hjGbyqrLBuz8EYYxR8h1B3DEGi1G+EKHtTW5BLX1/Xb/hYErzrCAsUjQE+Bkc314a4FV9N/idjp9AKWESs2dWREiMKoYAjRjeJXwoeSNutDJGixQsyltLpfvKCi1lVdmYM67oC5l4VnmUMtFX+u/tS3SQ3T//dbe6Pbzd3m/8AOYH77+sXAAA=';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for north-america/grenada.10m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get northAmericaGrenada10m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

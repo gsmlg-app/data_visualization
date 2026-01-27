@@ -2,213 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for north-america/curacao.10m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Cura\u00e7ao",
-        "iso_a2": "CW",
-        "iso_a3": "CUW",
-        "continent": "North America"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -68.7807511,
-              12.0978051
-            ],
-            [
-              -68.8040258,
-              12.1170108
-            ],
-            [
-              -68.8118383,
-              12.1293399
-            ],
-            [
-              -68.8148087,
-              12.1496036
-            ],
-            [
-              -68.8207902,
-              12.1623396
-            ],
-            [
-              -68.8352758,
-              12.1710473
-            ],
-            [
-              -68.9612931,
-              12.2013614
-            ],
-            [
-              -69.0040177,
-              12.2216658
-            ],
-            [
-              -69.0407609,
-              12.2560489
-            ],
-            [
-              -69.0499568,
-              12.2761091
-            ],
-            [
-              -69.0604142,
-              12.3225772
-            ],
-            [
-              -69.0715226,
-              12.341376
-            ],
-            [
-              -69.089589,
-              12.356879
-            ],
-            [
-              -69.1077775,
-              12.3678246
-            ],
-            [
-              -69.1506242,
-              12.3857283
-            ],
-            [
-              -69.1562394,
-              12.3906111
-            ],
-            [
-              -69.1612036,
-              12.3915063
-            ],
-            [
-              -69.1661271,
-              12.3878441
-            ],
-            [
-              -69.1717423,
-              12.3788923
-            ],
-            [
-              -69.1638077,
-              12.3618839
-            ],
-            [
-              -69.1619767,
-              12.3428409
-            ],
-            [
-              -69.164296,
-              12.3069522
-            ],
-            [
-              -69.1595353,
-              12.2933617
-            ],
-            [
-              -69.1481014,
-              12.2844099
-            ],
-            [
-              -69.1343888,
-              12.2773298
-            ],
-            [
-              -69.1226701,
-              12.269029
-            ],
-            [
-              -69.0919083,
-              12.2198754
-            ],
-            [
-              -69.0786027,
-              12.2042504
-            ],
-            [
-              -69.0628963,
-              12.1984317
-            ],
-            [
-              -69.0436092,
-              12.196682
-            ],
-            [
-              -69.0272111,
-              12.1900902
-            ],
-            [
-              -69.0202531,
-              12.1697452
-            ],
-            [
-              -69.0074357,
-              12.1481794
-            ],
-            [
-              -68.9777726,
-              12.1245792
-            ],
-            [
-              -68.9447322,
-              12.1056176
-            ],
-            [
-              -68.893422,
-              12.0905216
-            ],
-            [
-              -68.8411759,
-              12.0554874
-            ],
-            [
-              -68.8148087,
-              12.0431583
-            ],
-            [
-              -68.7947485,
-              12.0413272
-            ],
-            [
-              -68.7698462,
-              12.0429141
-            ],
-            [
-              -68.7486466,
-              12.0470238
-            ],
-            [
-              -68.7397355,
-              12.053046
-            ],
-            [
-              -68.7452286,
-              12.0622419
-            ],
-            [
-              -68.7807511,
-              12.0978051
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for north-america/curacao.10m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE52XTWsUQRCG7/srhj3Hob4/vIngUbyIBxVZ4hgXkp2wTg5B8t9lVhOMlkhlD0NvV/dDdVV1v93fN8OwXW6vp+3zYftq2i03x+nlfHk5nS/7+bA9W81ffnZ/2z4f3m+GYRi+n75/TzwNPxmuj/P1dFz2p0n3w4dhe9hdnSa8vDnuPtwATL6bH2YNw3b/bf60o9OId3/186n/7SPD+XxY9ofpsKy21/Nx+Tq8uJqO+/Pd9teguwenLqb5alqOt49dul/Dm/ny9uLXkh/g8/Hz/rBbflv7z9/v7T//DcMzi9EDXBHP/jAhjZAeoPjI8PHsv8AAAdIogIgOCNEGIgYHV0BK5sw+UALCK6CkAVsbSOAJVAGNmLMPZCWvY+gI4twFpq2xqrJMgGwoPWCOAALoVQyJ0EybWc4RBNwgK6AaSDSzvAIz1aoYkhtCNgs7RzAQlCrLTKTu1AY6KpFVQEH2ZtXkCJEaVQRZLbwdQAR3d6145kHS9g8VjOoAhjpFs6pXoBGnVMAEQ2ynGA0JuMxIrt73PTRD8mrfcXiI9D10dKHqMGSPSHqChxxQbmQ2jOB+2RimWwkUCoEnAIWyzAlYKrW3HWoqaxXCVU4MvQ2UQMCqDClEoCtQOSILR9RHlzNl+3BFInMoj39LoP7ZmphQSjJhhmtfTjwMqJQTEFLoA40irbw0ZAj3kwzCBllqfJpF//AnJyzvXZgACU8AAmkp8Wjpon0guLDW16RAz2ZOYsxVT0q9QxL1bHoYY4o4U5kTUMOugsYYyVLyIEEJ+zxBdK0kGVQlvB3Cf19dQRi1K6ExeopLVCIPgkzdS02MbhliZQyFEruKF6NLmFhVNSAOxO33hHM6a7lkZehea1YHlShKB41IsP0+aT7JNlX7vnW3uf9+3NxtfgCHIwMxRg8AAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for north-america/curacao.10m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get northAmericaCuracao10m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

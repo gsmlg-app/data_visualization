@@ -2,185 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for africa/kenya.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Kenya",
-        "iso_a2": "KE",
-        "iso_a3": "KEN",
-        "continent": "Africa"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              39.20222,
-              -4.67677
-            ],
-            [
-              39.60489,
-              -4.34653
-            ],
-            [
-              39.80006,
-              -3.68116
-            ],
-            [
-              40.12119,
-              -3.27768
-            ],
-            [
-              40.26304,
-              -2.57309
-            ],
-            [
-              40.63785,
-              -2.49979
-            ],
-            [
-              40.88477,
-              -2.08255
-            ],
-            [
-              41.58513,
-              -1.68325
-            ],
-            [
-              40.993,
-              -0.85829
-            ],
-            [
-              40.98105,
-              2.78452
-            ],
-            [
-              41.8550831,
-              3.9189119
-            ],
-            [
-              41.1718,
-              3.91909
-            ],
-            [
-              40.76848,
-              4.25702
-            ],
-            [
-              39.85494,
-              3.83879
-            ],
-            [
-              39.5593843,
-              3.42206
-            ],
-            [
-              38.89251,
-              3.50074
-            ],
-            [
-              38.67114,
-              3.61607
-            ],
-            [
-              38.43697,
-              3.58851
-            ],
-            [
-              38.120915,
-              3.598605
-            ],
-            [
-              36.8550932,
-              4.4478641
-            ],
-            [
-              36.1590786,
-              4.4478641
-            ],
-            [
-              35.8174477,
-              4.7769657
-            ],
-            [
-              35.8174477,
-              5.3382321
-            ],
-            [
-              35.2980071,
-              5.506
-            ],
-            [
-              34.6201963,
-              4.8471227
-            ],
-            [
-              34.005,
-              4.2498849
-            ],
-            [
-              34.47913,
-              3.5556
-            ],
-            [
-              34.59607,
-              3.05374
-            ],
-            [
-              35.03599,
-              1.90584
-            ],
-            [
-              34.6721,
-              1.17694
-            ],
-            [
-              34.18,
-              0.515
-            ],
-            [
-              33.893569,
-              0.1098135
-            ],
-            [
-              33.9037112,
-              -0.95
-            ],
-            [
-              34.07262,
-              -1.05982
-            ],
-            [
-              37.69869,
-              -3.09699
-            ],
-            [
-              37.7669,
-              -3.67712
-            ],
-            [
-              39.20222,
-              -4.67677
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for africa/kenya.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE52WTWsbQQyG7/4Vi8+JkEbfuZXSXgql9xKKSTfBkHiD4x5MyH8vduKQZrYUdQ/LrDTzoHdH0szjYhiWu/39uLwYlp/H1e7Xdvw43d6OV7v1tFmeHdzXz+aH5cXwfTEMw/B4fPcLj9OPjvvtdD9ud+vjotP0YVhuVnfHBV/GzX71On0YluuH6ceqHV2fOjs/27++dVxNm916M252B9+H6+36arV88T69hnEzTnfjbrv/M4hT1N+m2/3Ni8hX6rT9ud6sdm/UPj9vx++/hoETGrbWzt7ZzwXMzf0P8+XZv1iGEjnDYjHlIisQ0ToWgwWRVViCQI2oj4uhuVsUWc0YpWM1UGfMIsvYQ2dYkulVVoS4z7AwmmqJRaChxB2LwIJbjYWQ2ZMQQqNVFWYQdn+rgYdoKwoMVQym9zCGpEiiWmQE5BRzrCxnhFtIhxJo6ljSeCgglewSlSE4arnFCarJId0+MkhrWCpGDohsOvPnFdGliDInmpFoZFhrXQHCll35MGiEUhFFDZO6RGXQDMNS+bAdMzW5a9ACIh4mtdgMSBM9ur76fziFIJeZtiPgbmla24S/4hSYo3GrRtcyEL3LNQUtJq2ANaS0rgIEQpxaqwkVwL6RCTTJCKnVpoB49r2aQVWrGjUNZ0oAlYuFqYCs2R24BIkaNdThHtK6HTx0XMsqqe/RCEq1gmSIZLVOGwJhBnGVlshO1N+/ELKGEkBv1oMIUDNqZ4eDZfQazxkwLWsJ6uA2izJ3qh5phbvqYm58Gj0tTu/LxdPiNw8ooThMDAAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for africa/kenya.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get africaKenya110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

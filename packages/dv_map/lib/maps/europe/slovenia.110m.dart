@@ -2,109 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for europe/slovenia.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Slovenia",
-        "iso_a2": "SI",
-        "iso_a3": "SVN",
-        "continent": "Europe"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              13.8064755,
-              46.5093061
-            ],
-            [
-              13.69811,
-              46.0167781
-            ],
-            [
-              13.9376302,
-              45.5910159
-            ],
-            [
-              13.7150598,
-              45.5003238
-            ],
-            [
-              14.4119682,
-              45.4661657
-            ],
-            [
-              14.5951095,
-              45.6349409
-            ],
-            [
-              14.9352438,
-              45.4716951
-            ],
-            [
-              15.3276746,
-              45.4523164
-            ],
-            [
-              15.3239539,
-              45.7317825
-            ],
-            [
-              15.6715296,
-              45.8341536
-            ],
-            [
-              15.7687329,
-              46.2381082
-            ],
-            [
-              16.5648084,
-              46.5037509
-            ],
-            [
-              16.370505,
-              46.8413272
-            ],
-            [
-              16.2022982,
-              46.852386
-            ],
-            [
-              16.0116639,
-              46.6836107
-            ],
-            [
-              15.1370919,
-              46.6587027
-            ],
-            [
-              14.6324716,
-              46.4318173
-            ],
-            [
-              13.8064755,
-              46.5093061
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for europe/slovenia.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WUTWvcMBCG7/4VwudFzGg0H8q1tNBLKRR6KaGY1AmGjbU4TmEJ+9+LneyyiQVFPghJr+bxOx6PXhrn2vl46Nsb137pu/l56j/l/b6/m4c8trtFvn/dfmpv3K/GOede1nEbuB5fhcOUD/00D2vQ+bhz7dg9rgE/9vlvPw7dJcK5dnjKv7uwql83+7Tu//x2LdzlcR7GfpwX7fPz8sr2TT1dnDz0+bGfp+N7H2fj3/P++PCW54Wapz/D2M1XCb8+1/OPK+eQvIFEZd59UKJ4hkQg+E643f2PJ8kQCzRAUbVaWiIVgrDhseeEgJwqeYoMnKzEA6BAVsWLPiImsZK/KILCWsnjxAhpWw32QjFFqMs3+kQcIpXyjYqSuK4e7CmoaJQSjwOhxGoeJaZU4CmhWuBKnihySCV/RhGZpJKnYkph6098IEOwUMUTzxINLBa7jZQr6yueFBhKzWsRKWitvQAhpMLvLN44kNV9vaXnUaRQXfFiJAh13cEeSSFhkcemEGq7TSgsbVDgRUJDpcrbpfIubUrz8+zUnMfb5tT8A5nG/vTzBgAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for europe/slovenia.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get europeSlovenia110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

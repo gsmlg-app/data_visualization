@@ -2,113 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for europe/lithuania.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Lithuania",
-        "iso_a2": "LT",
-        "iso_a3": "LTU",
-        "continent": "Europe"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              26.4943315,
-              55.6151069
-            ],
-            [
-              25.5330465,
-              56.1002969
-            ],
-            [
-              25.0009343,
-              56.1645307
-            ],
-            [
-              24.8606844,
-              56.3725284
-            ],
-            [
-              23.8782638,
-              56.2736714
-            ],
-            [
-              22.2011569,
-              56.3378018
-            ],
-            [
-              21.0558004,
-              56.0310764
-            ],
-            [
-              21.2684489,
-              55.1904817
-            ],
-            [
-              22.3157235,
-              55.0152986
-            ],
-            [
-              22.7577637,
-              54.8565744
-            ],
-            [
-              22.6510519,
-              54.582741
-            ],
-            [
-              22.7310987,
-              54.3275369
-            ],
-            [
-              23.2439873,
-              54.2205667
-            ],
-            [
-              23.4841276,
-              53.9124977
-            ],
-            [
-              24.4506836,
-              53.9057022
-            ],
-            [
-              25.5363538,
-              54.2824234
-            ],
-            [
-              25.7684327,
-              54.8469626
-            ],
-            [
-              26.5882792,
-              55.1671756
-            ],
-            [
-              26.4943315,
-              55.6151069
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for europe/lithuania.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WUPW/bMBCGd/0KQrNBHO+bWYt26tChnYqgEFI1FeBIhiMPRuD/XliOjSQiClADQfHlPXpPx+NLE0I7H3d9exfaL303H/b9p2m77R/mYRrbzVn+c1l+bu/CzyaEEF6WcR24bF+E3X7a9ft5WIKu20Nox+5pCfg6zH8P3Th0t5AQ2uF5+tXhIn9frdNl/cdb4WEa52Hsx/msfT6cv9m+qqeblcd+eurn/fG9kavzb9P2+Pia6I067X8PYze/yfjyvJ1/fAsBNXJmoiSbD4pI1CQJNL8T7jf/50kUImBd8zQmAMzVPADIxFTiKQuBVfE4uoI6c4FHhoLOVTyKbo5KXuChkVqq42FESEk0l/yROSSv4qUIIg5QyhcogWmdvxTx/Pd87U9iysCe6uqBkZIYUun8QRLMrpU8EzMlW/E4uqgY19ZDJYGkdb4cxdE41dqjBNlL9ghNqLI9KCJTdlu3B0dEENW6clBk54SmKx7FnJCz1bYbC6hTkQdigFh9vShJod04oiMj1ZVXoqkzYfG4sGbFuuOnUdzRMpbaQy2Z1PIqr+emNL/OTs11vG9OzT+PZ+iFRwcAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for europe/lithuania.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get europeLithuania110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

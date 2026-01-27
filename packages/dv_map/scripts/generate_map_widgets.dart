@@ -1,8 +1,10 @@
 #!/usr/bin/env dart
 
+import 'dart:convert';
 import 'dart:io';
 
 /// Generates Dart files for each GeoJSON map asset.
+/// Each file contains gzipped binary data encoded as base64.
 /// Organized as: lib/maps/<continent>/<country>/<scale>.dart
 void main() async {
   final assetsDir = Directory('assets');
@@ -19,7 +21,16 @@ void main() async {
   await for (final entity in assetsDir.list(recursive: true)) {
     if (entity is File && entity.path.endsWith('.json')) {
       final relativePath = entity.path.replaceFirst('assets/', '');
-      final content = await entity.readAsString();
+      final jsonContent = await entity.readAsString();
+
+      // Gzip compress the JSON
+      final jsonBytes = utf8.encode(jsonContent);
+      final gzipBytes = gzip.encode(jsonBytes);
+      final base64Data = base64Encode(gzipBytes);
+
+      final originalSize = jsonBytes.length;
+      final compressedSize = gzipBytes.length;
+      final ratio = (compressedSize / originalSize * 100).toStringAsFixed(1);
 
       final parts = relativePath.split('/');
       String outputPath;
@@ -52,7 +63,7 @@ void main() async {
       outputFile.parent.createSync(recursive: true);
 
       // Generate the Dart code
-      final dartCode = generateMapFile(getterName, relativePath, content);
+      final dartCode = generateMapFile(getterName, relativePath, base64Data);
       await outputFile.writeAsString(dartCode);
 
       allMaps[identifier] = MapInfo(
@@ -60,7 +71,7 @@ void main() async {
         importPath: importPath,
         assetPath: relativePath,
       );
-      print('Generated: $outputPath');
+      print('Generated: $outputPath ($ratio% of original)');
     }
   }
 
@@ -173,27 +184,45 @@ String _toCamelCase(String snake) {
 String generateMapFile(
   String getterName,
   String assetPath,
-  String jsonContent,
+  String base64Data,
 ) {
-  final escaped = jsonContent.replaceAll("'", r"\'");
-
   return """
 // Generated from: assets/$assetPath
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for $assetPath
-const String _kGeoJson = '''$escaped''';
+/// Gzipped GeoJSON data for $assetPath (base64 encoded)
+const String _kCompressedData = '$base64Data';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for $assetPath
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get $getterName {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }
 """;
 }

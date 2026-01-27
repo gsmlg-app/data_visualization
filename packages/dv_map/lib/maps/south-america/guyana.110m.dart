@@ -2,197 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for south-america/guyana.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Guyana",
-        "iso_a2": "GY",
-        "iso_a3": "GUY",
-        "continent": "South America"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -56.5393857,
-              1.8995226
-            ],
-            [
-              -57.1500978,
-              2.7689269
-            ],
-            [
-              -57.2814335,
-              3.3334919
-            ],
-            [
-              -57.601569,
-              3.3346546
-            ],
-            [
-              -58.0446944,
-              4.0608636
-            ],
-            [
-              -57.8602095,
-              4.5768011
-            ],
-            [
-              -57.9142889,
-              4.8126265
-            ],
-            [
-              -57.3072459,
-              5.0735666
-            ],
-            [
-              -57.1474365,
-              5.9731499
-            ],
-            [
-              -57.5422186,
-              6.3212682
-            ],
-            [
-              -58.0781032,
-              6.8090937
-            ],
-            [
-              -58.4548761,
-              6.8327874
-            ],
-            [
-              -58.4829622,
-              7.3476914
-            ],
-            [
-              -59.1016841,
-              7.999202
-            ],
-            [
-              -59.7582849,
-              8.3670348
-            ],
-            [
-              -60.5505879,
-              7.779603
-            ],
-            [
-              -60.6379728,
-              7.4149999
-            ],
-            [
-              -60.2956681,
-              7.0439114
-            ],
-            [
-              -60.5439992,
-              6.8565844
-            ],
-            [
-              -61.1593363,
-              6.6960774
-            ],
-            [
-              -61.139415,
-              6.2342968
-            ],
-            [
-              -61.4103029,
-              5.9590681
-            ],
-            [
-              -60.7335742,
-              5.2002772
-            ],
-            [
-              -60.2136834,
-              5.2444864
-            ],
-            [
-              -59.9809586,
-              5.0140612
-            ],
-            [
-              -60.1110024,
-              4.5749665
-            ],
-            [
-              -59.7674058,
-              4.4235029
-            ],
-            [
-              -59.5380399,
-              3.9588026
-            ],
-            [
-              -59.8154132,
-              3.6064985
-            ],
-            [
-              -59.9745249,
-              2.7552327
-            ],
-            [
-              -59.7185457,
-              2.2496304
-            ],
-            [
-              -59.6460437,
-              1.7868938
-            ],
-            [
-              -59.0308616,
-              1.3176977
-            ],
-            [
-              -58.540013,
-              1.2680883
-            ],
-            [
-              -58.4294771,
-              1.463942
-            ],
-            [
-              -58.1134499,
-              1.5071951
-            ],
-            [
-              -57.660971,
-              1.6825849
-            ],
-            [
-              -57.3358229,
-              1.9485377
-            ],
-            [
-              -56.7827042,
-              1.8637108
-            ],
-            [
-              -56.5393857,
-              1.8995226
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for south-america/guyana.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WXTWscRxCG7/srhj3LRX1/+BYCydVgcgjBhEWZOAvSrliPDsLov5tdW8LaHgg1h6Gnq/uhqqv67Z6vm2naLk8P8/b9tP1t3i2Pp/nX493dfLvsj4ftzdn87/fuL9v301+baZqmr5f3OPEy/GJ4OB0f5tOyv0x6GT5N28Pu/jLh98en3WH3On6atvsvx793fLH9OfTLpf+PN4bb42HZH+bDcrZ9PD4u/02/3M+n/e1u+2PQ86s7n+fj/bycnt468+L9h+Pd0+cfwb7Cj6d/9ofd8lPU35+f29df0/TOHExK0uLmykSQVcbsb/o/3fwPL4AMsSKveQzhWezV5XGSitg1T0BEtKjNcyTzWsOpmzbDTUBVL9VrngI6pkt7+dKRsYZwFSw8kajLK1LOHOJVSGJnty5PMFht4BlgiLn3y0VDxYd4DSqEtNrpNWWm9GuegzCxJ7fzG0koPPISC0uiy1PTDKcVnnBkaJuXXM6DfwGi4UVNXgEheergX0BVMTaXryAsOXUolwTxQNFs8RzBDC1j4AVElKN0cS5RwYNYBei59prV5whc5p4rq4cqRc1snMNVOa/7SrWYW2qTR0BWIi4jz8sxmtV35kkpDZvXgUW5vJldAiUU5BVxKSv07ImfI4SIhQ7LZ8CIHNGr5nN6STxlEHsDVtX09marxLJRrAyQFJ3a/hERIq8cRhZa3hX7gvBQtGF7KCiLITfFucAkUWrl8C3LxO5doyDJlEZxFnB0rWzHW6HGo1oxhBkLN8W+IChNx7sVA2u5YLteXB1VVu5qkZ4lvf1mBSiYTkP9EQiFV7QPN1NEGtSFgD0xs6fO57ONSyMGNSVQl9L2UU4kqmP1ERgGlbWvVu5Ya955sqW2by4iljyKH0FpmnST4RDJgaP4EaRLEDaLpfujsFlrv7SeNy/vT5vnzTeZGM9a1Q0AAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for south-america/guyana.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get southAmericaGuyana110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

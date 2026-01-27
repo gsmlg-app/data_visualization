@@ -2,295 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for seven-seas-open-ocean/south-georgia-and-the-islands.50m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "South Georgia and the Islands",
-        "iso_a2": "GS",
-        "iso_a3": "SGS",
-        "continent": "Seven seas (open ocean)"
-      },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [
-                -26.2641113,
-                -58.4351563
-              ],
-              [
-                -26.2793945,
-                -58.4017578
-              ],
-              [
-                -26.3034668,
-                -58.3822266
-              ],
-              [
-                -26.4012207,
-                -58.3832031
-              ],
-              [
-                -26.4510254,
-                -58.415332
-              ],
-              [
-                -26.415332,
-                -58.4398437
-              ],
-              [
-                -26.2598633,
-                -58.4922852
-              ],
-              [
-                -26.2641113,
-                -58.4351563
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                -37.1033203,
-                -54.065625
-              ],
-              [
-                -37.2328125,
-                -54.0605469
-              ],
-              [
-                -37.36875,
-                -54.0091797
-              ],
-              [
-                -37.3822266,
-                -53.984082
-              ],
-              [
-                -37.5358398,
-                -53.99375
-              ],
-              [
-                -37.9455078,
-                -53.9956055
-              ],
-              [
-                -38.0174316,
-                -54.0080078
-              ],
-              [
-                -37.912793,
-                -54.0289063
-              ],
-              [
-                -37.6188477,
-                -54.0420898
-              ],
-              [
-                -37.6890137,
-                -54.0767578
-              ],
-              [
-                -37.6922852,
-                -54.1347656
-              ],
-              [
-                -37.6309082,
-                -54.1674805
-              ],
-              [
-                -37.4976563,
-                -54.1558594
-              ],
-              [
-                -37.1581055,
-                -54.2714844
-              ],
-              [
-                -37.0828125,
-                -54.3115234
-              ],
-              [
-                -37.0067383,
-                -54.340918
-              ],
-              [
-                -36.8859863,
-                -54.3394531
-              ],
-              [
-                -36.851709,
-                -54.3660156
-              ],
-              [
-                -36.823877,
-                -54.4042969
-              ],
-              [
-                -36.7349609,
-                -54.4666016
-              ],
-              [
-                -36.628125,
-                -54.4960938
-              ],
-              [
-                -36.506543,
-                -54.5112305
-              ],
-              [
-                -36.4720703,
-                -54.5344727
-              ],
-              [
-                -36.445752,
-                -54.5707031
-              ],
-              [
-                -36.3114746,
-                -54.69375
-              ],
-              [
-                -36.251709,
-                -54.7798828
-              ],
-              [
-                -36.1236328,
-                -54.8529297
-              ],
-              [
-                -36.085498,
-                -54.8667969
-              ],
-              [
-                -35.938916,
-                -54.8342773
-              ],
-              [
-                -35.8669434,
-                -54.7923828
-              ],
-              [
-                -35.798584,
-                -54.7634766
-              ],
-              [
-                -35.9132812,
-                -54.7108398
-              ],
-              [
-                -35.9215332,
-                -54.6375
-              ],
-              [
-                -35.8953125,
-                -54.5547852
-              ],
-              [
-                -35.9646484,
-                -54.5680664
-              ],
-              [
-                -36.0331055,
-                -54.5676758
-              ],
-              [
-                -36.0731445,
-                -54.5541016
-              ],
-              [
-                -36.1168945,
-                -54.4583008
-              ],
-              [
-                -36.1726074,
-                -54.3822266
-              ],
-              [
-                -36.2356445,
-                -54.3604492
-              ],
-              [
-                -36.2852539,
-                -54.2886719
-              ],
-              [
-                -36.3264648,
-                -54.2511719
-              ],
-              [
-                -36.3858398,
-                -54.2789063
-              ],
-              [
-                -36.4067383,
-                -54.3033203
-              ],
-              [
-                -36.4486328,
-                -54.3083984
-              ],
-              [
-                -36.5410156,
-                -54.2480469
-              ],
-              [
-                -36.6474121,
-                -54.2623047
-              ],
-              [
-                -36.6068848,
-                -54.1898437
-              ],
-              [
-                -36.7038086,
-                -54.1081055
-              ],
-              [
-                -36.7600586,
-                -54.1077148
-              ],
-              [
-                -36.8051758,
-                -54.1014648
-              ],
-              [
-                -36.8489258,
-                -54.0850586
-              ],
-              [
-                -36.9289062,
-                -54.0811523
-              ],
-              [
-                -37.0060547,
-                -54.1142578
-              ],
-              [
-                -37.1033203,
-                -54.065625
-              ]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for seven-seas-open-ocean/south-georgia-and-the-islands.50m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE52YS2vkRhCA7/MrxJwS2DRVXc/eayBLDoHAHsMSBlvxDnglMyMHzOL/HlpeO2tbZdiawyCp1Z9K9S593Q3Dfrm7Gffvh/1v42G5PY2/ztfX48VynKf9u778z8Pl8/798NduGIbh6/r/euN6+7pwc5pvxtNyXDc93j4M++nwZd3wcb5dPg8fxvl0dTwMh+lyWD6Pw+/n68N0eX7CDMP+eJ7/PtS+5cPHV9dpRT1fuJin5TiN07Kujf+O03AeD+fhp/lmnIb5YjxMP++/3X7/JO/VOH8Zl9Pdc2kfX++P2+vl+Od8fXf1TSVPz5pPl8fpsHynm4ff98cvz16fD8MvVUtVRkR693pRvDAJitKLtU8vbw7I1qixBGRAE/McmYBY1bfJ5LVW1RyZAWsFi8hUgTBJFoQqHGgDhagmweveyH7NmSxpP2muFHlGq9UlKXLG53bR2bNn/nAEkBUE6nbdkoYLqGiVxGuSlUrVsW4GQAeDsLYcmdQt4kJDaxmTd+5D7GyRqTRn8IzFyYqQOLXNiKXSGllSxY1FwEKuKEiK7AXQmHBTFV3JDpDKXl1m7JkxAFdvkEq4ZEXRnW0zeXEBruAtKbJ6A6SIbJpM5Z38kEe2yUhsKplU3skEDTwiq7FD0um4dakCC6KIS+McGcURJIjsasjOSTL4G7mIEKVSlgxq5IE2iKFhyjW0uK8FKAD31iJViztZ0KAFYFXAnM9p8UoeBSAD15ZL+FqMuGkkMmuXOSmyvuEX6zMpaT4BFQ6sJ4iVcuGnha2CRfVaiNlqqvxpYRaLcpFYf2jS4QiRjYNiotny11u02JHNmntNGg8rKdXNusrFpbaaazG0gAtvNwJcXNWSISKlkbeoXjtxNUuVVelSNabNzp2LtUpJLUux5uIRWHvxSwW1lIZr6xmQEXovliTXcNzgoklHluJNKExDImy5WaMLrKwcKVnUQTVV+LQAUVysRXtXlIw+MELenpxXbWA62yOqBzM5FxYngGzGsKpggZ7zM3lPciQaaoMUmFvKN7T0zlMoyJ/VXQ2T9Zrq6nYBWRDzZA8nqd4ipseH/u3jrUbuYUjO1lWPqwmt2SgZg2ssSJD1KzskR2wtysZYMSBrJeBkBVRQ98g30LNfbHqXCOTggTYQ1tkiSVYAicnWR5NkywyCJpE2AHsYJcnsrUZkcOkvlCO3dUoPiiD4Ok1lyOswBcLBBIHINT1oJ75y7aKz/48fj+53j/+fdve7/wD+q3ih3xcAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for seven-seas-open-ocean/south-georgia-and-the-islands.50m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get sevenSeasOpenOceanSouthGeorgiaAndTheIslands50m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

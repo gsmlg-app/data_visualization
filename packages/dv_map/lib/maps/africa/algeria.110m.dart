@@ -2,285 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for africa/algeria.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Algeria",
-        "iso_a2": "DZ",
-        "iso_a3": "DZA",
-        "continent": "Africa"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -8.6843998,
-              27.3957441
-            ],
-            [
-              -4.9233374,
-              24.9745741
-            ],
-            [
-              -1.5500549,
-              22.7926659
-            ],
-            [
-              1.8232276,
-              20.6108094
-            ],
-            [
-              2.0609908,
-              20.1422334
-            ],
-            [
-              2.6835885,
-              19.8562302
-            ],
-            [
-              3.146661,
-              19.6935786
-            ],
-            [
-              3.1581332,
-              19.0573642
-            ],
-            [
-              4.2674195,
-              19.1552652
-            ],
-            [
-              5.677566,
-              19.601207
-            ],
-            [
-              8.5728931,
-              21.5656607
-            ],
-            [
-              11.9995056,
-              23.4716684
-            ],
-            [
-              11.5606694,
-              24.0979092
-            ],
-            [
-              10.7713636,
-              24.5625321
-            ],
-            [
-              10.3038469,
-              24.3793133
-            ],
-            [
-              9.9482613,
-              24.9369536
-            ],
-            [
-              9.9106926,
-              25.3654546
-            ],
-            [
-              9.3194108,
-              26.0943249
-            ],
-            [
-              9.7162858,
-              26.5122063
-            ],
-            [
-              9.629056,
-              27.1409535
-            ],
-            [
-              9.7561284,
-              27.6882586
-            ],
-            [
-              9.6838847,
-              28.1441739
-            ],
-            [
-              9.859998,
-              28.9599897
-            ],
-            [
-              9.8056344,
-              29.4246384
-            ],
-            [
-              9.4821399,
-              30.3075561
-            ],
-            [
-              9.0556027,
-              32.102692
-            ],
-            [
-              8.4391028,
-              32.5062849
-            ],
-            [
-              8.4304729,
-              32.7483373
-            ],
-            [
-              7.6126416,
-              33.3441149
-            ],
-            [
-              7.5244816,
-              34.0973764
-            ],
-            [
-              8.1409815,
-              34.655146
-            ],
-            [
-              8.3763676,
-              35.479876
-            ],
-            [
-              8.2178243,
-              36.433177
-            ],
-            [
-              8.4209644,
-              36.9464273
-            ],
-            [
-              7.7370785,
-              36.8857075
-            ],
-            [
-              7.330385,
-              37.1183806
-            ],
-            [
-              6.2618197,
-              37.110655
-            ],
-            [
-              5.3201201,
-              36.7165189
-            ],
-            [
-              4.8157581,
-              36.8650369
-            ],
-            [
-              3.1616988,
-              36.7839049
-            ],
-            [
-              1.4669186,
-              36.6056471
-            ],
-            [
-              0.5038766,
-              36.3012729
-            ],
-            [
-              -0.1274544,
-              35.8886624
-            ],
-            [
-              -1.2086029,
-              35.7148487
-            ],
-            [
-              -2.1699137,
-              35.1683963
-            ],
-            [
-              -1.7929858,
-              34.5279186
-            ],
-            [
-              -1.7334546,
-              33.9197128
-            ],
-            [
-              -1.3880493,
-              32.864015
-            ],
-            [
-              -1.1245512,
-              32.6515215
-            ],
-            [
-              -1.3078991,
-              32.2628889
-            ],
-            [
-              -2.6166048,
-              32.0943462
-            ],
-            [
-              -3.0689803,
-              31.724498
-            ],
-            [
-              -3.6474979,
-              31.637294
-            ],
-            [
-              -3.690441,
-              30.8969516
-            ],
-            [
-              -4.8596462,
-              30.5011876
-            ],
-            [
-              -5.2421293,
-              30.000443
-            ],
-            [
-              -6.0606323,
-              29.7316997
-            ],
-            [
-              -7.0592277,
-              29.5792284
-            ],
-            [
-              -8.6741162,
-              28.841289
-            ],
-            [
-              -8.6655896,
-              27.6564259
-            ],
-            [
-              -8.6651245,
-              27.5894791
-            ],
-            [
-              -8.6843998,
-              27.3957441
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for africa/algeria.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WYTWsbSRCG7/4Vg85WUd8fuYUse97zLmERWcUIHMko2oMJ/u9Ly7Fx3MNC6SBG05qH6up6366eHzfLsrk8Puw3H5bN7/vd5d/z/tPp/n7/5XI4HTe3Y/jr8+3vmw/LXzfLsiw/rt/zg9e/XwcezqeH/flyuD708vdl2Rx3364PfLy/258Pu9cHlmVz+H76e8dj8Lc/p/vyfP/j24Evp+PlcNwfL1fg1/Phy27zc/TpNZC7/enb/nJ+/DWMl7j/ON0/3v2c5iv1dP7ncNxd3sz3+fP2+v2vZdkmeKpU5e27EQ6QslClXwY+3/4/T6FYREInnkKFWjR5BGaIpjXxGKLY3arDI0gW5vAJh+CEiaUdHAM6VuGcPQRSZpEmzlMs097jqCDNWZA7OAFSd6cVmpdYpDdpliTCKzi0ENdWcArsoVRrcyUzdmvhDDzCfFrXMVckxujAEiw4S6bMMYG5ufdwRFBVhjZXnYAGuWerTGhEge61JjKsKKxW7gghgsRljk/BnE24JVpCEJRUn0WrIFFCIh1eQWmyk6x5iniZtAq5oAi9eJ6tgbipaRMnVEorHuCApcLacqiCIOe0NZwRM3ozd861VnkBpFgm1gzOnDjnwgvwTLaepdTwu0yNCZdAqhTSTF1arW1lCWVVWS3VFiSai85zLVBWl55oCzSZpCZNyFBLmHlLY8NzzZGn1AkDIXvPARJUipCn1AmDoXP2anjgUIPnuTKEpki0ajjAiV1pKmIREFWiXnQBxqq5gru6p4S3FjavQkqaNjJRcDPquUmChIvPDYoYaFRGk8YUyTo5pzioCEVzW1TG8lkR4lDqyt1lDQmMudsRh0wLjJY3BcjYdWZaAFFKYitzDuyUVLO+Bg7dWrEZCI8uZGooxIfdG2WrghWSLCzXcOmG4i2cADl55ax+h0gp7OmLQN2Lci5hB0dzjZbTIRhKxtzaiYMgcXArui0CcaitVLFBZrpzS/5bAsZ0XDE7gyBNzZbItgzkVSRz5RmQp1SvAdjSOCfVSkMhCsYxFqrLExlN0oobF1UQZ5Mnmag1exRDuiK1lLYlIFYzmo4pwuBGxm2eYGTVrDUGds7sSXfL4OSOurbVjnZRvbVzbwXQsxLn9BEEq1ZvNQRcQyvmaiZwCe6djweuUHVOHkKWl1Gv9nR0eK4+L+5wCaLm9rg1YGXildpDQETVntR8vA5w4fmgUhAyZN2zggC0Yo65Py6wKOZeCzpe9oQSzenjhFTiZiknuJtlrR0u3Fy5927mmTfUu8KzLI3qvTtqv9u6Wbt+uXq6efn+fPN08x/FpzTFghQAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for africa/algeria.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get africaAlgeria110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

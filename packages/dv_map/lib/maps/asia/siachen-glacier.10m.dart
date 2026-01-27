@@ -2,189 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/siachen-glacier.10m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Siachen Glacier",
-        "iso_a2": "-99",
-        "iso_a3": "-99",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              77.048971,
-              35.110442
-            ],
-            [
-              77.4246587,
-              35.3029238
-            ],
-            [
-              77.8003463,
-              35.4954056
-            ],
-            [
-              77.7735779,
-              35.4989713
-            ],
-            [
-              77.7603488,
-              35.4980928
-            ],
-            [
-              77.7474296,
-              35.4943204
-            ],
-            [
-              77.7167338,
-              35.4754068
-            ],
-            [
-              77.6896554,
-              35.4626944
-            ],
-            [
-              77.6606132,
-              35.4580952
-            ],
-            [
-              77.5196082,
-              35.4774392
-            ],
-            [
-              77.5121985,
-              35.4784557
-            ],
-            [
-              77.4764384,
-              35.4771638
-            ],
-            [
-              77.4127731,
-              35.4694123
-            ],
-            [
-              77.3837309,
-              35.4719962
-            ],
-            [
-              77.3520016,
-              35.4860521
-            ],
-            [
-              77.3053894,
-              35.5178332
-            ],
-            [
-              77.2811015,
-              35.5280134
-            ],
-            [
-              77.2508191,
-              35.5307006
-            ],
-            [
-              77.177542,
-              35.5231558
-            ],
-            [
-              77.1412651,
-              35.5253779
-            ],
-            [
-              77.1052983,
-              35.537987
-            ],
-            [
-              77.0922758,
-              35.5478055
-            ],
-            [
-              77.0710885,
-              35.5710082
-            ],
-            [
-              77.0581694,
-              35.5801033
-            ],
-            [
-              77.0390491,
-              35.5850125
-            ],
-            [
-              77.0175517,
-              35.5845991
-            ],
-            [
-              76.9764173,
-              35.5786563
-            ],
-            [
-              76.9357996,
-              35.5796382
-            ],
-            [
-              76.9150257,
-              35.5831522
-            ],
-            [
-              76.8964222,
-              35.5896117
-            ],
-            [
-              76.8805058,
-              35.6006705
-            ],
-            [
-              76.8569414,
-              35.6285757
-            ],
-            [
-              76.8429887,
-              35.6412881
-            ],
-            [
-              76.8245919,
-              35.6477994
-            ],
-            [
-              76.7828374,
-              35.6457323
-            ],
-            [
-              76.7773507,
-              35.6461117
-            ],
-            [
-              76.9131609,
-              35.3782769
-            ],
-            [
-              77.048971,
-              35.110442
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/siachen-glacier.10m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WWy2obUQyG936Kwet00P2SXSm020KXJRTjTtMBxw6Ouwgh717sxCFJBUVeDOPROR/S0S/pPCyGYXm4v52Wl8Py87Q6/NlPn3abzbQ+zLvt8uJo/vX0+W55OXxfDMMwPJye/248LT8Zbve722l/mE+bzsuHYbld3Zw2fJtX69/TdviyWa3naf+ycRiW893ux4qOiz5k/mPgwrDebQ/zdtoejraPd/Nq+Wx7fPHnetrdTIf9/Vtvzu5/3W3ur5+jfWHu9j/n7erwKuyn3+v39/+GwX0EiXS8eGdgHRFBhN58v7r4H01ITMMLHAMlcTR5AcBiXPAkVUCtyXNndc+SdzwH7vIMWCJqHiR143VxobSSJ0wgXR6aM5f+uQpY1z+LNFWpeEaW0vXPDAyZKp4GpHb1p5gGUfLchbPPI8zQkhei6t36cBOO8vzc0dr1IUjuXJWvWApSV88c7AxlfThmWvf8WAkASz2HgRJ2eaAcWZ2fogdz1z8KRMAqv0oByF09k0JgVvlQBgfo9it0V6nkrMSo2pULCpJp6R4pu2eXB0oZVXtW9oxudUASuVbdSsUDVLs8R4iyetURILpqAQ20Wn0BCNytNuAEqdUSCkjteNFVsZq+GqKZvWqzMd0EvUyvh6n14rUxWT3L6aaexs182JioQFrHy6jU5UWaEJXlFmmIPT3bGAEKpZ4NwBx6+bUx9NjUK/0ZhXpzGtkYQhnlbc0EKaKrlyDRxGp6mLhn9rqpjR4U7GW8os7N6WajH69/UMdr2M9vIqOV05I9yK3bTlt38UX1fn57XJyfV4vHxV+X+ga3Nw0AAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/siachen-glacier.10m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaSiachenGlacier10m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

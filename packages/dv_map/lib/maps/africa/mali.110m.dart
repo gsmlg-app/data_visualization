@@ -2,341 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for africa/mali.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Mali",
-        "iso_a2": "ML",
-        "iso_a3": "MLI",
-        "continent": "Africa"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -11.5139428,
-              12.4429876
-            ],
-            [
-              -11.4561686,
-              12.0768342
-            ],
-            [
-              -11.2975736,
-              12.0779711
-            ],
-            [
-              -11.036556,
-              12.2112446
-            ],
-            [
-              -10.8708296,
-              12.1778875
-            ],
-            [
-              -10.5932238,
-              11.9239753
-            ],
-            [
-              -10.1652138,
-              11.8440836
-            ],
-            [
-              -9.8909928,
-              12.0604786
-            ],
-            [
-              -9.5679117,
-              12.1942431
-            ],
-            [
-              -9.3276163,
-              12.3342862
-            ],
-            [
-              -9.1274735,
-              12.3080604
-            ],
-            [
-              -8.9052649,
-              12.0883581
-            ],
-            [
-              -8.786099,
-              11.8125609
-            ],
-            [
-              -8.3763049,
-              11.3936459
-            ],
-            [
-              -8.5813053,
-              11.1362456
-            ],
-            [
-              -8.620321,
-              10.8108908
-            ],
-            [
-              -8.4073108,
-              10.9092569
-            ],
-            [
-              -8.2823571,
-              10.7925974
-            ],
-            [
-              -8.3353772,
-              10.4948119
-            ],
-            [
-              -8.0299436,
-              10.2065349
-            ],
-            [
-              -7.8995898,
-              10.2973821
-            ],
-            [
-              -7.6227592,
-              10.1472362
-            ],
-            [
-              -6.8505066,
-              10.1389938
-            ],
-            [
-              -6.6664609,
-              10.4308107
-            ],
-            [
-              -6.493965,
-              10.4113028
-            ],
-            [
-              -6.2052229,
-              10.5240608
-            ],
-            [
-              -6.050452,
-              10.0963608
-            ],
-            [
-              -5.8169262,
-              10.2225546
-            ],
-            [
-              -5.4043416,
-              10.3707368
-            ],
-            [
-              -5.4705649,
-              10.9512698
-            ],
-            [
-              -5.1978426,
-              11.3751458
-            ],
-            [
-              -5.2209419,
-              11.713859
-            ],
-            [
-              -4.4271661,
-              12.5426456
-            ],
-            [
-              -4.280405,
-              13.2284435
-            ],
-            [
-              -4.0063908,
-              13.4724855
-            ],
-            [
-              -3.5228027,
-              13.3376616
-            ],
-            [
-              -3.1037068,
-              13.5412668
-            ],
-            [
-              -2.9676945,
-              13.7981503
-            ],
-            [
-              -2.1918245,
-              14.2464175
-            ],
-            [
-              -2.0010351,
-              14.5590083
-            ],
-            [
-              -1.0663635,
-              14.973815
-            ],
-            [
-              -0.5158545,
-              15.1161577
-            ],
-            [
-              -0.2662573,
-              14.924309
-            ],
-            [
-              0.3748922,
-              14.9289082
-            ],
-            [
-              1.0157833,
-              14.9681823
-            ],
-            [
-              1.3855282,
-              15.3235611
-            ],
-            [
-              2.7499927,
-              15.4095248
-            ],
-            [
-              3.6382589,
-              15.5681198
-            ],
-            [
-              3.7234217,
-              16.1842838
-            ],
-            [
-              4.27021,
-              16.8522275
-            ],
-            [
-              4.2674195,
-              19.1552652
-            ],
-            [
-              3.1581332,
-              19.0573642
-            ],
-            [
-              3.146661,
-              19.6935786
-            ],
-            [
-              2.6835885,
-              19.8562302
-            ],
-            [
-              2.0609908,
-              20.1422334
-            ],
-            [
-              1.8232276,
-              20.6108094
-            ],
-            [
-              -1.5500549,
-              22.7926659
-            ],
-            [
-              -4.9233374,
-              24.9745741
-            ],
-            [
-              -6.4537866,
-              24.9565907
-            ],
-            [
-              -5.9711287,
-              20.6408334
-            ],
-            [
-              -5.4885225,
-              16.325102
-            ],
-            [
-              -5.3152773,
-              16.2018537
-            ],
-            [
-              -5.5377443,
-              15.5016898
-            ],
-            [
-              -9.5502384,
-              15.4864969
-            ],
-            [
-              -9.7002551,
-              15.2641074
-            ],
-            [
-              -10.0868465,
-              15.3304857
-            ],
-            [
-              -10.6507914,
-              15.1327459
-            ],
-            [
-              -11.349095,
-              15.411256
-            ],
-            [
-              -11.6660783,
-              15.3882083
-            ],
-            [
-              -11.8342075,
-              14.799097
-            ],
-            [
-              -12.1707503,
-              14.6168342
-            ],
-            [
-              -12.1248875,
-              13.9947275
-            ],
-            [
-              -11.927716,
-              13.4220751
-            ],
-            [
-              -11.5533978,
-              13.1412137
-            ],
-            [
-              -11.4678991,
-              12.7545189
-            ],
-            [
-              -11.5139428,
-              12.4429876
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for africa/mali.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5VYTWscRxC961cMe5aK+v7wzQQCgQRyDyYIZ20W5F0hbw7C6L+HXllCdjeE2sMwOz3zqOqqrnqvvl1t2+78eL/fvdt2v+5vz/8+7H853d3tP54Pp+Pueix/en78dfdu++tq27bt2+U6f3h5/bJw/3C63z+cD5ePXl7ftt3x9svlgz9u7w6vb2/b7vD19PctX1Z+n57L8/Pf3i58PB3Ph+P+eB5r7z89HD7e7r6vPr1a8Xl/+rI/Pzz+aMOL0X+e7h4/f/fxFfX08M/heHt+4+zz7+39z/+27YYIjKSU8/qnJWJQ5crwHxY+XP8voJqTpy8AMTxFuQvIFRayBowKoi4giput8JiIVZseI2Rgcq0AKSIzrAtoJcwyx4SgWCpMuoDkxrQETFVM6blckIVVy6RBR43s4plHEcVqB0tZpRfiAuFwclngiSin93KwgDg0xFZ4mMPlFl5CobFrrfYvUyx7/iZEOtYMR5DE5lhNOAkXXJhHICWu1sWzJEGbw0FA4qzWS5cEZxSmCQ4hCbMwm3CKIYRzNiMUFpt33eVksVjZF8VW0c0WEZMIXuBpaRJ17UOu0kVBRWB0E+3hBWSVZa32jyskuZfNAc4cVit/SYOleXod0tDQV/6SZJX08sXB3dVxPh4IKpiE0cTTkvK5uCAokSB3zWM0Zl6ZZ6zozePhgIZqq2hguXThDJK82Fd4zGzWbL8GiipKq+hKYIh37dNAW9VmhDJiry4eVaTybB+BhJFaF48ZS2lVnIMkm7VZQTnIfS5WDKbs3dqswImKczILMKeq9LiQAqJLLWqzgAZrWg9PwJgTeWYaAiLhTj13BQgl0Ff2mRJ7M/sYysNLV/sXlWTYo36DP1HyAk+B1ZWa3JQBkVBsThcFs0LMJjUFdBdfMCuF0TqoZx6CkaUt3DUgcrLolWYEdmeLmbkoFKv0iNUoSJrFc+kbaIO3tBobAZJFytI4T0puxYJA0oxzts5AWMx7OoshtKoWJ21U7DLW1skQcEm2nMuegfngQE24YFFeKA4HSuXscQIFDlwQ0kE9eJCZJpiHUs1JXEBm7NZKEwEa9FvmuBbg0NU9QS5A6qt+UeAl1pR+DD7kTq58TXMWbBl3kZ+1aBc8qCOzSIt6EyQLc0y9mxGcMLF6TJ7ADNFmbsE8lIF7u3kXi0johDeqp1poj3k7qEnkzJQHnrlVk9kajOkM53TKxv6NsUMvHIOb5ThQc7Y4CBv1kuXGQMg4FtV9cGhKk667Q6apzngGhuTZpI410oUlp/COEpqu1RSmBYHItmjeBuxK2BSmQwGkpy6ki4EIalpvAwnBDaNo5TEJR3fyMDi2Fi5KqQ1txU1ySzSkH0auIiyZ3KY/BGMgirHiP1GF1dzAMXHEMFxxgjGVbU9fGYh1jDAXhLRKo9nbbi4jzIiFXBNQHjvRnuaaiVSsGDgpMTUP8Rhge2TVShGFqVG2c7A5Yr9a3b/cPV29XD9cPV39B0P/AbgHGQAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for africa/mali.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get africaMali110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

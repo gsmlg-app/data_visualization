@@ -2,201 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/tajikistan.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Tajikistan",
-        "iso_a2": "TJ",
-        "iso_a3": "TJK",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              67.8299996,
-              37.144994
-            ],
-            [
-              68.1355624,
-              37.0231151
-            ],
-            [
-              68.8594458,
-              37.3443358
-            ],
-            [
-              69.1962728,
-              37.1511435
-            ],
-            [
-              69.5187854,
-              37.6089967
-            ],
-            [
-              70.1165784,
-              37.5882228
-            ],
-            [
-              70.2705742,
-              37.7351647
-            ],
-            [
-              70.3763042,
-              38.1383959
-            ],
-            [
-              70.8068205,
-              38.4862816
-            ],
-            [
-              71.3481311,
-              38.2589053
-            ],
-            [
-              71.2394039,
-              37.9532651
-            ],
-            [
-              71.5419178,
-              37.9057744
-            ],
-            [
-              71.4486935,
-              37.0656448
-            ],
-            [
-              71.8446383,
-              36.7381713
-            ],
-            [
-              72.1930408,
-              36.9482877
-            ],
-            [
-              72.6368897,
-              37.0475581
-            ],
-            [
-              73.2600558,
-              37.4952569
-            ],
-            [
-              73.9486959,
-              37.4215663
-            ],
-            [
-              74.9800025,
-              37.4199901
-            ],
-            [
-              74.8299858,
-              37.990007
-            ],
-            [
-              74.8648157,
-              38.3788463
-            ],
-            [
-              74.2575143,
-              38.6065069
-            ],
-            [
-              73.9288522,
-              38.5058153
-            ],
-            [
-              73.6753793,
-              39.4312369
-            ],
-            [
-              71.7846936,
-              39.2794632
-            ],
-            [
-              70.5491618,
-              39.6041979
-            ],
-            [
-              69.4648869,
-              39.5266833
-            ],
-            [
-              69.5596098,
-              40.1032114
-            ],
-            [
-              70.6480188,
-              39.9357539
-            ],
-            [
-              71.014198,
-              40.2443655
-            ],
-            [
-              70.6014067,
-              40.2185273
-            ],
-            [
-              70.4581596,
-              40.4964949
-            ],
-            [
-              70.6666223,
-              40.9602133
-            ],
-            [
-              69.3294947,
-              40.7278244
-            ],
-            [
-              69.0116329,
-              40.0861581
-            ],
-            [
-              68.5364165,
-              39.5334529
-            ],
-            [
-              67.7014287,
-              39.5804784
-            ],
-            [
-              67.4422197,
-              39.1401435
-            ],
-            [
-              68.176025,
-              38.9015535
-            ],
-            [
-              68.3920325,
-              38.1570253
-            ],
-            [
-              67.8299996,
-              37.144994
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/tajikistan.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5VXTYsbRxC961cMOi9FfX/4Zgw+JBcfcgsmCEcxsteaRSsfFrP/PUibNbvuJlA6DK2u6cd7Xa+ren5slmV7frjbb98s2/f73fn7af9uvb3dfzof1uP25hL+52n6fvtm+XOzLMvy4/ocF15fvwbuTuvd/nQ+XBc9v74s2+Pu23XBH7svh6+H+/Pu+HPNsmwP9+tfO77Gfxvm5Wn+95eBT+vxfDjuj+dL7O39Ybf9L/b4k8nn/fptfz49vObxTPzDevvweT2+xlxPfx+Ou/MLwU+/l+Nf/y2LByRXVfnNLxEJINUqfTX/8eb/4RJIzJx1AocsREZNvLRStZzgiaqIZQuvgMo5eIZHRqRiTTyjjLSZXses8ujgBQKRW+QMzzKZuaU3EDjQQnmCF2Lk2uUn4YITvEvmU8qqiZfoyWgTPE3nJG/hEYgmCdEEjy0LTZp4LKUoNdm/MmHv+TkITKkoZv4rtAhtnbcgUE0vGfcvAN1ctecXglR1SRnwHEKSgnr7x0AlqDjqdShNzuj5j8HFMytmejXMspcPAXZEm9YXLWPznp/losrLZn5RJnPv7Z9CJSLyLL9KVYU9vXot9znVW4WIvXQopGuSjelIkMjUtly2MNLRfgmObthPB2caz8qVoSU1y4GAh0nUyK9AhVia/Agi1UvG7lvAUerCzXJqWuQ0prfAUamixc8L1DXTRzsXGLuntPbv0i6tHGvgpwiEwkS98ofgmkg501tiYdLNB5LSlB6rilvrdnChh6Tow/G44FEaR89+CHrx7HhZUwQt19Ju93V3Zx7srAjlyNROr3Bp6UxvcCT3upsXIJELD/ZTBEynZrX3BBNX8rGaFpiIGveOR0AgKedY/gosUSN7egNUmWnS3QpIsX07TaDwWfNIKCSzNpwUo0zxyAK5V03b3x6b2fh59Lh5fn7cPG7+BUxXtH4iDgAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/tajikistan.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaTajikistan110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

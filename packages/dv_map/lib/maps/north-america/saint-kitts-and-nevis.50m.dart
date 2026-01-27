@@ -2,123 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for north-america/saint-kitts-and-nevis.50m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Saint Kitts and Nevis",
-        "iso_a2": "KN",
-        "iso_a3": "KNA",
-        "continent": "North America"
-      },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [
-                -62.5322266,
-                17.121875
-              ],
-              [
-                -62.5341797,
-                17.1701172
-              ],
-              [
-                -62.574707,
-                17.2010254
-              ],
-              [
-                -62.6152832,
-                17.1991211
-              ],
-              [
-                -62.6249023,
-                17.1295898
-              ],
-              [
-                -62.5824219,
-                17.1005859
-              ],
-              [
-                -62.5322266,
-                17.121875
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                -62.6306641,
-                17.2399902
-              ],
-              [
-                -62.6405273,
-                17.2623047
-              ],
-              [
-                -62.6757812,
-                17.290918
-              ],
-              [
-                -62.7137207,
-                17.3532715
-              ],
-              [
-                -62.7946289,
-                17.4025879
-              ],
-              [
-                -62.8270508,
-                17.3864258
-              ],
-              [
-                -62.8394043,
-                17.365332
-              ],
-              [
-                -62.8404785,
-                17.3470703
-              ],
-              [
-                -62.838916,
-                17.3392578
-              ],
-              [
-                -62.7755371,
-                17.302832
-              ],
-              [
-                -62.702002,
-                17.2860352
-              ],
-              [
-                -62.6564941,
-                17.2244141
-              ],
-              [
-                -62.6306641,
-                17.2399902
-              ]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for north-america/saint-kitts-and-nevis.50m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE51UTWsjMQy9z68wc+4WWbIsu7eysJfSsLDHpSxD6u0aknGYuIVQ8t+XmTQhTTyHeg7G+nrWSE96b5Rq824T2jvV/ghdfh3C97RahWWOqW9vRvPfg3rb3qnfjVJKvU/ndeDkPhk2Q9qEIccp6OiuVNt36yngVxf7rB5izlvV9c9qEd7i9hSuVBu36U+Ho+vD4kpPB/39uWGZ+hz70OfRtkhD/qfu12GIy679cNqfsnsJaR3ysPuc2/FnHl9XOf5Mq93LRwFOL6ThOfZdPqvE4Tu/X0rXslLfLN4yIaK1N1dGLbcatRO+sDxdus7hGi1eyrgCWgtWAosRKOMiaEA2dbhWMzrCcsLea9S6EhiNB6SZCnt23lVWwqFB7cvAAOzY1/buq5xo5qRPL9bw0xJYa3S53+S9h0oeWQOMUm4LWiQwUgksLE6XiYQevK5st2gSnGE+MaHoylEVbyy6Mo8MIDup5JFDAQZXzthZg1xZCkfegCn3jiwTVXLCGTDiuIw7rh2g2oSd1+WBIvLIUssJYSYpTwfBuM8qcQEBZijsLBDXDh1b4+emGY3RpnbJfn1NzO+s5vK2b47nU7Nv/gO/NcHsrAgAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for north-america/saint-kitts-and-nevis.50m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get northAmericaSaintKittsAndNevis50m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

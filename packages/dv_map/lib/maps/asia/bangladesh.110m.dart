@@ -2,181 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/bangladesh.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Bangladesh",
-        "iso_a2": "BD",
-        "iso_a3": "BGD",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              92.672721,
-              22.0412389
-            ],
-            [
-              92.1460348,
-              23.6274987
-            ],
-            [
-              91.8699276,
-              23.6243464
-            ],
-            [
-              91.7064751,
-              22.985264
-            ],
-            [
-              91.1589633,
-              23.5035269
-            ],
-            [
-              91.4677299,
-              24.0726395
-            ],
-            [
-              91.9150928,
-              24.1304137
-            ],
-            [
-              92.3762016,
-              24.9766928
-            ],
-            [
-              91.799596,
-              25.1474317
-            ],
-            [
-              90.8722107,
-              25.1326006
-            ],
-            [
-              89.9206926,
-              25.2697499
-            ],
-            [
-              89.8324809,
-              25.9650821
-            ],
-            [
-              89.355094,
-              26.0144073
-            ],
-            [
-              88.5630494,
-              26.4465256
-            ],
-            [
-              88.2097893,
-              25.7680657
-            ],
-            [
-              88.931554,
-              25.2386923
-            ],
-            [
-              88.3063725,
-              24.8660794
-            ],
-            [
-              88.0844222,
-              24.5016572
-            ],
-            [
-              88.6999402,
-              24.2337149
-            ],
-            [
-              88.5297697,
-              23.6311419
-            ],
-            [
-              88.8763119,
-              22.8791464
-            ],
-            [
-              89.0319613,
-              22.0557083
-            ],
-            [
-              89.4188627,
-              21.9661789
-            ],
-            [
-              89.7020496,
-              21.8571158
-            ],
-            [
-              89.8474671,
-              22.039146
-            ],
-            [
-              90.2729708,
-              21.8363677
-            ],
-            [
-              90.5869568,
-              22.3927937
-            ],
-            [
-              90.4960063,
-              22.8050166
-            ],
-            [
-              91.417087,
-              22.765019
-            ],
-            [
-              91.834891,
-              22.1829357
-            ],
-            [
-              92.0252153,
-              21.7015697
-            ],
-            [
-              92.0828862,
-              21.1921951
-            ],
-            [
-              92.3685535,
-              20.6708833
-            ],
-            [
-              92.3032345,
-              21.4754853
-            ],
-            [
-              92.6522571,
-              21.3240476
-            ],
-            [
-              92.672721,
-              22.0412389
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/bangladesh.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WWTYsTQRCG7/kVQ85LUd8f3vxAr95FJOi4BtZkycbDIvvfZaK7uPaAVA7DpGv6oarf6rf752aatuf723n7Ytq+nXfnH6f59fHmZv583h8P26sl/PX38N32xfRhM03T9PPyHCdePr8Ebk/H2/l03l8mPX4+TdvD7vtlwqvd4fpm92W++/Y0Z5q2+7vjpx1f4m+GcbmMv3sW+Hw8nPeH+XBeYi/v9rvtn9jDUybX8/H7fD7dP8/jMfH3x5v76z91PjGPpy/7w+78V8G/f3+///tvmorBg4Pp6p8AM6ASS9azwMer/+FIHUVz4Ak4h1ZGi0eQXsXhqzwVdW3yAl3D1uqtNG7jyLJcZCU9QzH23vIRqEdw1cBTwGCXsiavyLB4lEOBBJWkJweDhDPSKIdChXtxduWoshpxBqShQr30EDKYCWONJ+yI3uFlQTF68Vp+7BVaLXmzIIU1cZTXoNwwmZo8McPSAeeApIohLVyCuaCu8lTd2HrLl8BYkTXuDoPwRLeWvJlQQmZjegYs6cXdcgVdgm2lmdMdo1pmkAmYqsy8wjMkt+Amz6tKcY3HIkHa674E4wqvcXcIuBApdXkZy7yxmxkyiprenAUoVE5juzCgWWD29C1QynQe6yUod4re2ZYFgYy64lYEaUFkLfNb3EBDPVbPXlnWr2l+HFyBo9cTpLh4dM3U0st85DFIcVTz7EDQWhx4Td7EZYP06iVQCsxRXYZww14zLxcN0aw1LSi5pGdVxYBsTDYWu9xAyLzavOSlmVd4VExlrZNjOcg9zWT0PgQPzJTWXlt4KCw68gg0TNO6PDdmW9kbBMKKGr1m6V5zN2vvj28Pm8fnx83D5hdVWwH1jQwAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/bangladesh.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaBangladesh110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

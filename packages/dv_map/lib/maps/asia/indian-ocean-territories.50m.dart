@@ -2,187 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/indian-ocean-territories.50m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Indian Ocean Territories",
-        "iso_a2": "-99",
-        "iso_a3": "-99",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [
-                105.7253906,
-                -10.4929688
-              ],
-              [
-                105.7054688,
-                -10.4306641
-              ],
-              [
-                105.6698242,
-                -10.4494141
-              ],
-              [
-                105.6455078,
-                -10.4522461
-              ],
-              [
-                105.5957031,
-                -10.459668
-              ],
-              [
-                105.584082,
-                -10.5125
-              ],
-              [
-                105.6443359,
-                -10.525
-              ],
-              [
-                105.696875,
-                -10.5641602
-              ],
-              [
-                105.7253906,
-                -10.4929688
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                96.8404297,
-                -12.1818359
-              ],
-              [
-                96.8356445,
-                -12.1712891
-              ],
-              [
-                96.8394531,
-                -12.1602539
-              ],
-              [
-                96.8341797,
-                -12.1441406
-              ],
-              [
-                96.8326172,
-                -12.1360352
-              ],
-              [
-                96.8326172,
-                -12.1261719
-              ],
-              [
-                96.8258789,
-                -12.1261719
-              ],
-              [
-                96.8277344,
-                -12.1506836
-              ],
-              [
-                96.8348633,
-                -12.1796875
-              ],
-              [
-                96.8495117,
-                -12.1973633
-              ],
-              [
-                96.8736328,
-                -12.1876953
-              ],
-              [
-                96.8673828,
-                -12.1814453
-              ],
-              [
-                96.8519531,
-                -12.1868164
-              ],
-              [
-                96.8404297,
-                -12.1818359
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                96.9182617,
-                -12.1941406
-              ],
-              [
-                96.9243164,
-                -12.184668
-              ],
-              [
-                96.925293,
-                -12.1732422
-              ],
-              [
-                96.9205078,
-                -12.1615234
-              ],
-              [
-                96.9189453,
-                -12.1733398
-              ],
-              [
-                96.9133789,
-                -12.1818359
-              ],
-              [
-                96.9043945,
-                -12.1865234
-              ],
-              [
-                96.8929688,
-                -12.187207
-              ],
-              [
-                96.8939453,
-                -12.1925781
-              ],
-              [
-                96.8967773,
-                -12.1955078
-              ],
-              [
-                96.906543,
-                -12.1998047
-              ],
-              [
-                96.9182617,
-                -12.1941406
-              ]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/indian-ocean-territories.50m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE7WWTWvcMBCG7/4VwufEaD6lya0UCj2U9tBbCcUkbjBs7OA4hxDy34udjya7VksmdA/G2hk9Hr1+NfJdFUI931519UmoP3XtfDN1H8fdrjub+3Goj5bwr4e/r+uT8KMKIYS79Xo4cU1fA1fTeNVNc79OekoPoR7ay3XC5+G8b4fw9axrh/C9m6Z+Hqcl++hPbn89/mxxyT42OwjQRuBsHOZ+6IZ5iX247tv6MXb/XNhFN15283T7uqyndXy52c39t3F3e/G49mfwOJ33Qzu/EOHh9/J+f3Q4DgGiNAmFLOrRQfAYYsOGpjnvxU73kwvkKKw5F8gUVRl8ZFXLyFggszG4ySwSU6lmQWR1ksUkRYIS2VSdMkvmmAtaCKB4hWAisQLWTTXNSQpQZdCITq85XFyVRq+e+dY9ZdpkjoyWtorBBjJkEnv7MhcwiTJv6ocNJMBsDneuYGPZNic2y1sR8lbMkIpSMANHdYJRIW3aHhsgjSQOK/0TvMTAKQVKTnlzR70XnBIxF8ASNZNXY85KVLLbupd9YDYBKLnCEimRD7xMxc32vey8pCZOsCbKZTAwe8ECVt55WTMoOzV+exP6bx3RIC8GL71wfxswZAIteT+z61RduYJWdD4ho6+7GMbS98XSaEGQfK/bIC8tvFgxkTmVAKJy23rHYWaRl1On6Hy3FPnhuC82AYzJyaW/SGwoKTtPX9OUUhG8fpE6JVbhItdyZJ8Snu1c7i3V/t199XQ9re6r3zEKKDYVDgAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/indian-ocean-territories.50m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaIndianOceanTerritories50m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

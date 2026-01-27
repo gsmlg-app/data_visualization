@@ -2,77 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/sri-lanka.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Sri Lanka",
-        "iso_a2": "LK",
-        "iso_a3": "LKA",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              81.787959,
-              7.5230553
-            ],
-            [
-              81.3043193,
-              8.5642062
-            ],
-            [
-              80.838818,
-              9.2684268
-            ],
-            [
-              80.1478007,
-              9.8240777
-            ],
-            [
-              79.6951669,
-              8.2008434
-            ],
-            [
-              79.8724687,
-              6.7634634
-            ],
-            [
-              80.348357,
-              5.9683699
-            ],
-            [
-              81.2180196,
-              6.1971414
-            ],
-            [
-              81.6373222,
-              6.4817752
-            ],
-            [
-              81.787959,
-              7.5230553
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/sri-lanka.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WSTWsCMRCG7/srhpwl5Hsm3qTQSz0UeixSFpvK0nUja3oQ8b8XV1d0UyjJIUzmnXl4k8yxAmDpsAtsDuw51OmnD0+xbcM6NbFjs7P8dUnv2RzeKwCA47DnjUP5IOz6uAt9aoamsRyAdfV2aHjrG1jW3Xd9awFgzT5+1OosL1+yvL7kF/fCOnap6UKXztpi39Tsqp1uRjYhbkPqD482Rt+vsT1srte8MWP/2XR1urvvZd3H0xMASY6E3vrZREBulRbW6of8avYfTQujpddTHHHrjBJOFeEEJ00kaUrzXDkyylEhTRokITDHkTICEUtw6LnzVjqXPR1xJQQZbQpxhMo4ytw5jk4bV4YjwbUhbTOa5d6Rdt4X/quSJKR3uTnpURpZZk5yp1ErpXKcIYloy8akcIarv+IxOlXjvqpO1S8Ll8fUaAQAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/sri-lanka.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaSriLanka110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

@@ -2,133 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for europe/albania.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Albania",
-        "iso_a2": "AL",
-        "iso_a3": "ALB",
-        "continent": "Europe"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              21.0200403,
-              40.842727
-            ],
-            [
-              20.6051819,
-              41.0862263
-            ],
-            [
-              20.4631751,
-              41.515089
-            ],
-            [
-              20.5902474,
-              41.8554042
-            ],
-            [
-              20.5902465,
-              41.8554089
-            ],
-            [
-              20.52295,
-              42.21787
-            ],
-            [
-              20.2837545,
-              42.3202595
-            ],
-            [
-              20.0707,
-              42.58863
-            ],
-            [
-              19.8016134,
-              42.5000935
-            ],
-            [
-              19.7380514,
-              42.6882474
-            ],
-            [
-              19.3044861,
-              42.1957451
-            ],
-            [
-              19.3717682,
-              41.8775507
-            ],
-            [
-              19.3717688,
-              41.8775475
-            ],
-            [
-              19.5400273,
-              41.7199861
-            ],
-            [
-              19.4035498,
-              41.4095657
-            ],
-            [
-              19.3190589,
-              40.7272301
-            ],
-            [
-              19.406082,
-              40.2507734
-            ],
-            [
-              19.9600017,
-              39.9150058
-            ],
-            [
-              19.9800004,
-              39.6949934
-            ],
-            [
-              20.1500159,
-              39.6249977
-            ],
-            [
-              20.6150004,
-              40.1100068
-            ],
-            [
-              20.6749968,
-              40.4349999
-            ],
-            [
-              20.9999899,
-              40.580004
-            ],
-            [
-              21.0200403,
-              40.842727
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for europe/albania.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE52VwW7bMAyG73kKwedA+EmJotjbNmynHXYfiiHr3MJAagepewiKvPtgpwnSyh2g+SDIpPn5p0jTLyvnmvGwa5sb13xrN+Pzvv0ybLft3dgNfbOe3Pcn81Nz436unHPuZV7LwPnx2bHbD7t2P3Zz0Plx55p+8zgHfNr+3vTd5hLgXNM9Db82PDu/F/Zwsn++dtwN/dj1bT9Ovq/P0xubV+/xIuShHR7bcX94K+Os+8ewPTy8pnmhDvs/Xb8Zr/I9Xdf793fOMXkwEBHW7zwRPkdW1jf22/W/cfAJQpmswJFHTswpVPJiCqRCCzwhQbZKnBg4alzAZZGIyP/DS/IRr14fs5U09kyaa0vBOajEJVpgsJhU8qDQBZjkXFdVMp9BiUJZBvYCwEKVNDKvIUNoiZdyngpeyQuIMaey69iTiUahWp6SpsxLbaIqgqrSXnj5A17U2vOTCLCWQ4C8kllOtflGBIm2pC/CJEl1vmSQXE4VeGXlgHp9CQvlgGeBaqhtF0sAqPg4gnkjASTX8jIAFO0czCeLZnX6GH4SQVIc38TjaKbVQ34ClvoiPBGAVJXvxNNolsp2gY8hmlntFJ1Csi21i0wnW3d8tb/I1dL+vDuuzuvt6rj6CwvcgivICAAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for europe/albania.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get europeAlbania110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

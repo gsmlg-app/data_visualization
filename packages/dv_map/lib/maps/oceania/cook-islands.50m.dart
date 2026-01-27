@@ -2,81 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for oceania/cook-islands.50m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Cook Islands",
-        "iso_a2": "CK",
-        "iso_a3": "COK",
-        "continent": "Oceania"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -159.7405273,
-              -21.2492188
-            ],
-            [
-              -159.7368652,
-              -21.240625
-            ],
-            [
-              -159.739502,
-              -21.2081055
-            ],
-            [
-              -159.7683594,
-              -21.1884766
-            ],
-            [
-              -159.8105957,
-              -21.1864258
-            ],
-            [
-              -159.8320312,
-              -21.2004883
-            ],
-            [
-              -159.8424805,
-              -21.2291016
-            ],
-            [
-              -159.8395996,
-              -21.2380859
-            ],
-            [
-              -159.8130859,
-              -21.2420898
-            ],
-            [
-              -159.7725586,
-              -21.2495117
-            ],
-            [
-              -159.7405273,
-              -21.2492188
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for oceania/cook-islands.50m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE52TTWvDMAyG7/kVwueu+EuO3GthMHbo7qOM0HolNLVL4h1K6X8fSZvSDw+W+GBkvXofJGMfMwAWD3vHZsBeXRF/ajcPVeVWsQyeTVr5+5xu2Aw+MwCAY7c/G7vyTtjXYe/qWHamvhyA+WLXGeYhbOGtqQq/bq4uAFY24auQXcX7U151+cWdsAo+lt752GqLlSt8WbCLfLq2s3Fh52J9uG+m7/4jVIfNZdgrNtTr0hfxZurzuo0fTwAvAu001xxlriaPmhRTqa0URHfKcvIPpDJkUKaR3EgcQbTI00BOguMIoiGFVqeQgkjnxgxGto1YzNNIoyUOv0lSkivxx+BcE6nhSC01cUwipRVcjBhcWbTWJJGKOKEdcZeq9aWfkORkR7zKXCJSukttUYh8OHLg38lScR+dsn5fZqfsF+dTe33rBAAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for oceania/cook-islands.50m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get oceaniaCookIslands50m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

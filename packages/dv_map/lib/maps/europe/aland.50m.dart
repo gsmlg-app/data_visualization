@@ -2,255 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for europe/aland.50m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Aland",
-        "iso_a2": "AX",
-        "iso_a3": "ALA",
-        "continent": "Europe"
-      },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [
-                19.9895508,
-                60.3511719
-              ],
-              [
-                19.9445313,
-                60.3575195
-              ],
-              [
-                19.8882813,
-                60.4058105
-              ],
-              [
-                19.8230469,
-                60.3901855
-              ],
-              [
-                19.787793,
-                60.3540527
-              ],
-              [
-                19.8123047,
-                60.3315918
-              ],
-              [
-                19.8546875,
-                60.3185059
-              ],
-              [
-                19.871582,
-                60.3016113
-              ],
-              [
-                19.8671875,
-                60.2681152
-              ],
-              [
-                19.8476562,
-                60.2205566
-              ],
-              [
-                19.7852539,
-                60.2133789
-              ],
-              [
-                19.7790039,
-                60.2855469
-              ],
-              [
-                19.7365234,
-                60.282373
-              ],
-              [
-                19.6869141,
-                60.267627
-              ],
-              [
-                19.6722656,
-                60.2330078
-              ],
-              [
-                19.7459961,
-                60.0989746
-              ],
-              [
-                19.7998047,
-                60.0817383
-              ],
-              [
-                20.0339844,
-                60.0935547
-              ],
-              [
-                20.0323242,
-                60.1524902
-              ],
-              [
-                20.0425781,
-                60.1806641
-              ],
-              [
-                20.0732422,
-                60.193457
-              ],
-              [
-                20.1254883,
-                60.2008789
-              ],
-              [
-                20.1550781,
-                60.1922852
-              ],
-              [
-                20.1947266,
-                60.1935547
-              ],
-              [
-                20.2588867,
-                60.2612793
-              ],
-              [
-                20.2395508,
-                60.2830078
-              ],
-              [
-                20.184082,
-                60.29375
-              ],
-              [
-                20.1678711,
-                60.3146973
-              ],
-              [
-                20.0874023,
-                60.353418
-              ],
-              [
-                20.0338867,
-                60.3593262
-              ],
-              [
-                20.0202148,
-                60.3508789
-              ],
-              [
-                19.9895508,
-                60.3511719
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                19.6623047,
-                60.1871582
-              ],
-              [
-                19.6288086,
-                60.2460938
-              ],
-              [
-                19.5513672,
-                60.2438477
-              ],
-              [
-                19.519043,
-                60.1845703
-              ],
-              [
-                19.5365234,
-                60.1449707
-              ],
-              [
-                19.5798828,
-                60.1350586
-              ],
-              [
-                19.5998047,
-                60.1626953
-              ],
-              [
-                19.6291992,
-                60.1703613
-              ],
-              [
-                19.6674805,
-                60.1647461
-              ],
-              [
-                19.6623047,
-                60.1871582
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                20.6113281,
-                60.0406738
-              ],
-              [
-                20.5691406,
-                60.0696289
-              ],
-              [
-                20.4901367,
-                60.0749023
-              ],
-              [
-                20.4295898,
-                60.0617187
-              ],
-              [
-                20.3979492,
-                60.0406738
-              ],
-              [
-                20.4112305,
-                60.030127
-              ],
-              [
-                20.4875,
-                60.0327637
-              ],
-              [
-                20.5217773,
-                60.0116699
-              ],
-              [
-                20.603418,
-                60.0169434
-              ],
-              [
-                20.6113281,
-                60.0406738
-              ]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for europe/aland.50m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE7WXS4sTQRDH7/kUQ84S6v3Ym4ieFDwKskhYowRissTZwyL73aWzD/bRLVjiHIaZqZ7f1FTXv6v612KalvP15WZ5Ni3fbdbz1XHz5rDbbS7m7WG/fNXM324f/1yeTZ8X0zRNv07nly+ehp8Ml8fD5eY4b08v3Q+fpuV+/eP0wuvdev/1Yfg0Lbc/D1/WdDJ9evGcT8/fv35suDjs5+1+s5+b7e1V+97yznrz4Mb3zeHHZj5eP3Xi3usPV7t5+/Gwu/5+96cP6MPx63a/nh/98u3x+Pr53cv7acJcZaQqxKsXNoMVK6JjPjOdPx/b54ooIw+4rpha4kYExYAroIFQ5BKDWPb9TcDQGtfDPUdhEFDymrvY/PU+l1ETo8ZVsXDtczEUtJYO4ahBfSygIXINa44jd8kCUanGFTe1vr9EoGpWzAYl5X6WETJ71MLrngAjbqiKFblsSiwDLrHXps3CEgUH0+ZWFIU5kan1scwAXhOFi2Za313ISJdiNmTGSMQQ6ByF8BKsgDlD+rMGyapSiO+JS0zSVwUqSUJBbY0rpB79+GKAmWCN683dgb/JorUwIKlE9Nd0AoiSiBtXFYZhSKKoLGaNm+JkfVngP6QDaURYP33JkDxr6Us8bkkoijJucQiBQQ2iZC/U9wY1D8f+pDGKZWWJbLkbLkCjxoGlUt9vl4bhnLEmkxUlTEAoozayqIlae7oY3T35YqFVNhv3XHjb4NTKFkVADMqWGCTXypYqsvkg4YVDvFZmFROkn5kYog61pkD/0GugSDoU3fVse4Y+lxU0atVb/1C90chSi80RJWYOqpYDW7FXNnMJ6PfKaOJihSpbk8X/kSjBqm0kaFBCQcC8IiWClbZ+FfoSBUujYsmXhKbRPtdbQ1WrHkKpkf2cB8O2aSpxOT1lkJv/El/Btp/t5yYwYGVD0LCjvSEwuXENqoTu3l//ANEsa7lg0Kr6AGspLDXs30tiLM/F86ubxf35fHGz+A0neNsjrhMAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for europe/aland.50m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get europeAland50m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

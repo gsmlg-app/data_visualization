@@ -2,121 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for north-america/haiti.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Haiti",
-        "iso_a2": "HT",
-        "iso_a3": "HTI",
-        "continent": "North America"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -71.7123614,
-              19.7144559
-            ],
-            [
-              -72.5796728,
-              19.8715006
-            ],
-            [
-              -73.1897906,
-              19.9156839
-            ],
-            [
-              -73.4150223,
-              19.6395509
-            ],
-            [
-              -72.7841048,
-              19.4835914
-            ],
-            [
-              -72.7916495,
-              19.1016251
-            ],
-            [
-              -72.3348816,
-              18.6684215
-            ],
-            [
-              -72.6949371,
-              18.4457995
-            ],
-            [
-              -73.4495422,
-              18.526053
-            ],
-            [
-              -74.3699253,
-              18.6649075
-            ],
-            [
-              -74.4580336,
-              18.34255
-            ],
-            [
-              -73.9224332,
-              18.0309927
-            ],
-            [
-              -73.4545548,
-              18.2179064
-            ],
-            [
-              -72.8444112,
-              18.1456111
-            ],
-            [
-              -72.3724762,
-              18.2149608
-            ],
-            [
-              -71.7083048,
-              18.0449971
-            ],
-            [
-              -71.6877376,
-              18.3166601
-            ],
-            [
-              -71.9451121,
-              18.6169001
-            ],
-            [
-              -71.7013027,
-              18.785417
-            ],
-            [
-              -71.6248732,
-              19.169838
-            ],
-            [
-              -71.7123614,
-              19.7144559
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for north-america/haiti.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WVzYrbMBSF93kK4XUqdP91Z1cKpd2ULrorQzFTz9SQ2MHjLsKQdy9xJiEzERR5YWSdq49zpCv8sgqhmfe7rrkLzeeunf9O3adxs+ke5n4cmvVRfjxNPzd34ecqhBBelvftwqV8EXbTuOumuV8WnctDaIZ2uyz40vZzfykPoemfx18tLtKPm3k6zX+9Fh7GYe6HbpiP2rdxmv+Ej9tu6h/a5rXocHHz1I3bbp72b72czX8fN/un16wX+Dj97od2vgp9eq7H779C+GAQDZAUeP1OAo8GzCL+Rrhf/weIUczVMBeA2UBS0jogRchunrQAdBDNVOmQIoMkRCoAlVwkVUe2zJC4FJkziQNXAx2UXQpASKAoUAsk4pzhdg9zVM2MILVAdXYyKACZxdwrgRSZXRixABTUJFTH40jqjnJ7yMfE7MkqDXJkyYmotIXEKNV5HZGJSnkTJXe06g0UFik0YY4Ix/tT3YSZmQFKDoFFAeqb0JBNS0AEdk25DgjRUqbSvcsxMbtbpUOIms3IimcMqpqqgc4CgKVroqCe6oGWgBJaAWhZGCq7BqIiZyu0oUdQz1R/JHW/k1VpfB4dVuf3/eqw+ge3ToOJ+wcAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for north-america/haiti.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get northAmericaHaiti110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

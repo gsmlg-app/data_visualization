@@ -2,259 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for europe/greece.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Greece",
-        "iso_a2": "GR",
-        "iso_a3": "GRC",
-        "continent": "Europe"
-      },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [
-                26.2900029,
-                35.2999903
-              ],
-              [
-                25.7450232,
-                35.1799977
-              ],
-              [
-                25.7692078,
-                35.3540181
-              ],
-              [
-                25.0250155,
-                35.4249956
-              ],
-              [
-                24.2466651,
-                35.3680224
-              ],
-              [
-                23.6999801,
-                35.7050044
-              ],
-              [
-                23.5149785,
-                35.2799916
-              ],
-              [
-                24.7350074,
-                35.0849905
-              ],
-              [
-                24.7249821,
-                34.9199877
-              ],
-              [
-                26.1649976,
-                35.0049954
-              ],
-              [
-                26.2900029,
-                35.2999903
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                22.9523772,
-                41.3379939
-              ],
-              [
-                22.76177,
-                41.3048
-              ],
-              [
-                22.5973084,
-                41.1304872
-              ],
-              [
-                22.0553776,
-                41.1498658
-              ],
-              [
-                21.6741606,
-                40.9312745
-              ],
-              [
-                21.0200403,
-                40.842727
-              ],
-              [
-                20.9999899,
-                40.580004
-              ],
-              [
-                20.6749968,
-                40.4349999
-              ],
-              [
-                20.6150004,
-                40.1100068
-              ],
-              [
-                20.1500159,
-                39.6249977
-              ],
-              [
-                20.217712,
-                39.3402347
-              ],
-              [
-                20.7300322,
-                38.7699853
-              ],
-              [
-                21.1200342,
-                38.3103234
-              ],
-              [
-                21.2950106,
-                37.6449893
-              ],
-              [
-                21.6700265,
-                36.8449865
-              ],
-              [
-                22.4900281,
-                36.4100001
-              ],
-              [
-                23.1542253,
-                36.4225058
-              ],
-              [
-                22.774972,
-                37.3050101
-              ],
-              [
-                23.409972,
-                37.4099907
-              ],
-              [
-                23.1150029,
-                37.9200113
-              ],
-              [
-                24.040011,
-                37.6550146
-              ],
-              [
-                24.0250249,
-                38.219993
-              ],
-              [
-                23.5300163,
-                38.5100011
-              ],
-              [
-                22.9730994,
-                38.9709032
-              ],
-              [
-                23.3500273,
-                39.1900113
-              ],
-              [
-                22.8497478,
-                39.6593108
-              ],
-              [
-                22.6262989,
-                40.2565612
-              ],
-              [
-                22.8139877,
-                40.4760052
-              ],
-              [
-                23.3429993,
-                39.9609978
-              ],
-              [
-                23.8999679,
-                39.9620055
-              ],
-              [
-                24.4079989,
-                40.124993
-              ],
-              [
-                23.7148112,
-                40.6871292
-              ],
-              [
-                24.9258484,
-                40.9470617
-              ],
-              [
-                25.447677,
-                40.8525455
-              ],
-              [
-                26.0569422,
-                40.8241234
-              ],
-              [
-                26.2946021,
-                40.9362613
-              ],
-              [
-                26.6041956,
-                41.5621146
-              ],
-              [
-                26.1170419,
-                41.8269046
-              ],
-              [
-                26.1061381,
-                41.3288988
-              ],
-              [
-                25.1972014,
-                41.234486
-              ],
-              [
-                24.4926449,
-                41.5838962
-              ],
-              [
-                23.6920736,
-                41.3090809
-              ],
-              [
-                22.9523772,
-                41.3379939
-              ]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for europe/greece.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE51YTW8bRwy961csdA4IfnOYa9D2VCDotQgKw90EAhzJUOSDEfi/ByPHiWNTh1CHxc5y5i2X88jH0dfNsmxP97fr9u2y/XO9Ot0d13eHm5v1+rQ77Ldvpvnj4+Mv27fLv5tlWZav5+vrhefpZ8Pt8XC7Hk+786Kn6cuy3V99Pi/467iu1z/nL8t29+Xw3xWfbf+8ei6Pz989N1wf9qfdft2fpu2Pu/nC7Xfrww8/Pq2Hz+vpeP+rF09u/313c9q9P9zcf/r+qT+gD8f/d/ur07Nvfvw9v385ej1eFnbgRETON69sYsCZmSgvTB9ezi1wDUINWbjEpcjMiB6uJ2OMEldMkQa1cJENyazEVdZM8wauAqu7G9X++kBmbeAKeGYOrHEDDVF7uEaaMeo48Nw36sUhxBBDS1wcmonWw2XNwVUcFJIyR4tnDuSaGV77i5MPnfi28m1zafTLG3879xnSWCKKHFUCkciUbHwjQzhF1KioowVpGYKjoI8S0EQNbuGimUS1zRNXc7h1/CXwUHKscBFSiEM7dCdARlSUEncoB3fYjjCJN7JgpSLYQMQO2XFGIdOLYq0IKjrf2sMlmz6VuESI6J1dQ5iwZFVyJvgUgVYxQWCKoEoLE0SRRXuwIYjCFe6YOpnDOtpNQIwoWuMKobB06EDAaUhVUkiAq+bInr8eiOyVZjkMPWdxqzhoIvKotMVBJ82w02sIkCmzFUk8cZkNW0WHIUKzKucSIDhD33NXMS/BTlNih70CNLOtVMKAZESiDhsUUOfammRmSNprYGaDyFq5O4Aps8VdARNE8ooLA2xyjDqbxjD1MrPqtwZkYKJ0BFNgtnEclb8JlN1dYxiaoWVfn+CWQtjLCWfnHLWysbk59RqHQTJ7y1rawhGtGV+dXWAd3/SZiZ04CIzM9KilLZ0Rrdd/K0Zeii9NyeylRZAOqiRTEXwEcXbCq5BsQ8s+EiE10Kl3LFUNv8CGYWzaiq4DmqdWCj9xWamnxPMUoo7Vqencnjp7K4sdHJXS6nbanKlXfB2IYiKXuIM9sYuLTlIp/Dyr8Bg5OtlmQBmMVB9XWFRHT4M0efZJdXiHjPRe0Tn/pyL1tgkmDuwdBBsHzM2l0c/7p7uHzdP1w+Zh8w3eJgWyKxQAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for europe/greece.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get europeGreece110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

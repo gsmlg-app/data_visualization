@@ -2,133 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/georgia.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Georgia",
-        "iso_a2": "GE",
-        "iso_a3": "GEO",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              39.9550086,
-              43.4349977
-            ],
-            [
-              40.3213945,
-              43.1286339
-            ],
-            [
-              40.8754692,
-              43.013628
-            ],
-            [
-              41.4534701,
-              42.6451234
-            ],
-            [
-              41.7031706,
-              41.9629428
-            ],
-            [
-              41.5540841,
-              41.5356562
-            ],
-            [
-              42.6195488,
-              41.5831727
-            ],
-            [
-              43.5827458,
-              41.0921433
-            ],
-            [
-              44.9724801,
-              41.2481286
-            ],
-            [
-              45.2174264,
-              41.4114519
-            ],
-            [
-              45.9626005,
-              41.1238726
-            ],
-            [
-              46.5016374,
-              41.0644447
-            ],
-            [
-              46.6379082,
-              41.1816727
-            ],
-            [
-              46.1454318,
-              41.7228024
-            ],
-            [
-              46.4049508,
-              41.8606752
-            ],
-            [
-              45.7764,
-              42.09244
-            ],
-            [
-              45.4702792,
-              42.5027807
-            ],
-            [
-              44.5376229,
-              42.7119927
-            ],
-            [
-              43.93121,
-              42.55496
-            ],
-            [
-              43.75599,
-              42.74083
-            ],
-            [
-              42.3944,
-              43.2203
-            ],
-            [
-              40.92219,
-              43.38215
-            ],
-            [
-              40.076965,
-              43.5531042
-            ],
-            [
-              39.9550086,
-              43.4349977
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/georgia.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WVTYvbMBCG7/kVwucwzLekvZXS9tjey1LM1g2GrB0c9xCW/PcSZxN216IgH4SsV3p4pZmRXjYhNPPp0DUPofnatfPfqfs87vfd09yPQ7O9yH+uw8fmIfzchBDCy9KuFy7TF+EwjYdumvtl0W16CM3QPi8LvnXjtOvb+4IQmv44/mp5Eb+sxuU6/v2t8DQOcz90w3zRPh37tnnVzncbu2587ubp9N7EzfWPcX/avW7yzhyn3/3Qzm92e/3e9j/+hSAZshli8u0HRQVUNOcY3wmP2//yFEGYJKsVeMTJRXIlL0VTz1zgIYlzqsIRqIlGpBWOwdWIRSt5EYUiro+PIDtnrfZnpph07Y/AxNycq3gMTtk0pRIvCUWuC6+AJY5qJR5mJhWp4inkyJoK8SBgTZeMqeIZMEVl1wJPidSoLv3sEkVHXKczAbGkyHX+HAzJJZb8oauq1sXDwSVmTOvyIKBEXhtfB1JToVJ8I3NCrqsPB0XNhiVecvRodflsEGMhuHxJPq2zZqARORZuFgZDjgnrjk7BJDpzLvAiUc7VpZaFuHRRmWmuSzuBaJaLzhRTXckySNZ1CASYsY6EkJlp7UpAEpNVsjB69tKzYyaEWpVn9c/iptS/9c6bW/u4OW/+AY94oCW7CAAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/georgia.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaGeorgia110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

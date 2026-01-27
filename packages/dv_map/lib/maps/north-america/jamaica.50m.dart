@@ -2,229 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for north-america/jamaica.50m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Jamaica",
-        "iso_a2": "JM",
-        "iso_a3": "JAM",
-        "continent": "North America"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -77.2614746,
-              18.4574219
-            ],
-            [
-              -77.354248,
-              18.4664551
-            ],
-            [
-              -77.4516113,
-              18.467041
-            ],
-            [
-              -77.8734375,
-              18.5222168
-            ],
-            [
-              -77.9268555,
-              18.5006836
-            ],
-            [
-              -77.9781738,
-              18.4678223
-            ],
-            [
-              -78.0945312,
-              18.4448242
-            ],
-            [
-              -78.2166992,
-              18.4480957
-            ],
-            [
-              -78.2524414,
-              18.4262695
-            ],
-            [
-              -78.3259766,
-              18.3497559
-            ],
-            [
-              -78.339502,
-              18.287207
-            ],
-            [
-              -78.2940918,
-              18.2180664
-            ],
-            [
-              -78.0736328,
-              18.1911621
-            ],
-            [
-              -78.0444824,
-              18.1738281
-            ],
-            [
-              -77.9629883,
-              18.0475586
-            ],
-            [
-              -77.8812988,
-              18.019043
-            ],
-            [
-              -77.8494141,
-              17.9875
-            ],
-            [
-              -77.7681641,
-              17.8773926
-            ],
-            [
-              -77.670752,
-              17.8597168
-            ],
-            [
-              -77.4638672,
-              17.8560547
-            ],
-            [
-              -77.3614258,
-              17.8336914
-            ],
-            [
-              -77.2798828,
-              17.779541
-            ],
-            [
-              -77.2049805,
-              17.7149414
-            ],
-            [
-              -77.1583984,
-              17.8450684
-            ],
-            [
-              -77.1194824,
-              17.8800781
-            ],
-            [
-              -77.0712891,
-              17.9012695
-            ],
-            [
-              -77.0359375,
-              17.8541016
-            ],
-            [
-              -76.9441406,
-              17.8487793
-            ],
-            [
-              -76.8962402,
-              17.9041016
-            ],
-            [
-              -76.8532227,
-              17.9737305
-            ],
-            [
-              -76.7948242,
-              17.9763184
-            ],
-            [
-              -76.748291,
-              17.9648926
-            ],
-            [
-              -76.7743164,
-              17.9404297
-            ],
-            [
-              -76.6693848,
-              17.9276367
-            ],
-            [
-              -76.6253906,
-              17.9009766
-            ],
-            [
-              -76.5246094,
-              17.8662109
-            ],
-            [
-              -76.4155273,
-              17.8682129
-            ],
-            [
-              -76.3014648,
-              17.879834
-            ],
-            [
-              -76.210791,
-              17.9135254
-            ],
-            [
-              -76.2327637,
-              17.9703125
-            ],
-            [
-              -76.3498535,
-              18.1518555
-            ],
-            [
-              -76.7007324,
-              18.2571777
-            ],
-            [
-              -76.7932617,
-              18.3042969
-            ],
-            [
-              -76.9082031,
-              18.3904297
-            ],
-            [
-              -76.959375,
-              18.4018555
-            ],
-            [
-              -77.0137695,
-              18.4029297
-            ],
-            [
-              -77.1395508,
-              18.4214844
-            ],
-            [
-              -77.2614746,
-              18.4574219
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for north-america/jamaica.50m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE52XTWsbSRCG7/oVg87epr4/cgsLOQR22XsIQThKVmBrjKI9mOD/vowcmzhTEMo6DKPp6Yeurvetrvm+mabt+f5uv30zbd/td+f/Tvs/55ub/fX5MB+3V8vwl8fH37Zvpg+baZqm75freuLl9cvA3Wm+25/Oh8ukp9enaXvc3V4mvN/d7g7Xu+cJ07Q9fJs/7egy+NfqOV+ev30xcD0fz4fj/nhexv6eT+d/p7e3+9OC/fHSw/N6vu7n2/35dP9yNU/L/2e+uf/6I9pn+Hz6fDjuzj+F/fj7+f7Xf9P0h/sgQ3Gxq1+GMIaoC2G+GPh49Vsgq5BExTMTVezyRNEQuQQ6SJsXzsKuBU+JCC26wCQL1RIIYMHWBnqgc72FHkTcA8aAFGWkCigSJNQFEppl1sCAVG8DlURQKiAZWWoXyKTpVsmaJV21KesYzKlQRUzhBP2AUyCxyjFhgJm0c+xsTBUQE9Go6ZMY8KiNCugcFG3jpVFGVEYGcdVo+yQCF2IFxARp2sRHSAoKrng+MrypQB9ugVbSwp2T2uGag+tagT5C019Rt8Q4zGuggUpT0z7YUEjX+fARzJbY1LQP8owoNO3DPbVf+gkkA9aV2ofjJfddIGpwxtoji5YULPpAzNJ0i9gBvG86cKTIUtOA/cLqA1izOj4X1QgCNmVtI5fCD+tKvexhuGfTxjYijaQo1UvIr1phKBORV0BnZ2juoQ2/JLlcoRtjVzY2XILqJJtEu9TYcBdGq2SYAkLZLA02zJKj6AqX7smNrQ8k5SxVkwDLyd8FKolBls4zI4Rmw2BDUJV8fdwtwCCkNpABxco9DM/gtmgIwWvRICtpn8dLKmubACO1bcKSoVw11qi4tNxtWQM4ly0NqaN7W4WeTIbrkGPwYhNr5zghCHidlBicrzJe1tU6hsArttAHILtlDaRsL9AHcqpC+bFDKCH9pqH3Qbup7p/uHjZP14+bh83/TveJwn8QAAA=';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for north-america/jamaica.50m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get northAmericaJamaica50m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

@@ -2,301 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/pakistan.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Pakistan",
-        "iso_a2": "PK",
-        "iso_a3": "PAK",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              77.8374508,
-              35.4940095
-            ],
-            [
-              76.1928483,
-              35.8984034
-            ],
-            [
-              75.8968974,
-              36.6668061
-            ],
-            [
-              75.1580278,
-              37.1330309
-            ],
-            [
-              74.5758928,
-              37.0208414
-            ],
-            [
-              74.0675517,
-              36.8361756
-            ],
-            [
-              72.9200249,
-              36.720007
-            ],
-            [
-              71.8462919,
-              36.5099423
-            ],
-            [
-              71.2623483,
-              36.0743875
-            ],
-            [
-              71.4987679,
-              35.6505633
-            ],
-            [
-              71.6130762,
-              35.1532034
-            ],
-            [
-              71.1150188,
-              34.7331257
-            ],
-            [
-              71.1567733,
-              34.3489114
-            ],
-            [
-              70.881803,
-              33.9888559
-            ],
-            [
-              69.9305432,
-              34.0201201
-            ],
-            [
-              70.3235942,
-              33.3585326
-            ],
-            [
-              69.6871473,
-              33.105499
-            ],
-            [
-              69.262522,
-              32.5019441
-            ],
-            [
-              69.3177641,
-              31.9014123
-            ],
-            [
-              68.9266769,
-              31.6201891
-            ],
-            [
-              68.556932,
-              31.71331
-            ],
-            [
-              67.7926892,
-              31.5829304
-            ],
-            [
-              67.6833936,
-              31.3031542
-            ],
-            [
-              66.9388912,
-              31.3049112
-            ],
-            [
-              66.3814576,
-              30.7388992
-            ],
-            [
-              66.3464726,
-              29.8879434
-            ],
-            [
-              65.046862,
-              29.4721807
-            ],
-            [
-              64.3504187,
-              29.5600306
-            ],
-            [
-              64.1480022,
-              29.3408192
-            ],
-            [
-              63.5502609,
-              29.4683308
-            ],
-            [
-              62.5498568,
-              29.3185725
-            ],
-            [
-              60.8742485,
-              29.829239
-            ],
-            [
-              61.3693087,
-              29.3032763
-            ],
-            [
-              61.7718681,
-              28.6993338
-            ],
-            [
-              62.7278304,
-              28.2596449
-            ],
-            [
-              62.7554257,
-              27.3789234
-            ],
-            [
-              63.2338977,
-              27.217047
-            ],
-            [
-              63.3166317,
-              26.7565325
-            ],
-            [
-              61.8741875,
-              26.2399749
-            ],
-            [
-              61.4973629,
-              25.078237
-            ],
-            [
-              62.9057007,
-              25.2184093
-            ],
-            [
-              64.5304077,
-              25.2370387
-            ],
-            [
-              66.3728276,
-              25.4251409
-            ],
-            [
-              67.1454419,
-              24.6636112
-            ],
-            [
-              67.4436666,
-              23.9448437
-            ],
-            [
-              68.1766451,
-              23.691965
-            ],
-            [
-              68.8425993,
-              24.3591336
-            ],
-            [
-              71.0432402,
-              24.356524
-            ],
-            [
-              70.8446993,
-              25.215102
-            ],
-            [
-              70.2828732,
-              25.7222287
-            ],
-            [
-              70.1689266,
-              26.4918716
-            ],
-            [
-              69.5143929,
-              26.9409657
-            ],
-            [
-              70.6164962,
-              27.9891963
-            ],
-            [
-              71.7776656,
-              27.9131802
-            ],
-            [
-              72.8237517,
-              28.9615917
-            ],
-            [
-              73.4506385,
-              29.9764135
-            ],
-            [
-              74.4213802,
-              30.9798148
-            ],
-            [
-              74.405929,
-              31.6926395
-            ],
-            [
-              75.2586418,
-              32.2711055
-            ],
-            [
-              74.4515593,
-              32.7648996
-            ],
-            [
-              74.1042937,
-              33.4414733
-            ],
-            [
-              73.7499484,
-              34.3176989
-            ],
-            [
-              74.2402027,
-              34.748887
-            ],
-            [
-              75.757061,
-              34.5049226
-            ],
-            [
-              76.8717216,
-              34.653544
-            ],
-            [
-              77.8374508,
-              35.4940095
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/pakistan.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5VYTWubRxC+61e86GyG+f7ILRR66SX3EopI1SDqSMZWDyb4v5dV6hBnl8L4IF69o308s/M8szP7dbdt++vzw3H/btv/ejxc/3k8/nK5vz9+up4u5/3dMP/17fXT/t32+27btu3r7XNeePv5zfDweHk4Pl5Pt0WvP9+2/fnw5bbgw+Hv09P1cP6+Ytv2p6fLHwe+WX+b3svt/fs3hk+X8/V0Pp6vw/b+6XTY/2d7+e7H5+Ply/H6+PzWi1e3P1zunz9fzm8xL49/ns6H6w/hfvv78fnnb9sWASmhhnn3k0UMtBSx7I3h493/4zlQcWrKAi8rFUVbeGOVZ4VOeA7unujUxCNL5JjjDSARFKwWnoKFZfEKDxlTqRevAnqYUSziTXEK8xYeQzEiay3wghExWnAEqc5FKzjDKmVp4rGzrOjigKGS0aMfgVaGx+yfgRuaS9c/J8FwXuCRCXfpTEBkSDnTRSFEiK2bDzKPkHn/FESzqEk/hExKnOEEKjPNWurwghI0lXn7dKiDGHvqRRAWK53xBMTShFvq8ALPII1VvISm1Q2XnY1n7xgMqVRb0XqBUIQrTXgEhaTUE5snFLuHz+IgcEbK6vmXYOa1SC5BkEgPLCCKPWuFZskl2GKyB3iKlPgCT1DIlFt4DiWZRSv/BLWIuniSpBazfwgx/lO18dQ1eMLjgswo7VUqN0D1nAsfF2gwZe/gcAUxVMrpXOMCc0TBnnIVSBNx1hoXiGJSc/sEzJAdJ22MeAeTMFt4DKaV5lOhH/5RWnDrYHOEDGVNW6WXi6VXqQjES3CZDkHh8F5pIYig9JxKFSd4lYh0ty84UnBq+ziBrVy1Fy9DmCnbHG+ARBY31SHAIlmxwmMK1J46BITcZe762CHMTZpsocEWypjZ4sBSFc3tG21ViPOsDgOMZOmFy1BogTiHa8CUitVjn4IJKi6yYcASKNnzz0GCk+fazAbKRtobEjyA1FTnrpkV3MW7Z0eAqrj77J9AqaY285FA4a42q1fAi8p77EtIZauauioep0CRSG+GIUAVVpxr/cBz43aPq+or9wb7jLCVjEDg5Iy5DWKDYGbukS8QaLRBi+Q6aFEGdXtcI5VaaNehFMubIweCk2stOoOAysGW7ogVEe42xxtQJJTNfDCMerSYoDmhnKyoF6+AGrosT94a3bn0RlQFZZKc2SwIFZWkraNy4KEt0jua+mKX5gWOAVu60jyhMnAQobXDNTKb1SYM4ZpVvWKgQKhcMl+QCKiOWa5HP4HQKs35gknH+OWV3QuhUamQZ/8UQjOb1cAgLNDnEVDBUIt7A284ZFAwzVOHgpuY9kpp+/Zwt3p+fXrZvX5+3L3s/gVpwcgF4xUAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/pakistan.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaPakistan110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

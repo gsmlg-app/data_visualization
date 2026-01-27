@@ -2,81 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/east-timor.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "East Timor",
-        "iso_a2": "TL",
-        "iso_a3": "TLS",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              124.9686825,
-              -8.8927902
-            ],
-            [
-              125.07002,
-              -9.0899875
-            ],
-            [
-              125.0885201,
-              -9.3931731
-            ],
-            [
-              125.925885,
-              -9.1060072
-            ],
-            [
-              126.967992,
-              -8.6682561
-            ],
-            [
-              127.3359282,
-              -8.3973166
-            ],
-            [
-              126.9572433,
-              -8.2733448
-            ],
-            [
-              126.6447042,
-              -8.3982468
-            ],
-            [
-              125.9470724,
-              -8.4320948
-            ],
-            [
-              125.0862464,
-              -8.6568873
-            ],
-            [
-              124.9686825,
-              -8.8927902
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/east-timor.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WTy2rDMBBF9/6KQetUyHqMZrIrpV11UWh2JRTTqsGQWMFWFyHk34udB0lsKPJCjOZqDvcKeV8AiLTbBjEH8RKq9NuGp7heh69Ux0bMevnn2O7EHD4KAID9sI4Hh+ODsG3jNrSpHobOxwFEU22GgeeqS7CoN7G9zACIuoufle71xeuob47992vhKzapbkKTeu2xqytx0g4XJ6sQNyG1u1sfZ+Nvcb1bnXJemLH9rpsqXQU+ftf1/Q6g1FYyEpJ2szvpgSSx9qz0jbCc/QN0Unml9AjHUhEzeZeNI3JalRNAw6b0pswFsnZE47wsS4VK+cy8KBk98zgwSezvFTP9eWmMY01TQMPelIjZBp3X1pgJoPbGWEu5QLTWKzvtkLTFTKCTbL3y2k4ArdGKcx32jwa1xSkgOiTyJg+Y/ZcUU/W5OhTndVkcij8EMnLkzgQAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/east-timor.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaEastTimor110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

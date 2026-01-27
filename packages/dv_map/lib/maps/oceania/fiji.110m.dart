@@ -2,135 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for oceania/fiji.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Fiji",
-        "iso_a2": "FJ",
-        "iso_a3": "FJI",
-        "continent": "Oceania"
-      },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [
-                180.0,
-                -16.0671327
-              ],
-              [
-                179.4135094,
-                -16.3790543
-              ],
-              [
-                179.0966094,
-                -16.4339843
-              ],
-              [
-                178.5968386,
-                -16.63915
-              ],
-              [
-                178.7250594,
-                -17.0120417
-              ],
-              [
-                179.3641427,
-                -16.8013541
-              ],
-              [
-                180.0,
-                -16.5552166
-              ],
-              [
-                180.0,
-                -16.0671327
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                178.12557,
-                -17.50481
-              ],
-              [
-                177.67087,
-                -17.38114
-              ],
-              [
-                177.28504,
-                -17.72465
-              ],
-              [
-                177.38146,
-                -18.16432
-              ],
-              [
-                177.93266,
-                -18.28799
-              ],
-              [
-                178.55271,
-                -18.15059
-              ],
-              [
-                178.71806,
-                -17.62846
-              ],
-              [
-                178.3736,
-                -17.33992
-              ],
-              [
-                178.12557,
-                -17.50481
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                -179.7933201,
-                -16.0208823
-              ],
-              [
-                -180.0,
-                -16.0671327
-              ],
-              [
-                -180.0,
-                -16.5552166
-              ],
-              [
-                -179.9173694,
-                -16.5017831
-              ],
-              [
-                -179.7933201,
-                -16.0208823
-              ]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for oceania/fiji.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE7VVwWojMQy9z1eYOTdGsmxL7nVhYRdKe1/KMmS9xUs6E6bTQyj595JJE9LEXqhp52BsSX7zLD/JL41S7bRZx/Zatd9jNz2P8duwWsXllIa+vdq5/+7NT+21+tUopdTLPF5unMNnx3oc1nGc0rzpEK5U23eP+w3pXzpGK9Wmp+F3Z2bPzws77e0/Th3LoZ9SH/tp57tdxq5PXfvm3h5pPMThMU7j5j2JA+ub59WU7obV5uHtpEfsYfyT+m46OfL+O52fry7XSqGAhqsL8wK9Bs9Ihs989+fBGUwO2iI5CDaPTBzAWapDhuB9EdkSBalDFu2CFxKfR/YU0NXhsnHg8oxZAxqwWJll8hat4TxjASRnsQK5rAnnnEHvPxWzoLOmtHr3tw/rnUWjcS6bM9YOrNRkjFl7BimgkiDaOlQjDgrKYWN9lSJnQjarc9HoLZk61EDGF1CNcAiVVekMY4Hrrq4qaxIFslxZeyO2RuEsmpgKoEQhVKX143L9msJZ7PoNByID2dvwGgyImIreu/iKR+h/oNVdbE5CQCZfeoAcIAtVtJDq/JavuzmfbZvDeN9sm1d39IDTWQkAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for oceania/fiji.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get oceaniaFiji110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

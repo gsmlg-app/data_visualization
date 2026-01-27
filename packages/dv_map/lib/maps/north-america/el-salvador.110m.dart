@@ -2,117 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for north-america/el-salvador.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "El Salvador",
-        "iso_a2": "SV",
-        "iso_a3": "SLV",
-        "continent": "North America"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -89.353326,
-              14.4241328
-            ],
-            [
-              -89.5873427,
-              14.3625862
-            ],
-            [
-              -89.5342193,
-              14.2448156
-            ],
-            [
-              -89.721934,
-              14.134228
-            ],
-            [
-              -90.0646779,
-              13.8819695
-            ],
-            [
-              -90.0955546,
-              13.7353376
-            ],
-            [
-              -89.8123936,
-              13.5206221
-            ],
-            [
-              -89.2567427,
-              13.4585328
-            ],
-            [
-              -88.8432279,
-              13.2597336
-            ],
-            [
-              -88.4833016,
-              13.1639513
-            ],
-            [
-              -87.9041121,
-              13.1490168
-            ],
-            [
-              -87.7931111,
-              13.3844805
-            ],
-            [
-              -87.723503,
-              13.7850504
-            ],
-            [
-              -87.8595153,
-              13.8933125
-            ],
-            [
-              -88.0653426,
-              13.964626
-            ],
-            [
-              -88.503998,
-              13.8454859
-            ],
-            [
-              -88.5412308,
-              13.9801547
-            ],
-            [
-              -88.8430729,
-              14.1405067
-            ],
-            [
-              -89.0585119,
-              14.3400294
-            ],
-            [
-              -89.353326,
-              14.4241328
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for north-america/el-salvador.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE52UTWvbQBCG7/oVi87usvO1O5NbKe2plEKglxKKcNRUYEtGUQsm+L8XKbGJo4Wy1WEZzcfDvJpZPVXO1dPx0NY3rv7UNtPvsf0w7HbtduqGvt7M4Z/P7sf6xn2vnHPuaTnXhUv6EjiMw6Edp24pOqc7V/fNfin4uHO3ze5Pcz+MlyLn6u5x+NHgnHD7beWnxf/5KrAd+qnr236aY1+Gcfrl3u/bsds29UvS6dLTQzvs22k8Xnd0lvB12B0fXhRf4MN43/XN9Er68/Pafvvm3Ds1T0KEcfMmAuwZGQj1KnC3+SdPNBFjygApomjEYiAxglEGiMwKEkuBacZxhgfEWCjYgg+RY0q24pFXBYsmxUATEV6PhHyah5WKBSsgGeWAgiEiQikQJabcjMmzqBQvjXplQsx+QxRLRIWS1bMSBchJhkgmQGXA5C0wAEIOyBYgFkpOPhkBQA5IyqyhbG1mIJKE9TUhn1SCBC7lqZiA5IBqRICFDaoPcb7KuZlY5IjFM5ZAZprrj4VVrJjHgBRyQNMAwuk/tjokXG81e+AgIRYCzQdRAcgBiUNAK5xx6c+/ytln61Sdz7vqVP0FiU69JK4HAAA=';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for north-america/el-salvador.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get northAmericaElSalvador110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

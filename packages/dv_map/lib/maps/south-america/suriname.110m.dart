@@ -2,141 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for south-america/suriname.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Suriname",
-        "iso_a2": "SR",
-        "iso_a3": "SUR",
-        "continent": "South America"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -54.5247542,
-              2.3118489
-            ],
-            [
-              -54.2697052,
-              2.7323917
-            ],
-            [
-              -54.181726,
-              3.1897798
-            ],
-            [
-              -54.0069305,
-              3.6200377
-            ],
-            [
-              -54.3995422,
-              4.2126114
-            ],
-            [
-              -54.478633,
-              4.8967557
-            ],
-            [
-              -53.9580446,
-              5.7565482
-            ],
-            [
-              -55.0332503,
-              6.0252914
-            ],
-            [
-              -55.8417798,
-              5.9531253
-            ],
-            [
-              -55.9493184,
-              5.7728779
-            ],
-            [
-              -57.1474365,
-              5.9731499
-            ],
-            [
-              -57.3072459,
-              5.0735666
-            ],
-            [
-              -57.9142889,
-              4.8126265
-            ],
-            [
-              -57.8602095,
-              4.5768011
-            ],
-            [
-              -58.0446944,
-              4.0608636
-            ],
-            [
-              -57.601569,
-              3.3346546
-            ],
-            [
-              -57.2814335,
-              3.3334919
-            ],
-            [
-              -57.1500978,
-              2.7689269
-            ],
-            [
-              -56.5393857,
-              1.8995226
-            ],
-            [
-              -55.995698,
-              1.8176671
-            ],
-            [
-              -55.9056001,
-              2.0219958
-            ],
-            [
-              -56.0733418,
-              2.220795
-            ],
-            [
-              -55.9733221,
-              2.5103639
-            ],
-            [
-              -55.569755,
-              2.4215063
-            ],
-            [
-              -55.0975874,
-              2.5237481
-            ],
-            [
-              -54.5247542,
-              2.3118489
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for south-america/suriname.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WVTWvbQBCG7/4Vi87uMt+zk1sp9FxaeiqhmFRNBbZlFOUQQv57sRKniddQVodlNLP7MK9mZvW4SqmbHw59d5W6z/1mvp/6T+N229/Mw7jv1sfw72f3XXeVfqxSSulxWeuDy/YlcJjGQz/Nw3LotD2lbr/ZLQe+3U/DYq//xYa78eeGlujXys+L//u7wM24n4d9v5+X2Hg//0kfd/003Gy6l01Prwnd9uOun6eH9+mc8v8ybh9uX+S+wsfp17DfzG90Pz9v7fO3lD6oZCVxFVqfhSgzYpES7/zX6//yyMJBL/CciQO9lYcFnewcxxlLuEdpxQFYMGjNMwJgb06PI1SokiuZkAxRWnnixZhrXAlz1cb0OIcWEKk+n2ZXUynUxtMMzKRQ5WcZSCla5Wougscq1vmFMpJyKy8kGItc0OtU3Bu72TOKC1vVLprDGSWaeQxOolHzwFnNrJUXKFRKxZNckIxMW3nFgCAqvZLVrQBiG6/kY/OFVPWQDAbFuFmvAapVcjkzi6k046igMF+4DZhZAtvbRQHCq3am7FaCrJFnWTm4qJ/zMJcIJWrUqzlCrZ42zAXdzBurqzlADQBruUAYoY2Xsx2HgAUvfD4i8Ghs5mVGmehCeorAxo3V0KwWrlWzUBZCBWu+qyBci1ezQVmJXUpjNVr/5KtL9sl6Wp3W69XT6i9Bmq69eAkAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for south-america/suriname.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get southAmericaSuriname110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

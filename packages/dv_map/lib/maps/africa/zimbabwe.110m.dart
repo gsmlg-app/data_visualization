@@ -2,185 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for africa/zimbabwe.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Zimbabwe",
-        "iso_a2": "ZW",
-        "iso_a3": "ZWE",
-        "continent": "Africa"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              31.1914091,
-              -22.2515097
-            ],
-            [
-              32.2449882,
-              -21.1164885
-            ],
-            [
-              32.5086931,
-              -20.3952923
-            ],
-            [
-              32.6597433,
-              -20.3042901
-            ],
-            [
-              32.772708,
-              -19.7155921
-            ],
-            [
-              32.6119943,
-              -19.4193828
-            ],
-            [
-              32.6548857,
-              -18.6720899
-            ],
-            [
-              32.8498609,
-              -17.9790573
-            ],
-            [
-              32.8476388,
-              -16.7133981
-            ],
-            [
-              32.328239,
-              -16.3920741
-            ],
-            [
-              31.8520406,
-              -16.319417
-            ],
-            [
-              31.6364982,
-              -16.0719902
-            ],
-            [
-              31.173064,
-              -15.8609437
-            ],
-            [
-              30.3389547,
-              -15.8808391
-            ],
-            [
-              30.2742558,
-              -15.507787
-            ],
-            [
-              29.5168343,
-              -15.6446778
-            ],
-            [
-              28.9474634,
-              -16.0430514
-            ],
-            [
-              28.8258688,
-              -16.3897486
-            ],
-            [
-              28.4679061,
-              -16.4684002
-            ],
-            [
-              27.5982434,
-              -17.2908306
-            ],
-            [
-              27.0444271,
-              -17.9380262
-            ],
-            [
-              26.7067733,
-              -17.9612289
-            ],
-            [
-              26.3819353,
-              -17.8460422
-            ],
-            [
-              25.2642257,
-              -17.7365398
-            ],
-            [
-              25.6491634,
-              -18.5360259
-            ],
-            [
-              25.8503915,
-              -18.7144129
-            ],
-            [
-              26.1647909,
-              -19.2930856
-            ],
-            [
-              27.2965048,
-              -20.3915199
-            ],
-            [
-              27.7247473,
-              -20.4990585
-            ],
-            [
-              27.7272278,
-              -20.8518019
-            ],
-            [
-              28.0213701,
-              -21.485975
-            ],
-            [
-              28.7946562,
-              -21.639454
-            ],
-            [
-              29.4321883,
-              -22.0913128
-            ],
-            [
-              29.8390369,
-              -22.1022165
-            ],
-            [
-              30.3228833,
-              -22.2716118
-            ],
-            [
-              30.6598654,
-              -22.1515675
-            ],
-            [
-              31.1914091,
-              -22.2515097
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for africa/zimbabwe.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE52WTWsUQRCG7/srhj3Hor4/vIno2ZugiKxxlYVkN6wrEiT/XWZjNDqNUM5h6Omafni7uqq6vq+maX26vdmun07rl9vN6etx+/xwdbW9PO0O+/XFbP50P/1l/XR6u5qmafp+fi8Xnn8/G26Oh5vt8bQ7L3r4fZrW+831ecGb3fWHzYdvv1dM03r35fB+w2fr68W83M+/eGy4POxPu/12f5ptzz4dd5eb9U/r3S8ln7eH6+3pePunjgfhrw5Xt59/7vMX9XD8uNtvTo82fP88Hv/9NU1CQEWKRRd/WZ4wAxsZVvxheXfxbyADq1YmL4EERK6Z1gQappcMFCJIGRdLE+hWoSJDICoXUhMYwYG54FFBkFlxl+dEVboUSAVKJcnZ3vHs91gCEzwYs6oJTK10rCUwoKLQonsmqeGSAx86BIlUdn0onCwDgQ5SjKE9HkEao6IPgVRKvTQhcHGtQZqQAwZVITeBFIKuS57BfFIqPYEIIlmmg5gxyMSU6nkQgUPZbHDEBoYR2RLIBUaeMsoSA1f1iFaWcEJpqMvAhQ6ogkbaBCZb+jioJSs0vQlUj0JflkJyUE/FXtBwgFWyjrYcwIUp2FMYgKrKMVAYUJLI3lPoEOgRg2I9A52Ys1W6ePY8ldgQmOqo3FNowK7Mo+IaEOIm1YvDOXqLhnGYYOLI1tuyQRpKkY2AQarEXR+Sa9So/BdwCaZ1w4bLDXWZKec7nox6FxQHBGtoDO94rULrdSFnYDDHUGEaJVJPYQIySeCgrSHQtIqewIQodfNh3+VSar3iVaDClDnwIAMWCfWaEC5IKRRfBg0zEDKT9xpDBGHOHPVxDBzkRL02CefGMN2WiTcrNDLvncl/NNer0fhhdLd6eL9b3a1+AGDBqDIFDQAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for africa/zimbabwe.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get africaZimbabwe110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

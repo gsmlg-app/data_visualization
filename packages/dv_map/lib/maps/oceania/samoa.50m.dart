@@ -2,151 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for oceania/samoa.50m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Samoa",
-        "iso_a2": "WS",
-        "iso_a3": "WSM",
-        "continent": "Oceania"
-      },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [
-                -172.3334961,
-                -13.4652344
-              ],
-              [
-                -172.5108887,
-                -13.4828125
-              ],
-              [
-                -172.6696289,
-                -13.5238281
-              ],
-              [
-                -172.7785156,
-                -13.5167969
-              ],
-              [
-                -172.7440918,
-                -13.5787109
-              ],
-              [
-                -172.6587891,
-                -13.6448242
-              ],
-              [
-                -172.5356934,
-                -13.7916992
-              ],
-              [
-                -172.4845215,
-                -13.8001953
-              ],
-              [
-                -172.3308594,
-                -13.774707
-              ],
-              [
-                -172.2249512,
-                -13.8042969
-              ],
-              [
-                -172.1768555,
-                -13.684668
-              ],
-              [
-                -172.2215332,
-                -13.5595703
-              ],
-              [
-                -172.3334961,
-                -13.4652344
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                -171.4541016,
-                -14.0464844
-              ],
-              [
-                -171.4495605,
-                -14.0224609
-              ],
-              [
-                -171.461377,
-                -13.9776367
-              ],
-              [
-                -171.5068848,
-                -13.9499023
-              ],
-              [
-                -171.5654297,
-                -13.9430664
-              ],
-              [
-                -171.6039062,
-                -13.8791992
-              ],
-              [
-                -171.8581543,
-                -13.8071289
-              ],
-              [
-                -171.9848633,
-                -13.8244141
-              ],
-              [
-                -172.0458984,
-                -13.8571289
-              ],
-              [
-                -172.0280762,
-                -13.9068359
-              ],
-              [
-                -171.9119141,
-                -14.0016602
-              ],
-              [
-                -171.8637695,
-                -14.0020508
-              ],
-              [
-                -171.7282227,
-                -14.0472656
-              ],
-              [
-                -171.4541016,
-                -14.0464844
-              ]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for oceania/samoa.50m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE52VwWrcQAyG736KwefUSBpJI+Va6C20kEMPJRSTusGwscPGOSxh373sJhuSjedQ+WA8o5nPv6XR7+cmpXbZPQztZWq/Df3ytB2+zpvNcLuM89ReHMJ/X6Yf28v0q0kppefj/fPG4/Jj4GE7PwzbZTxuOi1PqZ36++OG6/5+7t+Wp9SOj/Pvng6hn9ef5vPL/NX7wO08LeM0TMsh9v126Kexb1/D+zcdd8N8Pyzb3UcVJ9lXT5tl/DFvdnevn/rGnrd/xqlf3n3zy/X++Xz0eZzSFyzU5ZzZFS9WorljFcrMZ7Gb88UVtCCYWamgjQxJgmhVVzJfRwvlAzyILsUERSto1OLqUTQzOFoFXawgRNEqVswrZVRmI6ZoGbOoZ15HF0d1j6LZWAhlHW0A6JKD6JzBxGuqCxcoQTIRuyDVRDPFDwgWNZFKPtRY1cKiUXKuiBZxKRDP9P87SFMbfXhpwNCwY2EEXO1f7oCVLWho2DG7KKyWhzsgYg32L3asmEvFKr0UzRo7rtgJqBlXTMfZHShWeexEhclrqjmDajTVCtlBa01WHKOmg52JoXCu9W9BsmgV3dg019DEjBz9LQGLuVX8zCSumjogg1LLtYNalnBCEB151Ru4A0BVCJdRc1GvNSMQCMTMErtCRkSr5/pgIYVUNNrnAXeqm2Vz/rRvTvebZt/8A8+Lg+ZACwAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for oceania/samoa.50m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get oceaniaSamoa50m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

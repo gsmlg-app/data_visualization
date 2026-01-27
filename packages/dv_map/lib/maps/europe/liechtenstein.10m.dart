@@ -2,153 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for europe/liechtenstein.10m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Liechtenstein",
-        "iso_a2": "LI",
-        "iso_a3": "LIE",
-        "continent": "Europe"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              9.5211548,
-              47.262801
-            ],
-            [
-              9.5046184,
-              47.2437324
-            ],
-            [
-              9.4873584,
-              47.2100135
-            ],
-            [
-              9.4849813,
-              47.1763463
-            ],
-            [
-              9.4926294,
-              47.1598099
-            ],
-            [
-              9.5034815,
-              47.1453922
-            ],
-            [
-              9.5118531,
-              47.1293725
-            ],
-            [
-              9.5123698,
-              47.1080301
-            ],
-            [
-              9.5028614,
-              47.0946976
-            ],
-            [
-              9.4875651,
-              47.0839489
-            ],
-            [
-              9.4758863,
-              47.073226
-            ],
-            [
-              9.4770232,
-              47.0638984
-            ],
-            [
-              9.4995541,
-              47.0593509
-            ],
-            [
-              9.5606356,
-              47.0524004
-            ],
-            [
-              9.5812028,
-              47.0568704
-            ],
-            [
-              9.6087981,
-              47.0807708
-            ],
-            [
-              9.6157227,
-              47.106764
-            ],
-            [
-              9.6055941,
-              47.1322663
-            ],
-            [
-              9.581823,
-              47.1549006
-            ],
-            [
-              9.5520573,
-              47.1668895
-            ],
-            [
-              9.551954,
-              47.1755712
-            ],
-            [
-              9.5618759,
-              47.190609
-            ],
-            [
-              9.5629094,
-              47.1977404
-            ],
-            [
-              9.5543311,
-              47.2116155
-            ],
-            [
-              9.5448226,
-              47.220323
-            ],
-            [
-              9.5403785,
-              47.229108
-            ],
-            [
-              9.5470964,
-              47.2430348
-            ],
-            [
-              9.5302499,
-              47.2536543
-            ],
-            [
-              9.5211548,
-              47.262801
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for europe/liechtenstein.10m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WWS2vcMBDH7/sphM8hzEPzyrWkUOih9xLKkrqpIbHDxjmEkO9edtMNeUwp44OQNdLPI81/Rn7ctDasD7fjcNaGz+N2vd+Nn5br6/FynZZ5ONmbfz0P3w1n7fumtdYeD+3HhYfpB8Ptbrkdd+t0WHSc3towb28OC75O4+XvdZzv1nGaX5a1Nkx3y48tHaZ8+TDOz+Pnrw2Xy7xO8zive9v5/f67w1/r04s7V+NyM667h7fOHL3/tlw/XC3zW+qy+znN2/XVrp+f1/33b63FqRCidD95Z+h2SkoO+Gb84uR/NOiK3jNaZ2PqNVx3Y8lxCIAsVVwPR05waMpduYgLUorMO5RwiKieHXdHyXBdOIiKOEQXxgxHwUbFsxMk1sh0guDAdaGQK2ZnB9E1TMtCEZVss+Ac3Yuh6CbumgkFjImqzpkBMWU0ZQ+vJkWESE/3KsECVdkpKIumOOoARe/EkYAynYCoWxWn4BaeBxbMwIs4FCOyVMVqWnZOJNJI4F4l1Xoijk5pdZIeAEXViRCIpThV96jmv2BIWutMxLBanBTdJDJcgNYlTAF5IQ6zXpawdGbMwkqIilI9ud6dKEswImCqiqQDm2e3BFFgNR+kG4T+477e30dFHAP1yMJKwiq9utfSv8km6x97T5tje7F52vwBCggXLUYKAAA=';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for europe/liechtenstein.10m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get europeLiechtenstein10m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

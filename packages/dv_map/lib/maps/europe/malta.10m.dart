@@ -2,263 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for europe/malta.10m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Malta",
-        "iso_a2": "MT",
-        "iso_a3": "MLT",
-        "continent": "Europe"
-      },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [
-                14.5480249,
-                35.8900414
-              ],
-              [
-                14.5192977,
-                35.8999698
-              ],
-              [
-                14.5139266,
-                35.9008243
-              ],
-              [
-                14.514008,
-                35.9108341
-              ],
-              [
-                14.5128687,
-                35.9208031
-              ],
-              [
-                14.5078231,
-                35.9285342
-              ],
-              [
-                14.478689,
-                35.9369571
-              ],
-              [
-                14.445079,
-                35.9603539
-              ],
-              [
-                14.4284774,
-                35.965725
-              ],
-              [
-                14.3493758,
-                35.9731306
-              ],
-              [
-                14.3623153,
-                35.9824079
-              ],
-              [
-                14.3681747,
-                35.9848494
-              ],
-              [
-                14.3772893,
-                35.9862328
-              ],
-              [
-                14.3772893,
-                35.9936384
-              ],
-              [
-                14.3615015,
-                35.9924177
-              ],
-              [
-                14.3475041,
-                35.9887149
-              ],
-              [
-                14.3347274,
-                35.9823673
-              ],
-              [
-                14.3220321,
-                35.9731306
-              ],
-              [
-                14.3325301,
-                35.962836
-              ],
-              [
-                14.3382268,
-                35.9469669
-              ],
-              [
-                14.3426213,
-                35.9116885
-              ],
-              [
-                14.3426213,
-                35.8806827
-              ],
-              [
-                14.3457137,
-                35.8759219
-              ],
-              [
-                14.3598739,
-                35.8696964
-              ],
-              [
-                14.3630477,
-                35.8666853
-              ],
-              [
-                14.381521,
-                35.842963
-              ],
-              [
-                14.4244898,
-                35.8236758
-              ],
-              [
-                14.4726669,
-                35.8114281
-              ],
-              [
-                14.5070907,
-                35.8086612
-              ],
-              [
-                14.5114852,
-                35.8064639
-              ],
-              [
-                14.5275171,
-                35.8012149
-              ],
-              [
-                14.5275171,
-                35.813544
-              ],
-              [
-                14.5324813,
-                35.8219669
-              ],
-              [
-                14.5480249,
-                35.836005
-              ],
-              [
-                14.5617782,
-                35.8298201
-              ],
-              [
-                14.5671493,
-                35.8456078
-              ],
-              [
-                14.5631617,
-                35.8700219
-              ],
-              [
-                14.5480249,
-                35.8900414
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                14.2566024,
-                36.0755883
-              ],
-              [
-                14.1954859,
-                36.0681013
-              ],
-              [
-                14.1836044,
-                36.0647647
-              ],
-              [
-                14.1843368,
-                36.0563012
-              ],
-              [
-                14.1879989,
-                36.0453962
-              ],
-              [
-                14.1849064,
-                36.0346133
-              ],
-              [
-                14.2011825,
-                36.0260684
-              ],
-              [
-                14.2208765,
-                36.0191918
-              ],
-              [
-                14.2414657,
-                36.0146345
-              ],
-              [
-                14.2600204,
-                36.0134952
-              ],
-              [
-                14.2775985,
-                36.016669
-              ],
-              [
-                14.304454,
-                36.0265974
-              ],
-              [
-                14.3220321,
-                36.0271671
-              ],
-              [
-                14.3342391,
-                36.0343692
-              ],
-              [
-                14.3147893,
-                36.0510928
-              ],
-              [
-                14.2825627,
-                36.0678572
-              ],
-              [
-                14.2566024,
-                36.0755883
-              ]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for europe/malta.10m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE6WXSWvbYBCG7/4VwudgZl9yLe2pgR56K6GY1g0Gxw6Ocggh/73YWciiCXTqg7A00qPRfO8s391sGObj7dVqfjrMv6yW481+9Wm32ax+jevddn5yMP95uHw9Px1+zIZhGO6Ox/cPHm8/Gq72u6vVflwfH3q6fRjm2+Xl8YGz5WZcPt8+DPP19e7nko6m7++u8/H611eGX7vtuN6utuPB9vnm8L75o/X+2Y2L1e5yNe5vXzvx5PXZzWZcf9ttbi8ev/QZvdv/Xm+X44tPfvi9/P/27P35MKAsVAJI8uSdjXURCSAob0znb++d5mJSuhfcTMtocjnJbJKbAEHCTa4AxDQWIViwiaWwmA5DEgRwkwsexFhwQ1moxRUPi2k1JFuq99wVUfACa8DK2cNSiLsUXHXSFpYl2bUQgzMyWI9rxKg8zQ0S8F4Y2AJdCpGFhGQvh9mdIit/jZh6OfwhN9k4mv4aKqAWXBJ0b+rBFaRItghHaa4bi1Ml3yA279UyJgKmwt//0S+TMhRco+AuNoisSDexNGuGV8gIC5khWkS3PNTcCLCgrszUkYuW6ZqEzThohnPR4i0trZtuDFK1eDMLbco3UAv1hlBajyokEjmtsmOuaa+YiZOZFdFFFIp2h4eEIroQZtjr8IoooVRwTazZi5Vc0YtlA6RukfyQi6zSnE+ZJKokJmwXnQ/naTaAXs1RQ/coVo0yCJoqs0P3KsIgauDNMd0YDataBtCtZY3tyqw6e/XGxtaJ1Axoqn3bAlw1olepMFVCp77RFmCBgE3uQX9S+GviJr2+hSHMk/3bFqDG0KxUGJ45uRmxBYhyWpcrCVbEgcWQe/ElQAyaGj9tAWRgzbGWCMKt4GJiYi9HSVBMp3L0wBVj6dUqMgCCIr7IktpbN3LXjCoO1h4TQUQLb8k0vTkdlUP4getoza00sxBnwWVhy150GcWnN2WHLEbI5maPgtSoUJl5qDfV8O/Vt+4Es7f/7mdPx/PZ/ewvCOdjyoYUAAA=';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for europe/malta.10m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get europeMalta10m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

@@ -2,129 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for north-america/montserrat.10m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Montserrat",
-        "iso_a2": "MS",
-        "iso_a3": "MSR",
-        "continent": "North America"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -62.1473689,
-              16.7442895
-            ],
-            [
-              -62.1563208,
-              16.7603214
-            ],
-            [
-              -62.1700333,
-              16.7770043
-            ],
-            [
-              -62.1793107,
-              16.794501
-            ],
-            [
-              -62.174672,
-              16.8131371
-            ],
-            [
-              -62.1829321,
-              16.8127302
-            ],
-            [
-              -62.1894425,
-              16.8144392
-            ],
-            [
-              -62.2020158,
-              16.819322
-            ],
-            [
-              -62.2188615,
-              16.7763126
-            ],
-            [
-              -62.2301326,
-              16.7276065
-            ],
-            [
-              -62.2188615,
-              16.6887068
-            ],
-            [
-              -62.1678768,
-              16.6753604
-            ],
-            [
-              -62.1578263,
-              16.6773135
-            ],
-            [
-              -62.1497697,
-              16.6817895
-            ],
-            [
-              -62.1440324,
-              16.6882185
-            ],
-            [
-              -62.140533,
-              16.6964786
-            ],
-            [
-              -62.141184,
-              16.7018497
-            ],
-            [
-              -62.1439103,
-              16.7089704
-            ],
-            [
-              -62.1475724,
-              16.7158878
-            ],
-            [
-              -62.1507869,
-              16.7203637
-            ],
-            [
-              -62.1517635,
-              16.7245141
-            ],
-            [
-              -62.1476945,
-              16.7370466
-            ],
-            [
-              -62.1473689,
-              16.7442895
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for north-america/montserrat.10m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE52VTWsbMRCG7/srxJ7dMF+aGeVWCr21lPZYQlnSbbpg75q1ejDB/71kHRsnUSnyHoRWr+ZhRqMZPTYhtHm/7dvb0H7su/xn7j9M63V/n4dpbFdP8q/j8q69Dd+bEEJ4XMa3hsv2RdjO07af87AYnbaH0I7dZjH4NI15189zl882IbTDbvrR0aJ/e7POx/Wvl8L9NOZh7Mf8pH2e5vw7vN/083Dftc+bDmeXHvpp0+d5/9KhUwRfpvX+4TngM3yafw5jly8iP36X89d/IbxTukExVk+rVxLqjYmQp/hCuFv9HxiVCbwEVGBCqQYaADOXgGYAwvXAxAhWAiaJgPU8UaMCzpGRrZ7nlJiwCCRjoHpgEqFYBIpwqgYSEGAs5dgxMdXz0F2x5KCZMpJWAxmQSUtAMgWtvtX/9lDdDdSrc6LmpqUjVIusUF8m0Zy0VCZqxsj1hSzJNJXKRB3tms4gAkxSPkNCvwIIsdgYNKmYV98aFEQv+WeALsnqeZwQip0LPNkVORaLVjxBw+hu9bcwgrkWuz8BK9eHHNGUi5VMElHqm6GYJikC2UD0iiRXPXhNaX6aHZrTeNccmr+dWy9LoggAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for north-america/montserrat.10m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get northAmericaMontserrat10m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

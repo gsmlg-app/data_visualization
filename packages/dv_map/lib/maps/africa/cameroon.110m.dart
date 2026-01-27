@@ -2,281 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for africa/cameroon.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Cameroon",
-        "iso_a2": "CM",
-        "iso_a3": "CMR",
-        "continent": "Africa"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              14.4957874,
-              12.8593963
-            ],
-            [
-              14.2135307,
-              12.8020354
-            ],
-            [
-              14.1813363,
-              12.4836569
-            ],
-            [
-              14.5771778,
-              12.0853608
-            ],
-            [
-              14.4681922,
-              11.9047517
-            ],
-            [
-              14.4153789,
-              11.5723689
-            ],
-            [
-              13.5729497,
-              10.798566
-            ],
-            [
-              13.3086764,
-              10.160362
-            ],
-            [
-              13.1675997,
-              9.6406263
-            ],
-            [
-              12.955468,
-              9.4177717
-            ],
-            [
-              12.7536715,
-              8.7177628
-            ],
-            [
-              12.2188721,
-              8.3058241
-            ],
-            [
-              12.0639462,
-              7.7998085
-            ],
-            [
-              11.8393087,
-              7.3970423
-            ],
-            [
-              11.7457744,
-              6.981383
-            ],
-            [
-              11.0587879,
-              6.6444268
-            ],
-            [
-              10.4973751,
-              7.0553578
-            ],
-            [
-              10.1182768,
-              7.0387696
-            ],
-            [
-              9.5227059,
-              6.4534824
-            ],
-            [
-              9.2331629,
-              6.4444907
-            ],
-            [
-              8.757533,
-              5.4796658
-            ],
-            [
-              8.5002877,
-              4.7719829
-            ],
-            [
-              8.4888155,
-              4.4956174
-            ],
-            [
-              8.7449239,
-              4.3522153
-            ],
-            [
-              8.9481157,
-              3.9041289
-            ],
-            [
-              9.4043669,
-              3.7345269
-            ],
-            [
-              9.7951958,
-              3.0734044
-            ],
-            [
-              9.6491582,
-              2.2838661
-            ],
-            [
-              11.276449,
-              2.2610509
-            ],
-            [
-              11.7516655,
-              2.3267575
-            ],
-            [
-              12.3593803,
-              2.1928122
-            ],
-            [
-              12.9513339,
-              2.3216157
-            ],
-            [
-              13.0758224,
-              2.2670971
-            ],
-            [
-              14.3378125,
-              2.2278747
-            ],
-            [
-              15.146342,
-              1.9640148
-            ],
-            [
-              15.9409188,
-              1.7276726
-            ],
-            [
-              16.0128524,
-              2.2676397
-            ],
-            [
-              15.9073808,
-              2.5573894
-            ],
-            [
-              15.8627324,
-              3.0135373
-            ],
-            [
-              15.4053959,
-              3.3353006
-            ],
-            [
-              15.0362195,
-              3.8513673
-            ],
-            [
-              14.9509534,
-              4.2103893
-            ],
-            [
-              14.4783724,
-              4.7326055
-            ],
-            [
-              14.558936,
-              5.0305976
-            ],
-            [
-              14.4594072,
-              5.4517606
-            ],
-            [
-              14.5365601,
-              6.2269587
-            ],
-            [
-              14.7765454,
-              6.408498
-            ],
-            [
-              15.2794605,
-              7.4219245
-            ],
-            [
-              15.4360917,
-              7.6928124
-            ],
-            [
-              15.1208655,
-              8.3821502
-            ],
-            [
-              14.9799956,
-              8.7961042
-            ],
-            [
-              14.5444666,
-              8.9658613
-            ],
-            [
-              13.9542184,
-              9.5494949
-            ],
-            [
-              14.1714661,
-              10.0213783
-            ],
-            [
-              14.6272006,
-              9.9209193
-            ],
-            [
-              14.9093539,
-              9.9921294
-            ],
-            [
-              15.4678728,
-              9.9823367
-            ],
-            [
-              14.9235649,
-              10.8913252
-            ],
-            [
-              14.9601518,
-              11.555574
-            ],
-            [
-              14.89336,
-              12.21905
-            ],
-            [
-              14.4957874,
-              12.8593963
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for africa/cameroon.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5VYTWtjVwzd+1cYr4PQ98fshoHuCqXbMhSTeoZAEgePuwhD/nt5TlKS6JUiG8zz07vHutLRka5/brbb3fnx4bD7tN39ctif/z4dvhxvbw/X55vj/e5qMX97vv1j92n7x2a73W5/Xj77wsvjF8PD6fhwOJ1vLoteH99ud/f7u8uCL/u7w+n48gMvtpsfxz/3fLH+2u7L8/3f3xquj/fnm/vD/Xmxff52urne716sT/968v1wvDucT4/v/Xh1/Lfj7eP3925cH4+nv27u9+c3G35+vb3++G27JQUtiwy9+mhhSCspl3eGr1f/h8ckJhhreMgopkM8ShJxWcHTFDevIZ5FUESu4GGaOOYQTz2pmBseQaGGUUzxyCSyVvAsWDxn+5VlVWn1fCBEpbkP4QTTwztdEMhRnIdw5GHVvStwRech+RjKTL3ltkAplrQP0cLEg+wjXMLCIOcZUxiYMoOpwwlastIQDl1KvREvIKoS00ZwBCklmC0TAVKByrNMEIRahDaeOFSS5BQNLSOjFYWDqyr7LBMIWiFhLRMBaCYWUzii5Oi0C0DJ8BqVWIExB9rKXtVEk0f6WcAi5LyGpqqFo5JICAuTpsUGGuVuo7glGCJnNMYpRFAlj4QuQTOTrBXrpcE5xShsCaFaLC1sCmLMZCP+JpQmkbWdytIiiGeSXqCo4t58EwhR41lDLIgyKmvkFcAQRR3SzbXIsokSA6ek+0zjCDhcte2UgZ3QcNYKCcLIvVOEQdgXZg8FWKwksVUDAxUn8awVLr2LRDrlFu/IyWbNa0mfJXMT4CV2gRWzTCiIRBKvxI55GR9n3hmQumgfmqBckXQmwAalWJR9poPg8ODZjOOAxGn/ETqXmu61MCSxecdgFpI1G4gN0jmkeyeAy+Qds9ZqoGhSvd0IyDLH4yx2BssMSNV4IpBG4kPvFMqwTNpml2MGStYUTiMleuwUQtjRZgqgYJYl3tshClrFLHQKaqUYrSgM1Ch8mAkFW05H2IYcB2Yvy+m5JMJNbWWgU0ytacVylDo2mgQoU7HOEmGg4li0Mrz6RYqnJUaMudIoEiSZDGfKrlBRVdZ4khDlhDqFM1V1X4Ert3Sa1YRAmTJlS2yBaS3voXcUpO6NdoSATBLD0V/BORix7bagGIvGClBYYr3LFlQx8ViM1SODV06clSzi0yIrFvM+8BBCFgnbmHmOZNQbI4GZ2WwoJoUs6XJ3OdkWTrVz+L/TZu369epp8/r5dfO0+QdyDCdSHxQAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for africa/cameroon.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get africaCameroon110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

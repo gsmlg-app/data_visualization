@@ -2,69 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for north-america/bermuda.50m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Bermuda",
-        "iso_a2": "BM",
-        "iso_a3": "BMU",
-        "continent": "North America"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -64.7302734,
-              32.293457
-            ],
-            [
-              -64.6683105,
-              32.3819336
-            ],
-            [
-              -64.6946289,
-              32.3869141
-            ],
-            [
-              -64.7711914,
-              32.3077148
-            ],
-            [
-              -64.8628418,
-              32.273877
-            ],
-            [
-              -64.8450684,
-              32.2623047
-            ],
-            [
-              -64.8201172,
-              32.2596191
-            ],
-            [
-              -64.7302734,
-              32.293457
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for north-america/bermuda.50m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WSTWvDMAyG7/kVwuesxB/xR2/bYLeNXXYaZZjW7QJJHFz3EEr++6jThLQ1DPsgZL3SgyT7nAEg33cGrQG9Ge1PzrzaujZbX9kW5Rd5P4aPaA3fGQDAOdjHwpAehM7ZzjhfhaIpHQC1ugkFL8Y1p52eCwBQdbQ/mgTx/SFOx/jXUtja1letaf1F+7DO/8JzY1y11eiaNMz9HIxtjHf9bTdT+5+27g/XaWe4dbuq1X4x9niW/v0N4ImzlaAFEZTldxIlK6IoK8VNfJP/y+NcUlyUER6VWFHKk4GKcSJVFMgVZjgVKATGCscmpoUQmMlUoOREMixjKxRUiuQVSlYWXEafhBNasHQgKTAWJAYsFccqfYVJnyaL+ZM3ZJPdZEP2B64eljHiAwAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for north-america/bermuda.50m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get northAmericaBermuda50m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

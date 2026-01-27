@@ -2,125 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for africa/sierra-leone.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Sierra Leone",
-        "iso_a2": "SL",
-        "iso_a3": "SLE",
-        "continent": "Africa"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -13.2465503,
-              8.9030486
-            ],
-            [
-              -13.1240254,
-              8.1639464
-            ],
-            [
-              -12.949049,
-              7.7986457
-            ],
-            [
-              -12.4280989,
-              7.262942
-            ],
-            [
-              -11.7081945,
-              6.8600984
-            ],
-            [
-              -11.4387795,
-              6.7859169
-            ],
-            [
-              -11.1998018,
-              7.1058456
-            ],
-            [
-              -11.1467043,
-              7.3967064
-            ],
-            [
-              -10.6955949,
-              7.939464
-            ],
-            [
-              -10.2300936,
-              8.4062056
-            ],
-            [
-              -10.5054773,
-              8.3488964
-            ],
-            [
-              -10.4943152,
-              8.7155407
-            ],
-            [
-              -10.6547705,
-              8.9771785
-            ],
-            [
-              -10.6223952,
-              9.2679101
-            ],
-            [
-              -10.839152,
-              9.6882462
-            ],
-            [
-              -11.1174812,
-              10.0458729
-            ],
-            [
-              -11.9172774,
-              10.046984
-            ],
-            [
-              -12.1503381,
-              9.8585717
-            ],
-            [
-              -12.4259285,
-              9.8358341
-            ],
-            [
-              -12.5967191,
-              9.6201883
-            ],
-            [
-              -12.7119576,
-              9.3427117
-            ],
-            [
-              -13.2465503,
-              8.9030486
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for africa/sierra-leone.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE52VwWobQQyG736KYc/uIGmkkZRbKe0ph0KPJRSTbsKCs2s224MJfvfidZw6noUy2cMwK40+9CNp5mUVQjPtd21zE5pv7Wb6M7Zfhu22vZ+6oW/WR/fDyfzc3ISfqxBCeJnXMnA+Pjt247Brx6mbg87HQ2j6zdMc8KNrx3ETbtuh/xcVQtM9D782NJ+4LezpZP966bgf+qnr2346+j4/jN39pnn1Ht6yeWyHp3Ya9+9zOSf/fdjuH1+1vlGH8XfXb6YL0afvcn/9F8InTJE4i0BaX7ksOiRgy+/sd+v/8pAYSLjkYU7Omet4FJ0d2K9xGtUts2gtjsnAbYFHmZypDodRwdBZrnE5WgZwq1SLkZOp+gJPTRyz1/LQ3QCtlIsgxlJZXYzIWYGLbtGYPCvUVhdidhFfKq9/oFkgUgLwlMvmY8gEtXIhCgirLgxHYjOvz4+dEwqVPEURhspuhpiP6UHRLhZdFdWkmkeUvMzPI2V1BKzlWfIFuR6zGXGunjZEZcOChxCBxZSqx8NRSbW4rGZgrh5fiiiQkmEp2MRE8QO3lThZUV+PlsQSV9aDonhW9IX8MgGapVqeIrpoMW8eE5Nird7ax2i1tD/vDqvzerc6rP4CBUICXzgIAAA=';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for africa/sierra-leone.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get africaSierraLeone110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

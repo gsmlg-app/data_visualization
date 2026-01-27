@@ -2,129 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for europe/bosnia-and-herzegovina.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Bosnia and Herzegovina",
-        "iso_a2": "BA",
-        "iso_a3": "BIH",
-        "continent": "Europe"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              18.56,
-              42.65
-            ],
-            [
-              18.70648,
-              43.20011
-            ],
-            [
-              19.03165,
-              43.43253
-            ],
-            [
-              19.21852,
-              43.52384
-            ],
-            [
-              19.454,
-              43.5681
-            ],
-            [
-              19.59976,
-              44.03847
-            ],
-            [
-              19.11761,
-              44.42307
-            ],
-            [
-              19.36803,
-              44.863
-            ],
-            [
-              19.00548,
-              44.86023
-            ],
-            [
-              19.0054846,
-              44.8602345
-            ],
-            [
-              18.5532141,
-              45.0815897
-            ],
-            [
-              17.8617835,
-              45.0677404
-            ],
-            [
-              17.002146,
-              45.2337768
-            ],
-            [
-              16.5349394,
-              45.2116076
-            ],
-            [
-              16.3181568,
-              45.0041267
-            ],
-            [
-              15.9593673,
-              45.2337768
-            ],
-            [
-              15.7500261,
-              44.8187117
-            ],
-            [
-              16.2396603,
-              44.3511433
-            ],
-            [
-              16.4564429,
-              44.0412397
-            ],
-            [
-              16.9161564,
-              43.6677225
-            ],
-            [
-              17.2973735,
-              43.4463406
-            ],
-            [
-              17.6749215,
-              43.0285625
-            ],
-            [
-              18.56,
-              42.65
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for europe/bosnia-and-herzegovina.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE52VTWvcMBCG7/4VwudFaL6l3NqQkt56L6GYxFkMG3vxOoVt2P9e1skum1jQKj4IeUbzMDN+R36pnKun/batr1z9rW2m57G9Hjab9n7qhr5eHd2Pr+ZdfeV+Vs459zKvy8D5+OzYjsO2HaduDjodd67um6c54Ouw67vGNf2Du23HP+16+N31zTneubrbDb8anM9+Wdhptn+/vXTcD/3U9W0/HX03z8cE6jfv4ZzXuh2e2mncv8/qVMaPYbNfv1V9pg7jQ9c300X5r8/l/uObcxC96OqDkdGrvLPdrf5FsaAcFyDyGAJAESv5QKCSYTGhUCELIQpmWIIUuZDFwjmSxtICJSVbdp19oMhWyAIwhQyLkUIpizQGyrCilrY9BMnI4UgK+CkW5/o107hUqiKEwMueiQ8RJKayrpmPChZpKVjxQc04lMnMfAgImXLFI5GZxiKceiFOlJbKFY8AGkwLeQQRRJcfV3wIDKhl7ROfJJHaUnafq1e8SQiYHYkI0QDK8lOPlFSzY0ECwFQmZ/UsyowpN/4MSIXyU59AQTR3M6maIZaNh3lMRpaRM3lmJQ5lejGvxgkhxwsYRQvz+8//VZXbn3aH6rTeVYfqL/6sRrRbCAAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for europe/bosnia-and-herzegovina.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get europeBosniaAndHerzegovina110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

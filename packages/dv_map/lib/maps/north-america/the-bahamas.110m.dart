@@ -2,131 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for north-america/the-bahamas.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "The Bahamas",
-        "iso_a2": "BS",
-        "iso_a3": "BHS",
-        "continent": "North America"
-      },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [
-                -78.98,
-                26.79
-              ],
-              [
-                -78.91,
-                26.42
-              ],
-              [
-                -77.82,
-                26.58
-              ],
-              [
-                -77.85,
-                26.84
-              ],
-              [
-                -78.51,
-                26.87
-              ],
-              [
-                -78.98,
-                26.79
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                -77.79,
-                27.04
-              ],
-              [
-                -77.78802,
-                26.92516
-              ],
-              [
-                -77.34,
-                26.53
-              ],
-              [
-                -77.35641,
-                26.00735
-              ],
-              [
-                -77.17255,
-                25.87918
-              ],
-              [
-                -77.0,
-                26.59
-              ],
-              [
-                -77.79,
-                27.04
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                -78.19087,
-                25.2103
-              ],
-              [
-                -78.40848,
-                24.57564
-              ],
-              [
-                -78.03405,
-                24.28615
-              ],
-              [
-                -77.78,
-                23.71
-              ],
-              [
-                -77.53466,
-                23.75975
-              ],
-              [
-                -77.54,
-                24.34
-              ],
-              [
-                -77.89,
-                25.17
-              ],
-              [
-                -78.19087,
-                25.2103
-              ]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for north-america/the-bahamas.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE7VUS2vDMAy+51eYnDvjZ+T0tg7GLhuD7TbGCJ3XBpK4pO6hlP730fRBm6iwCuaDsV6fJeuTNwljaVwvfDpm6aMv4qr1D6Gq/DSWoUlHO/PPXr1Mx+wjYYyxTbcPAzv3zrBow8K3seyCju6MpU1RdwHvc88mxbyoi+UpiLG0XIavQu0cJm8Dve70TxeGaWhi2fgm7mwvoY1zdl/7tpwW6cFpe8pp5kPtY7u+zOhYwvOqiuVrqNazQ9mnG0L7XTZFPKt/v87PfWkoM3YHjuduNNCrjEPe03723a7ASRTOKAoccKdQOOuIcBaFc4ZWrMWLdUB8u7+2IrkmXVx0OxuAQ46kAFyQHgg4OCfwDubKyowGqg3OCU2Es5nB+ygEaEsDlaAsxjXLHeSSyF6B102a1Bta/V9sc1zmwgH6SkoKUjsdN8IZbI4Mt2Az4qALbQTWTsOVyySRI4ClqTlIGpzVJstwRJsDMUeLzZrhmvgfOIxzlkvih3kbf67zOOmftslx/0y2yS8sAIcFkggAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for north-america/the-bahamas.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get northAmericaTheBahamas110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

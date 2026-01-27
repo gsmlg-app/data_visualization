@@ -2,197 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for europe/finland.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Finland",
-        "iso_a2": "FI",
-        "iso_a3": "FIN",
-        "continent": "Europe"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              28.5919296,
-              69.0647769
-            ],
-            [
-              29.015573,
-              69.7664912
-            ],
-            [
-              27.7322921,
-              70.164193
-            ],
-            [
-              26.179622,
-              69.825299
-            ],
-            [
-              25.6892127,
-              69.0921138
-            ],
-            [
-              24.7356792,
-              68.6495568
-            ],
-            [
-              23.6620496,
-              68.8912475
-            ],
-            [
-              22.3562378,
-              68.8417414
-            ],
-            [
-              21.2449362,
-              69.370443
-            ],
-            [
-              20.6455929,
-              69.1062473
-            ],
-            [
-              21.9785348,
-              68.6168456
-            ],
-            [
-              23.5394731,
-              67.9360086
-            ],
-            [
-              23.5658798,
-              66.3960509
-            ],
-            [
-              23.9033785,
-              66.0069274
-            ],
-            [
-              25.294043,
-              65.5343464
-            ],
-            [
-              25.3980677,
-              65.1114265
-            ],
-            [
-              24.7305115,
-              64.9023437
-            ],
-            [
-              22.4427442,
-              63.8178104
-            ],
-            [
-              21.5360295,
-              63.189735
-            ],
-            [
-              21.0592111,
-              62.6073933
-            ],
-            [
-              21.5448662,
-              61.7053295
-            ],
-            [
-              21.3222441,
-              60.72017
-            ],
-            [
-              22.2907638,
-              60.3919213
-            ],
-            [
-              22.8696949,
-              59.8463732
-            ],
-            [
-              24.496624,
-              60.0573164
-            ],
-            [
-              26.255173,
-              60.4239607
-            ],
-            [
-              28.0699976,
-              60.5035165
-            ],
-            [
-              28.0700019,
-              60.5035191
-            ],
-            [
-              28.07,
-              60.50352
-            ],
-            [
-              30.2111072,
-              61.7800278
-            ],
-            [
-              31.1399911,
-              62.3576928
-            ],
-            [
-              31.5160922,
-              62.8676875
-            ],
-            [
-              30.0358724,
-              63.5528136
-            ],
-            [
-              30.4446847,
-              64.2044534
-            ],
-            [
-              29.5444296,
-              64.9486716
-            ],
-            [
-              30.21765,
-              65.80598
-            ],
-            [
-              29.0545887,
-              66.9442862
-            ],
-            [
-              29.9774264,
-              67.698297
-            ],
-            [
-              28.4459436,
-              68.3646129
-            ],
-            [
-              28.5919296,
-              69.0647769
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for europe/finland.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5VXy4obWQzd+ysKrxuh9yPbYQZmM2QfQjCJJxg6duM4iyb0vw/lftDpezOgWhTXV3VPHZV0JPnnZlm2l/u7/fbdsv1rv7v8OO//ON3e7j9fDqfj9mY1//u4/X37bvmwWZZl+Xm9jwevj18Nd+fT3f58OVwPPT++LNvj7tvjgcPxdnf88nJgWbaH76dPO74a/x725XH/n9eGz6fj5XDcHy+r7c8f6xu3T9aHFyJf96dv+8v5/lcaz7zfn27vvz65+YJ6On85HHeXV/4+Xq/Xb38tCydYUXH5zRuLF6BrhNcvho83/49XgGQWMoELdy3iFlxACHMxvcULBHKlkhacA0U584RdsnH1fDXwLCaO2bcrJpJs4SmEmEeN9BJcy8x7eALujDqJbUIWsYa18BjEnCVyhqcUStrCI2DVEp+FQwJVe8FFcDUrrgkcobNGD4+gIk105q6Tp5o3w2FSGjLksgeUOGK28dwyauTnIOVo2EtngUKRSJvgIXpx9MJrwKWoYykwMFFR78JJJXqMajMgImXvZfOqNjSi0V2FQhaVaKpDlUN1zGaBpEjCrjpMHLlGfgKUFdJzlwBtrUlj9jE4hpR01WGq6RPxEgSacHX5CTOrjvwQgpG6weDCcBm1gSBrw6Oetwzp5aVDbbGCVJeQXl9T0HJnndBDC6GmNhzYjCZdF0F5rQW9r5eAXlUxNg4EQzFqSi0BAxFprMxPeEVtvN9AtcIgCKsiMKZJnIgcrY4rBCRVNRWZWHhxF8/IsSYDy5qQ4dnr4IKAYhmTvBMw4yRptSBBUFVPHaOhwKhq0svjWouKzqZRhdL0oC4/pvCxghokWvWmqQI0tczRV4dS5fReCSioCGUfYxHglVxdzapaqcyGPXF14t400P5jsJmtn1cPm+f7x83D5j9f+5jTvw0AAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for europe/finland.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get europeFinland110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

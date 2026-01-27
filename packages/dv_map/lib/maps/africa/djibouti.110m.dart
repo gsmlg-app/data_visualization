@@ -2,97 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for africa/djibouti.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Djibouti",
-        "iso_a2": "DJ",
-        "iso_a3": "DJI",
-        "continent": "Africa"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              42.35156,
-              12.54223
-            ],
-            [
-              42.0,
-              12.1
-            ],
-            [
-              41.66176,
-              11.6312
-            ],
-            [
-              41.73959,
-              11.35511
-            ],
-            [
-              41.75557,
-              11.05091
-            ],
-            [
-              42.31414,
-              11.0342
-            ],
-            [
-              42.55493,
-              11.10511
-            ],
-            [
-              42.7768518,
-              10.9268786
-            ],
-            [
-              43.1453048,
-              11.4620397
-            ],
-            [
-              42.7158737,
-              11.7356406
-            ],
-            [
-              43.2863815,
-              11.9749283
-            ],
-            [
-              43.3178524,
-              12.3901484
-            ],
-            [
-              43.081226,
-              12.6996386
-            ],
-            [
-              42.7796424,
-              12.4554158
-            ],
-            [
-              42.35156,
-              12.54223
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for africa/djibouti.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WUTWvDMAyG7/kVJudiLMnyR29jY7Cddh9lZF1aMtq4pO6hlP730bQp7WLYnIOR9VoPr5CdQyFEGfebupyK8rmu4q6rH8NqVc9jE9pycpIX5/S2nIr3QgghDv06LuyP98KmC5u6i01fNBwXomyrdV/w9N18hl1srhVClM02fFTYq6+jPJ3zL7fCPLSxaes2nrSHRdfMq/KiHq9OlnVY17Hb3/sYjL+F1X556fNKDd1X01bxpuHzdxv/3gmhURIDm8mvPKBkjUh36dnkL5ZKcCCLAdIYsGM/IA0BZqIsefYJFDFDri3LzDbBUqx8HgslgQadYpHOaxEls/aUQIHKbRGltcYxuBFNSY/GWWeyeCRBMyk95oHUBhV5m+sP2FlKDcESG61y/aEz5IATPG+1R5d3+0kSWMc4HixK8gq005k85QAx9TSN94Yyx3Earzc6aU8za2CXe4v//+MoUvEQHYthnRXH4gdUpHch3AUAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for africa/djibouti.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get africaDjibouti110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

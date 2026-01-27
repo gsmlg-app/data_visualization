@@ -2,109 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for europe/north-macedonia.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "North Macedonia",
-        "iso_a2": "MK",
-        "iso_a3": "MKD",
-        "continent": "Europe"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              22.3805258,
-              42.3202595
-            ],
-            [
-              21.91708,
-              42.30364
-            ],
-            [
-              21.576636,
-              42.2452244
-            ],
-            [
-              21.3527,
-              42.2068
-            ],
-            [
-              20.76216,
-              42.05186
-            ],
-            [
-              20.71731,
-              41.84711
-            ],
-            [
-              20.5902465,
-              41.8554089
-            ],
-            [
-              20.5902474,
-              41.8554042
-            ],
-            [
-              20.4631751,
-              41.515089
-            ],
-            [
-              20.6051819,
-              41.0862263
-            ],
-            [
-              21.0200403,
-              40.842727
-            ],
-            [
-              21.6741606,
-              40.9312745
-            ],
-            [
-              22.0553776,
-              41.1498658
-            ],
-            [
-              22.5973084,
-              41.1304872
-            ],
-            [
-              22.76177,
-              41.3048
-            ],
-            [
-              22.9523772,
-              41.3379939
-            ],
-            [
-              22.8813737,
-              41.9992972
-            ],
-            [
-              22.3805258,
-              42.3202595
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for europe/north-macedonia.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE52UTW/bMAyG7/4Vgs+BwA9RlHrdx2XosPtQDEbqdgZSK3DVQ1Dkvw92miCttQGaDwLNl3xMWpReG2PafNj37Y1pv/Zdfpn6T2m367d5SGO7meWHk/u5vTE/G2OMeV3WdeISvgj7Ke37KQ9L0jncmHbsnpaE72nKv81tt+3v0zh0l0Rj2uE5/epoDrr9tvLzyf/5WtimMQ9jP+ZZ+/Iyf7l9U4+Xgh779NTn6fC+nHP9P9Lu8PjW7oWapvth7PJV36fn2v74ZgyR5QBCEjYfFEeWCUiivBPuNv/moY2oUKQBe1fJEvWefQFGTohcLY6FtAQDH6pIYNUTluoCweBrWaiMKxba4BSxkiURyHkp0UQchPg/PHV/4zmq5DnPqFLqVlDqy/Pz/8ZYwEHwRJ4rBwQIwAGveGCDIyWtxHl16GE9J2AjI6mrO1rzdAmrrnlo0cXgpW6KyUpUhlDaXWRwQet2l6x61PUBQzvDKlFRiFWpBGONkesmhWwIyMql4mKMFKtbrbw1m5J9to7Neb1rjs0fYiXcwOQGAAA=';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for europe/north-macedonia.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get europeNorthMacedonia110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

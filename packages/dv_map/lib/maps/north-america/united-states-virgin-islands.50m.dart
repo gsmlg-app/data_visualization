@@ -2,123 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for north-america/united-states-virgin-islands.50m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "United States Virgin Islands",
-        "iso_a2": "VI",
-        "iso_a3": "VIR",
-        "continent": "North America"
-      },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [
-                -64.8450195,
-                18.3300781
-              ],
-              [
-                -64.8891113,
-                18.3742187
-              ],
-              [
-                -64.942041,
-                18.3852051
-              ],
-              [
-                -65.0236328,
-                18.3675781
-              ],
-              [
-                -64.9199707,
-                18.3212891
-              ],
-              [
-                -64.8450195,
-                18.3300781
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                -64.6598145,
-                18.3543457
-              ],
-              [
-                -64.7524414,
-                18.3719727
-              ],
-              [
-                -64.7876953,
-                18.3411133
-              ],
-              [
-                -64.7706055,
-                18.3315918
-              ],
-              [
-                -64.7259766,
-                18.3278809
-              ],
-              [
-                -64.6598145,
-                18.3543457
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                -64.765625,
-                17.7943359
-              ],
-              [
-                -64.8847168,
-                17.7722656
-              ],
-              [
-                -64.8891113,
-                17.701709
-              ],
-              [
-                -64.6862793,
-                17.7061035
-              ],
-              [
-                -64.5804687,
-                17.7501953
-              ],
-              [
-                -64.6818359,
-                17.7501953
-              ],
-              [
-                -64.765625,
-                17.7943359
-              ]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for north-america/united-states-virgin-islands.50m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE7WUwWrcMBCG734K4XNqNJJGM8qtFAo5tJSW5lJCMbvqVuCVFls5LGHfvdibXZJd+xCR+iAkzcyn0cxvPVVC1Hm/8/WtqD/7Nj/2/lPqOr/KIcX6ZjT/OW4P9a34VQkhxNM0XgdO7pNh16ed73OYgk7uQtSx3U4BP2PIfi1+5Db7QdyHfhOiuBu6Nq6HM0WIOgzpd6vGiPu7q3193P/+0rBKMYfoYx5tX1Of/4qPW9+HVVs/Ox3OSW582vrc71+neLrTl8cuh2+p22+e63A+IfXrEMfEzwU5fi/nl6vrtRAfrGnYoASHN1dG4EZrKYnhwvRw6bsAZgcAeh5MRgFTGdgZJQ3McxmVxKKEsZFKW614HmwJiyvhwDmSNA9WoNiVlvjtvauWVq+OLBGSRcdgFpJBow0W9ptQGQNmQUjgSJWCmazDBYWaUby6EEzSSlzqC6ADLgQrdGTtgpKIWboycEHz/p+SyKJVc7lQQ85ojYWXZDYEdu4Hp4ZIKYv2vZ86akgCFXeFrSK3xLUgNZaBkaWxPPciUUPTm1KofMvAGt37g9+uiWV9VpezQ3UaH6pD9Q8n+UpYkggAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for north-america/united-states-virgin-islands.50m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get northAmericaUnitedStatesVirginIslands50m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

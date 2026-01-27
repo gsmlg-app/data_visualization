@@ -2,113 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for europe/san-marino.10m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "San Marino",
-        "iso_a2": "SM",
-        "iso_a3": "SMR",
-        "continent": "Europe"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              12.4294504,
-              43.8920555
-            ],
-            [
-              12.4604562,
-              43.8952595
-            ],
-            [
-              12.4782868,
-              43.9170379
-            ],
-            [
-              12.4774939,
-              43.920051
-            ],
-            [
-              12.4780262,
-              43.9232164
-            ],
-            [
-              12.4795765,
-              43.9258002
-            ],
-            [
-              12.4821603,
-              43.927919
-            ],
-            [
-              12.4830945,
-              43.9292049
-            ],
-            [
-              12.4903252,
-              43.9391586
-            ],
-            [
-              12.4923923,
-              43.9564185
-            ],
-            [
-              12.4891883,
-              43.97311
-            ],
-            [
-              12.4821603,
-              43.9825668
-            ],
-            [
-              12.4533249,
-              43.9790528
-            ],
-            [
-              12.4213888,
-              43.9672189
-            ],
-            [
-              12.4110487,
-              43.959661
-            ],
-            [
-              12.395654,
-              43.9484087
-            ],
-            [
-              12.3856287,
-              43.9245342
-            ],
-            [
-              12.3995814,
-              43.9032176
-            ],
-            [
-              12.4294504,
-              43.8920555
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for europe/san-marino.10m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WUwWrkMAyG73kKk/NQZMmypV5LeyuU7nEpS+hmS2AaD2l6GMq8+zKZzjBtVYpyMLZ/68svW/ZbE0I7bzd9exnam76bX6f+qq7X/eM81LFd7eV/h+mX9jL8bkII4W1pvwYuyxdhM9VNP83DEnRcHkI7ds9LwK9uDLfdNIz1FBNCO7zUPx0u+u2XeTrM358Lj3Wch7Ef5712/br/afuu7k5envr63M/T9qOTo/W7ut4+vWd6otbp7zB281nKh++8/3kUQsSLhJoY0uqTkuhCFIGZPwgPqx95GRJnNHmMrG5eEZQsBk9jASrq5pWkpBYPATj67QGa6SoSxpzcPOWS2eSxAKCXJxgzkMkrGt27JwSabHuKkNw8BUI2t480smQ3D0nRTJdziuKuPtEoYvIKRXexfH8YgpyzeHlMhMms5aLA6OZhJBHzruWCUdynGyMkKeZpaM7e7SPlzNZLpUkSSPHihDPa7jAxJe9VI1WWaPoDwljctex7mRurf+ztmmP70Oya/3eZGrpDBwAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for europe/san-marino.10m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get europeSanMarino10m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

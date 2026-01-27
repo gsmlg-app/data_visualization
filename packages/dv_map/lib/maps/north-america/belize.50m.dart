@@ -2,307 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for north-america/belize.50m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Belize",
-        "iso_a2": "BZ",
-        "iso_a3": "BLZ",
-        "continent": "North America"
-      },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [
-                -89.1614746,
-                17.8148437
-              ],
-              [
-                -89.1710937,
-                17.5722656
-              ],
-              [
-                -89.1821777,
-                17.2912109
-              ],
-              [
-                -89.1903809,
-                17.084668
-              ],
-              [
-                -89.2012695,
-                16.8089844
-              ],
-              [
-                -89.2124512,
-                16.5271484
-              ],
-              [
-                -89.2276367,
-                16.1428223
-              ],
-              [
-                -89.2375,
-                15.8944336
-              ],
-              [
-                -89.2328125,
-                15.8886719
-              ],
-              [
-                -89.1135742,
-                15.9006836
-              ],
-              [
-                -88.9371582,
-                15.8898437
-              ],
-              [
-                -88.894043,
-                15.890625
-              ],
-              [
-                -88.9117187,
-                15.9560059
-              ],
-              [
-                -88.8791016,
-                16.0166504
-              ],
-              [
-                -88.695166,
-                16.2476562
-              ],
-              [
-                -88.5623047,
-                16.2904297
-              ],
-              [
-                -88.4611328,
-                16.4337891
-              ],
-              [
-                -88.404541,
-                16.488623
-              ],
-              [
-                -88.3134277,
-                16.6327637
-              ],
-              [
-                -88.2618164,
-                16.9630371
-              ],
-              [
-                -88.2939941,
-                17.1921387
-              ],
-              [
-                -88.2888184,
-                17.3126953
-              ],
-              [
-                -88.2671875,
-                17.3925781
-              ],
-              [
-                -88.2034668,
-                17.5166016
-              ],
-              [
-                -88.2717285,
-                17.6098633
-              ],
-              [
-                -88.2214355,
-                17.7513672
-              ],
-              [
-                -88.2074707,
-                17.8460937
-              ],
-              [
-                -88.0972168,
-                18.1216309
-              ],
-              [
-                -88.0852539,
-                18.226123
-              ],
-              [
-                -88.1302734,
-                18.3507324
-              ],
-              [
-                -88.2472656,
-                18.3546875
-              ],
-              [
-                -88.2956543,
-                18.3440918
-              ],
-              [
-                -88.3492676,
-                18.3588379
-              ],
-              [
-                -88.2956543,
-                18.4724121
-              ],
-              [
-                -88.3724121,
-                18.4823242
-              ],
-              [
-                -88.4612793,
-                18.4767578
-              ],
-              [
-                -88.522998,
-                18.4458984
-              ],
-              [
-                -88.5861816,
-                18.2905273
-              ],
-              [
-                -88.7436035,
-                18.0716309
-              ],
-              [
-                -88.8063477,
-                17.9655273
-              ],
-              [
-                -88.857373,
-                17.9288086
-              ],
-              [
-                -88.8978027,
-                17.9145508
-              ],
-              [
-                -88.942627,
-                17.9396484
-              ],
-              [
-                -89.0504395,
-                17.999707
-              ],
-              [
-                -89.1335449,
-                17.9708008
-              ],
-              [
-                -89.1623535,
-                17.9019531
-              ],
-              [
-                -89.1614746,
-                17.8148437
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                -87.9505859,
-                17.9249512
-              ],
-              [
-                -87.8485352,
-                18.1403809
-              ],
-              [
-                -87.8589355,
-                18.1540527
-              ],
-              [
-                -87.8983398,
-                18.1549316
-              ],
-              [
-                -87.9533203,
-                18.0010742
-              ],
-              [
-                -87.9590332,
-                17.9640137
-              ],
-              [
-                -87.9980957,
-                17.9063477
-              ],
-              [
-                -87.9505859,
-                17.9249512
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                -87.8529297,
-                17.4228516
-              ],
-              [
-                -87.7981445,
-                17.4795898
-              ],
-              [
-                -87.788623,
-                17.5242188
-              ],
-              [
-                -87.826416,
-                17.5462891
-              ],
-              [
-                -87.8325195,
-                17.5010742
-              ],
-              [
-                -87.8594238,
-                17.462793
-              ],
-              [
-                -87.902832,
-                17.4264648
-              ],
-              [
-                -87.9348633,
-                17.3229492
-              ],
-              [
-                -87.9299805,
-                17.2830078
-              ],
-              [
-                -87.8529297,
-                17.4228516
-              ]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for north-america/belize.50m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE7VYTW8cRRC9768Y7Tm06vsjN0DiBIgzKEKWWcJKttfabA4m8n9HvY5DbNcgpSL2MJqe7n5T87rqVdV+2CzL9nR3u9u+XrY/7C5O74+77w9XV7vL0/5ws301p/98ePxu+3r5bbMsy/LhfH258bz8PHF7PNzujqf9edPj8mXZ3lxcnzd8t7va//3v+mXZ7t8dfr+g89yvL57z+fmPTyYuDzen/c3u5jTnfj4cT38t317vjvvLi+3HRfefzHm7O1zvTse7p8Y8Wv/T+6vT/pfD1d3bj1/86Q2H4x/7m4vTZ5/+8Pv8/vno5XhZvokcaCgu9urFJPoIlBD2Z1Nvnq9dAXaEZC+B1YlMrQkchO41MCUSQjaBEzggS2AIMYseLgGSpRa4NgIiQ6QJjCSKVAIr+Ty9JjC5sVUU20ChIOImMHvFg45IEeamRxBTIK0AR5hj1yOQ1aUiWEcCWPQsjpHsqFEDx/SIXtTF5BGEVygGI23ai+gYlUPoSDUAbTEcIzwRsJIfG4BmCi0XjmGpaDUuiZsa9XDViEHq0KAEoWyenBgiU5TAwuyR2AQGUcEaN8J6oRyDkYVKGbZhPAWkSQQZBpqUwGkM7E0iKDmzZMIHJiFH1+KIwKgs9sFn7W9yTDajrhI2H5ykHl0qgGc+q5MzmgE2hY0cnaK22CDDuEsFobDWwK7I5s2AJnBxqMuJEJs1TA8Y0glLjmMgoXGvTokBoaRc1SmTJsNuRCMDOVduHIMVnKmpxSQ+y70VYLHwZlqiVNMy3cVgEUhslWxzc5L5msUR7M2z+y+LxUmQmhHND5tr4CAmacaHGJLnmsXm6k2OlSizDg8RnUVQEzfOCaQOjwQlb8aHCxtwJUExwL8ioAOMZaWjSdO+xaHOXh2dj6QIiKbKR3oArRiMogpNn0ghW8PltHZDAwrCZQvmIzMduk0us4rULWM6BPSImG05sZa+5iMBU7mlE61+f7M2evLKL//zwUcqaOgKfSSp2BKtmbhDWav+KgbKuc1vAmtkXYbEQJWpLk3gDOYVOUSV5F5FNjlmJqj1GwDBe4lhAicwVxxP1RLAXuE0AzIgdUUFHqSya/EXu9v/5/uhlJT1VwpRaPfAPQNFaukQz5lZm8DnbrHuGUgIo4kbZFLmax8qRs3G10cwKa6Ivn6N54emENfdk9islpr+CRQrASVkYtIkOFlm41W3kUQp2ZWAWcFBzTAFA/Rqw1ZwrEfq5vnd/ebx+mZzv/kHK49pLWwYAAA=';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for north-america/belize.50m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get northAmericaBelize50m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

@@ -2,97 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for europe/isle-of-man.50m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Isle of Man",
-        "iso_a2": "IM",
-        "iso_a3": "IMN",
-        "continent": "Europe"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -4.4120605,
-              54.1853516
-            ],
-            [
-              -4.3922852,
-              54.2253906
-            ],
-            [
-              -4.3379883,
-              54.2690918
-            ],
-            [
-              -4.3771973,
-              54.3925781
-            ],
-            [
-              -4.3955566,
-              54.4029297
-            ],
-            [
-              -4.424707,
-              54.4071777
-            ],
-            [
-              -4.5086426,
-              54.376709
-            ],
-            [
-              -4.6148437,
-              54.2669434
-            ],
-            [
-              -4.6987305,
-              54.2249023
-            ],
-            [
-              -4.7455566,
-              54.1187988
-            ],
-            [
-              -4.7853516,
-              54.0730469
-            ],
-            [
-              -4.7657715,
-              54.0694336
-            ],
-            [
-              -4.6960937,
-              54.0814453
-            ],
-            [
-              -4.6142578,
-              54.0586914
-            ],
-            [
-              -4.4120605,
-              54.1853516
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for europe/isle-of-man.50m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WUTWvDMAyG7/kVxueu+EO2rF7HBjt07D7KCJ1bAqldUvdQSv/7SLKWfngM52AcvdITSbZyrBjj6bD1fMb4q6/TvvPPsW39MjUx8Ekvr0bzjs/YZ8UYY8dhfQwc3Adh28Wt71IzBJ3dGeOh3gwBb7vWs7hi8zpcghjjzS5+1WpwmD/Y9Wh/vxaWMaQm+JB67WXff5X/qqdLMmsfNz51h9tUzrl/xPawjuGWGrvvJtTpqubxud7fvzH2BFOQSlhhJneKgal0Rhtpb4TF5D+eJqWcURmeUkaTKOZpJOd0jmdJkHSlPERJmONpUgadLK7XGGNthgdCkSIs5IECFJjFoUQsxRnhLKhcehotCirEWQkOdC49ZS2BhlIeOdTZ26cUkFC6kIfw12lI6fqLVMobZyDDE6gF2NL+oTWIMlev6NunS6fDkhWUPQ/hJIAp7Z+V0A9BjmecJVl6voV/lyq3P+9O1XldVKfqByO23hkIBgAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for europe/isle-of-man.50m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get europeIsleOfMan50m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

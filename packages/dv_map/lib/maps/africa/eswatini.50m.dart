@@ -2,189 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for africa/eswatini.50m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "eSwatini",
-        "iso_a2": "SZ",
-        "iso_a3": "SWZ",
-        "continent": "Africa"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              31.9482422,
-              -25.9576172
-            ],
-            [
-              31.9216797,
-              -25.96875
-            ],
-            [
-              31.8714844,
-              -25.9816406
-            ],
-            [
-              31.6404297,
-              -25.8672852
-            ],
-            [
-              31.4151367,
-              -25.746582
-            ],
-            [
-              31.3826172,
-              -25.7429688
-            ],
-            [
-              31.3351563,
-              -25.7555664
-            ],
-            [
-              31.2073242,
-              -25.8433594
-            ],
-            [
-              31.0880859,
-              -25.9806641
-            ],
-            [
-              31.0333008,
-              -26.0977539
-            ],
-            [
-              30.9452148,
-              -26.21875
-            ],
-            [
-              30.8033203,
-              -26.4134766
-            ],
-            [
-              30.7890625,
-              -26.4554688
-            ],
-            [
-              30.7875,
-              -26.6136719
-            ],
-            [
-              30.7943359,
-              -26.7642578
-            ],
-            [
-              30.8067383,
-              -26.7852539
-            ],
-            [
-              30.8833008,
-              -26.7923828
-            ],
-            [
-              30.9380859,
-              -26.9158203
-            ],
-            [
-              31.0633789,
-              -27.1123047
-            ],
-            [
-              31.2740234,
-              -27.2383789
-            ],
-            [
-              31.4695313,
-              -27.2955078
-            ],
-            [
-              31.7425781,
-              -27.3099609
-            ],
-            [
-              31.9583984,
-              -27.3058594
-            ],
-            [
-              31.9460938,
-              -27.1736328
-            ],
-            [
-              31.9671875,
-              -26.9606445
-            ],
-            [
-              31.9947266,
-              -26.8174805
-            ],
-            [
-              32.0248047,
-              -26.8111328
-            ],
-            [
-              32.0816406,
-              -26.8248047
-            ],
-            [
-              32.1128906,
-              -26.8394531
-            ],
-            [
-              32.105957,
-              -26.5200195
-            ],
-            [
-              32.0779297,
-              -26.4498047
-            ],
-            [
-              32.0483398,
-              -26.347168
-            ],
-            [
-              32.0414063,
-              -26.28125
-            ],
-            [
-              32.0599609,
-              -26.2150391
-            ],
-            [
-              32.0688477,
-              -26.1101563
-            ],
-            [
-              32.0605469,
-              -26.0183594
-            ],
-            [
-              31.968457,
-              -25.9722656
-            ],
-            [
-              31.9482422,
-              -25.9576172
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for africa/eswatini.50m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE52WXWsUSxCG7/dXDHsdm/r+8O5wwGvBC8GDHJY4ykLcDeuIBMl/l9mYYEwFKfdi6O2afqaq6+3q+r6Zpu1ycz1vX07bV/Nu+Xqa/z1eXc2Xy/542F6s5o9301+2L6f/NtM0Td/Pz6cLz6+fDden4/V8WvbnRfevT9P2sPt8XjC/+bZb9of9w4pp2u6/HP/f0Wp98+7JPJ/n3z4yXB4Py/4wH5bV9s/H0/5yt/1pvX3w5NN8/Dwvp5vHftw7/vp4dfPpZ5wP1OPpw/6wW34J+O736/j3f9PEOFKChOjiN8sL0pHqhk6PLO8v/ggkNE8vgRauTVw4SoiUuEATsCbQBIRq/8KcQrsBCyqylUAX0+jyOGjd9ppHaRFdICuqcQlUVTNpAgmcSUoPQ5g1u0CIgNCskwxmgl0gMwPEU6ANSHflbAFhpCihlEDCrqphBDATFCmxIcji1lM1DI8EIy2BqtIVzQr0kmar1rG7fZ5nXVRANyH1rnsB5hzlBnoo9RMc8axiPImDuh4mP6NpG4kaBNzVtDF7FEAfiMQg3j3GLkBclFYfxLF+q1sJLZWxSIoPSlVoZhnXeqceWAEZMg26HqYGZ5QhM2j0K1eKQXIhGx/obNyUDY40x2eOXhqYSPcCzRQnswoY6BLQA9IAkgAp7rsViNgNmQbc3eMl8O5bTSAireWwBHKKcu86oYGgqWXESgCY7S10z7IHsSGSfxExSDBnWb1YHK2dEkGBqmWwQYHUjlfPh7W+PRU4uwkBixAvNxAR1m6nDQQVKz0EjL9oadJCKsnoSCcy7bat3T59U43vR7eb++f7ze3mB0j3BFJQDQAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for africa/eswatini.50m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get africaEswatini50m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

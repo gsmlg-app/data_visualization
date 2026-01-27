@@ -2,73 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/taiwan.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Taiwan",
-        "iso_a2": "CN-TW",
-        "iso_a3": "TWN",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              121.7778178,
-              24.3942736
-            ],
-            [
-              121.9512439,
-              24.9975959
-            ],
-            [
-              121.4950444,
-              25.2954589
-            ],
-            [
-              120.6946798,
-              24.5384508
-            ],
-            [
-              120.1061886,
-              23.5562627
-            ],
-            [
-              120.2200834,
-              22.8148609
-            ],
-            [
-              120.7470797,
-              21.9705714
-            ],
-            [
-              121.1756324,
-              22.7908572
-            ],
-            [
-              121.7778178,
-              24.3942736
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/taiwan.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WSTWsCMRBA7/srQs425Hsy3orQo/QgeChSQptKQBNZU4qI/724dkXdhZIcwiRv5jFDcmwIoeWwC3RK6Evw5bsNs7zZhI8Sc6KTM/66XO/plLw1hBBy7PZhYZfegV2bd6EtsSvq0wmhyW+7goWPPz5d8wmhcZ/fvTyz2fxpsRwg1ZUt57fgI6cSU0jlzJ730dM/dro2sg55G0p7uG+j7/s1bw7rnO6duf2MyZebeS/rNn48ESKkYADgBLjJA5KaKdQSlL0Dq8m/QjRCaoUjQkQwaLBWqNFwrfVAaJhEo42rFHJmUVvAsZGNctpwVysU3Arn7EComDFWWgm1Qik5d2o4smROaGd59ciggQPCQCgYAjcgdO2jCDBWybEOAbkzIGuFlf+wGYv76NT0+6o5Nb/5vIR2LwQAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/taiwan.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaTaiwan110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

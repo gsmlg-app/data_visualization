@@ -2,145 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for africa/liberia.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Liberia",
-        "iso_a2": "LR",
-        "iso_a3": "LBR",
-        "continent": "Africa"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -8.4392985,
-              7.6860428
-            ],
-            [
-              -8.7221236,
-              7.7116743
-            ],
-            [
-              -8.9260646,
-              7.3090374
-            ],
-            [
-              -9.2087864,
-              7.3139208
-            ],
-            [
-              -9.4033482,
-              7.5269052
-            ],
-            [
-              -9.3372798,
-              7.9285345
-            ],
-            [
-              -9.7553422,
-              8.5410552
-            ],
-            [
-              -10.0165665,
-              8.4285039
-            ],
-            [
-              -10.2300936,
-              8.4062056
-            ],
-            [
-              -10.6955949,
-              7.939464
-            ],
-            [
-              -11.1467043,
-              7.3967064
-            ],
-            [
-              -11.1998018,
-              7.1058456
-            ],
-            [
-              -11.4387795,
-              6.7859169
-            ],
-            [
-              -10.7653839,
-              6.1407108
-            ],
-            [
-              -9.9134204,
-              5.5935607
-            ],
-            [
-              -9.0047937,
-              4.8324185
-            ],
-            [
-              -7.9741072,
-              4.3557551
-            ],
-            [
-              -7.7121594,
-              4.3645659
-            ],
-            [
-              -7.6353682,
-              5.1881591
-            ],
-            [
-              -7.5397151,
-              5.3133452
-            ],
-            [
-              -7.5701526,
-              5.7073522
-            ],
-            [
-              -7.9936926,
-              6.1261897
-            ],
-            [
-              -8.3113476,
-              6.1930331
-            ],
-            [
-              -8.6028802,
-              6.4675642
-            ],
-            [
-              -8.3854516,
-              6.9118006
-            ],
-            [
-              -8.4854455,
-              7.3952078
-            ],
-            [
-              -8.4392985,
-              7.6860428
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for africa/liberia.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE52WT2vdMAzA7+9ThJw7IVn/e9sGO+0wdh1lvHVpCbQvJc0OpfS7j6Z9pa0Dw8vBOJL1Q7Ik2/e7ruuXu5uhP+36L8N++TMPn6erq+F8GadDf/KovngS3/an3Y9d13Xd/TrWhuvyVXEzTzfDvIyr0XF51/WH/fVq8HX8Nczj/sWg6/rxdvq5L6vyeyXnVf7pjeJ8OizjYTgsj7qPF/N4vu+ftQ8vjlwO0/WwzHdv3Tj6/W26urt8DvOFOs2/x8N+eRXv0/d6/v6v6z4ECGfJ0JN3GgcLQynxRn528i+cl0KFrcY5kblwIy6LockGjjGRXZpwCQXDw2QDR5wF24JNEGSWKDVOiyVqacQxe/GMGpcllEUbca7KUirvAlQItdE7QkAyNasqJUBKKHK28gojZl0qAYJWUK2VZ6makhvbxynWVipEQGKOwhu1kub4H7zMQNrILqGGtIZLIBzuWaXDwEOTrDkdbsrB1fYZkKBTc28ksRSsWk1Bk9XQG3GI4sn+HicQXISirTcc0oXQq94QYFVXpUacUyHNKlgBNlHTtlw4GCtbfa4oUARptnqnnE5KNY6JWRoPAgd1JC1V3yo4OmtpxWWyZY0zoGIU2VYoAUzE4lu4ZGRu27sAwxKBVSoMxFxN2oIN4FBR2vAuiQKx7RAIkFAR3bi8ObWgt17ebW+B3db8OHvYHcez3cPuL9OTNTOxCQAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for africa/liberia.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get africaLiberia110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

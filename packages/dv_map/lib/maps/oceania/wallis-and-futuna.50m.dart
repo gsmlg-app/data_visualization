@@ -2,107 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for oceania/wallis-and-futuna.50m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Wallis and Futuna",
-        "iso_a2": "WF",
-        "iso_a3": "WLF",
-        "continent": "Oceania"
-      },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [
-                -176.1605957,
-                -13.3328125
-              ],
-              [
-                -176.1280762,
-                -13.2681641
-              ],
-              [
-                -176.1479492,
-                -13.2216797
-              ],
-              [
-                -176.1711914,
-                -13.2425781
-              ],
-              [
-                -176.1953613,
-                -13.3016602
-              ],
-              [
-                -176.1769043,
-                -13.340918
-              ],
-              [
-                -176.1605957,
-                -13.3328125
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                -178.0466797,
-                -14.3183594
-              ],
-              [
-                -178.0436523,
-                -14.3032227
-              ],
-              [
-                -178.1050293,
-                -14.2841797
-              ],
-              [
-                -178.1422363,
-                -14.2425781
-              ],
-              [
-                -178.1780273,
-                -14.2316406
-              ],
-              [
-                -178.1943848,
-                -14.2554688
-              ],
-              [
-                -178.1585937,
-                -14.3119141
-              ],
-              [
-                -178.1033203,
-                -14.3249023
-              ],
-              [
-                -178.0466797,
-                -14.3183594
-              ]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for oceania/wallis-and-futuna.50m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE6WTy2rjMBSG934K4XVG6Fx063Ygqymd3SxKKSJVg8GVg6MsQsi7D3ab0Fy0GI0XQtJ/zqdz5F+HRog27zexfRDtMoa8G+PPoe/jKndDaheT/P65vW0fxHMjhBCHebxNnMNnYTMOmzjmbk46hQvRpvAxJ/wJfd9tRUhvYrnLuxTOqUK03XZ4DTiHLW/2ad7/dSGshpS7FFOetKdVDKkL7Zd8PNe0jsNHzOP+sqJTC4+7Pne/h36//mr7zB7Gty6F/K3/z+/7/Hp1uxbiB1gjwSjttV3cUUkSoQPUV9rLdXAJjU5Zg/fRaBwYhlo0W8++hEYw1ttatAXwwAU0o7auumqvyQAV7lqBMQqrqzZecQnNyoOrJVcYpCmtLg6t8KuTis30c++Vw5LAkfZc1emEJqPx7h2yJEWIWGcqJ0Fphb6ARsdQ61cngRHJlND/4VcnwTqFtoQmMKxMLdozOXYFtNZsXJ1hnQTttKeiQ6bHXX0highVySHIXiFVm+/ffV1+Zs317Nicxpfm2PwFcdZJ2WUHAAA=';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for oceania/wallis-and-futuna.50m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get oceaniaWallisAndFutuna50m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

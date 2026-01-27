@@ -2,327 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/east-timor.50m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "East Timor",
-        "iso_a2": "TL",
-        "iso_a3": "TLS",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [
-                125.6460938,
-                -8.1399414
-              ],
-              [
-                125.6210938,
-                -8.15
-              ],
-              [
-                125.584082,
-                -8.1786133
-              ],
-              [
-                125.5071289,
-                -8.2750977
-              ],
-              [
-                125.5794922,
-                -8.3118164
-              ],
-              [
-                125.6460938,
-                -8.1399414
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                125.0681641,
-                -9.5119141
-              ],
-              [
-                125.2102539,
-                -9.4035156
-              ],
-              [
-                125.4080078,
-                -9.2757813
-              ],
-              [
-                125.7351562,
-                -9.1609375
-              ],
-              [
-                125.840332,
-                -9.1301758
-              ],
-              [
-                125.8947266,
-                -9.1321289
-              ],
-              [
-                125.9460937,
-                -9.1239258
-              ],
-              [
-                126.0730469,
-                -9.0435547
-              ],
-              [
-                126.1642578,
-                -8.9966797
-              ],
-              [
-                126.2647461,
-                -8.9727539
-              ],
-              [
-                126.3825195,
-                -8.9576172
-              ],
-              [
-                126.4869141,
-                -8.9126953
-              ],
-              [
-                126.5685547,
-                -8.8329102
-              ],
-              [
-                126.6654297,
-                -8.7820313
-              ],
-              [
-                126.7924805,
-                -8.7550781
-              ],
-              [
-                126.9152344,
-                -8.7152344
-              ],
-              [
-                127.1145508,
-                -8.5835938
-              ],
-              [
-                127.2960938,
-                -8.4245117
-              ],
-              [
-                127.2570313,
-                -8.3945312
-              ],
-              [
-                127.2148438,
-                -8.3729492
-              ],
-              [
-                127.0584961,
-                -8.3482422
-              ],
-              [
-                126.9664063,
-                -8.3157227
-              ],
-              [
-                126.9046875,
-                -8.3416016
-              ],
-              [
-                126.8457031,
-                -8.3773438
-              ],
-              [
-                126.7345703,
-                -8.4227539
-              ],
-              [
-                126.6197266,
-                -8.4594727
-              ],
-              [
-                126.5310547,
-                -8.4708008
-              ],
-              [
-                126.1728516,
-                -8.4889648
-              ],
-              [
-                125.9050781,
-                -8.4865234
-              ],
-              [
-                125.8042969,
-                -8.4921875
-              ],
-              [
-                125.3818359,
-                -8.5753906
-              ],
-              [
-                125.3231445,
-                -8.5913086
-              ],
-              [
-                125.1780273,
-                -8.6478516
-              ],
-              [
-                125.1157227,
-                -8.7080078
-              ],
-              [
-                125.0269531,
-                -8.859082
-              ],
-              [
-                124.9222656,
-                -8.9424805
-              ],
-              [
-                124.9150391,
-                -9.031543
-              ],
-              [
-                124.9368164,
-                -9.053418
-              ],
-              [
-                124.9732422,
-                -9.0642578
-              ],
-              [
-                125.1003906,
-                -9.0040039
-              ],
-              [
-                125.1244141,
-                -9.0154297
-              ],
-              [
-                125.1490234,
-                -9.0425781
-              ],
-              [
-                125.1494141,
-                -9.1229492
-              ],
-              [
-                125.1004883,
-                -9.1898438
-              ],
-              [
-                124.9775391,
-                -9.1949219
-              ],
-              [
-                124.9601563,
-                -9.2137695
-              ],
-              [
-                124.9585938,
-                -9.2546875
-              ],
-              [
-                124.9682617,
-                -9.2942383
-              ],
-              [
-                124.9969727,
-                -9.3259766
-              ],
-              [
-                125.0335938,
-                -9.3818359
-              ],
-              [
-                125.0681641,
-                -9.5119141
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                124.0363281,
-                -9.3416016
-              ],
-              [
-                124.0524414,
-                -9.3753906
-              ],
-              [
-                124.0901367,
-                -9.4164063
-              ],
-              [
-                124.1155273,
-                -9.4231445
-              ],
-              [
-                124.1345703,
-                -9.4138672
-              ],
-              [
-                124.2823242,
-                -9.4279297
-              ],
-              [
-                124.3193359,
-                -9.4137695
-              ],
-              [
-                124.3756836,
-                -9.3499023
-              ],
-              [
-                124.4129883,
-                -9.3143555
-              ],
-              [
-                124.4382812,
-                -9.2385742
-              ],
-              [
-                124.4444336,
-                -9.190332
-              ],
-              [
-                124.1981445,
-                -9.2561523
-              ],
-              [
-                124.0363281,
-                -9.3416016
-              ]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/east-timor.50m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE6WYS2sjRxDH7/oUg86bpt6PvYWQnBIIZG9hCWajLAJbMrb2YBZ/99Aj23jt7oPLOgjN9MxPNfX6V8/3zbJsT3fXu+3HZfvb7uL07Wb3y/HycvfltD8eth/68n/n07fbj8vfm2VZlu/r9+sb18vXheub4/Xu5rRfb3q8fFm2h4ur9YZfL25Py6f91fHm6Z5l2e5vj/9cUF//9Pur83w+/9fzhS/Hw2l/2B1Ofe3n2/3F9mHt/smSr7vj1e50c/ejHY+G//Ht8rT/83h59/XhYZ/Ax5t/94eL07OnPn+e/3559Pp4WZC0mRgkx4dXiz9FQ84UlBdLn19eOwETzsFaY2oIBI2RHobMRS44UuQQTK6Q7kWwpySNLWbEQKt69+1h28yOfvjLSg6B9QfBgTHZFDFRsPaUhEDKo7hkE2BFtRpYIAB85L7sAffAYib5atQo4Nmwh8yLqR8CzBMuA7pGkZviZDYBUy+LGjjXDPUxmDipZrE1cAaxcVKAsKqUitUampAOkyJapplnEUwmLjaqj2jp5MolH1vjIMXUMVjd0KkGlrBetWMwkqWW6sOaWvQADcHBlAhFi81UKMdgDwKuVbQ1T5KAsY9dFTxKzc1aohKLjMHntQrYG6KowjiPNViTS5XnjXIuOkKiiKUC8UbqPUBjmUxRxlJWeCOUkInF7NTFuQYGDclJSbMECRXzOM0EbOIKVCcqNqEEsfBxHrOgAZa01FrIGr2Jj52llm7WnFfyJN3e0TYNc6J50US7IBZ9rIww627ifeYougKdQnFicUSaFOU/Ye1gE7D1LlScK0AohyodTZIwqoMQB/YeNu5uPSegOBMyMYqMC0QTGaIIRg8gH+exiffAFsHnfjBWkPOEWwPDqvDjrAhNiFJzk5ZEZDpO45RVZ4tgVOAc70CAUaUk/tKS163NmKssWHKwtHTuEjHmnsfQYkoA9AoYg0H6ahFMIuOJMBvgOnsVwZJAPHHx6oni5hElpxYjlbV/9bFEjOo5G0ZGUfB6VvT+NbG424ul4ElLA9ThUJGNkN2yWncaOp4Is5GuA0fV4iDD8e6RUoijWtFpfcs1BDNpuhWbMTBPXfGgWUXw29+ubGZH73zVIw3YmIbzQr5nipQGujaYMbgu69IgAdnGARdch+0aGFF1LOvZ5DxLFMHTubdbzGG1Xb00CuqyM7HYs9jDpTEmj2ey1eJ6f2FXCx7LGUt25aiBBSlnPZyxv0UqWiwcFDj2MXGoSzF4IiI8cQVmfzlYzLaMydjbW7j1FxHFwnt7q5j3rc3LX/ebx+/Pm/vN//ZqjQsrGgAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/east-timor.50m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaEastTimor50m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

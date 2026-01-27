@@ -2,173 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/qatar.50m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Qatar",
-        "iso_a2": "QA",
-        "iso_a3": "QAT",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              51.2679688,
-              24.6072266
-            ],
-            [
-              51.3964844,
-              24.6451172
-            ],
-            [
-              51.4279297,
-              24.6682617
-            ],
-            [
-              51.5333984,
-              24.8908691
-            ],
-            [
-              51.5869141,
-              24.9648438
-            ],
-            [
-              51.6088867,
-              25.0528809
-            ],
-            [
-              51.6019531,
-              25.1479492
-            ],
-            [
-              51.5614258,
-              25.2844727
-            ],
-            [
-              51.5195312,
-              25.3897461
-            ],
-            [
-              51.5102539,
-              25.4523437
-            ],
-            [
-              51.4853516,
-              25.524707
-            ],
-            [
-              51.5269531,
-              25.6821289
-            ],
-            [
-              51.5722656,
-              25.7810059
-            ],
-            [
-              51.5430664,
-              25.9023926
-            ],
-            [
-              51.3890625,
-              26.0111328
-            ],
-            [
-              51.2623047,
-              26.1532715
-            ],
-            [
-              51.1081055,
-              26.0805664
-            ],
-            [
-              51.003125,
-              25.9814453
-            ],
-            [
-              50.9038086,
-              25.7240723
-            ],
-            [
-              50.8686523,
-              25.6126953
-            ],
-            [
-              50.8026367,
-              25.4970703
-            ],
-            [
-              50.7628906,
-              25.4447266
-            ],
-            [
-              50.7545898,
-              25.3992676
-            ],
-            [
-              50.7773438,
-              25.1774414
-            ],
-            [
-              50.8467773,
-              24.8885742
-            ],
-            [
-              50.8359375,
-              24.8503906
-            ],
-            [
-              50.8043945,
-              24.7892578
-            ],
-            [
-              50.8556641,
-              24.6796387
-            ],
-            [
-              50.9283203,
-              24.5951172
-            ],
-            [
-              50.9660156,
-              24.5739258
-            ],
-            [
-              51.0227539,
-              24.5652344
-            ],
-            [
-              51.0933594,
-              24.5646484
-            ],
-            [
-              51.1780273,
-              24.5867188
-            ],
-            [
-              51.2679688,
-              24.6072266
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/qatar.50m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WWTWvcQAyG7/srjM9h0OhbuYVAzy30VkIxqRsWknXYuIcQ8t+LnWxI4ilFPpjxaOZBsqR35mnXdf38eD/2513/ZRzmP8fxcrq9Ha/n/XTozxbz75fph/68+7Hruq57Wt/bjevy1XB/nO7H47xfN52Wd11/GO7WDd+GeTi+Le+6fv8w/RxwNV1s5ull/vt7w/V0mPeH8TAvtouH/dC/2p7fnLgZp7txPj5+dOHk89fp9vHmNcQ35nT8tT8M87tYX573489fXSe1oFqo+9knC3JRMETVD4ars//xKJSducVjqdUwyWO0wLAWTx21WpInRBTe8s8DXKNmecserg3e+iPIkzwFd9dtvFJA0B0izashtPVPSmULjmw+RCujbOtFCjqzYTofq3vY4JGHsabzUQGFosFjQWLK+scuJFUbPEE2SIeL+o90qGNFz6ZXlh6VlnvmFUDSPCZQ3baHlACkwLQceICibHhaoNZKmG0PVCTgbXtoqUJoVZK8Cl5Bmv45iConeQBUG+FKCa/MQikclABy8GZ6kcEwy3N1FaRW+dW1MrM8QKWmWnEYGGR5prgUTIu3iEvyNIJiwuLRUiuKQLU0z4yYWrxqxlxz5QLFWRdk6zRyF+OcOkNxkiDb1h8XF6CAbLwOTMEtnnmgWK59obgsPdU6LZdrCHlOTqEEOiG0/p9E/rYBJVShNuSUixgFSlauANFapxEXWfqQ0/ISRBKt24soL/eNrPyZAzbrT1ytel6eU7fJXWt8Gj3vTu+r3fPuL6H7AP7wCwAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/qatar.50m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaQatar50m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

@@ -2,253 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/uzbekistan.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Uzbekistan",
-        "iso_a2": "UZ",
-        "iso_a3": "UZB",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              55.9681914,
-              41.3086417
-            ],
-            [
-              57.0963912,
-              41.3223101
-            ],
-            [
-              56.9322152,
-              41.8260261
-            ],
-            [
-              57.78653,
-              42.1705529
-            ],
-            [
-              58.6290109,
-              42.751551
-            ],
-            [
-              59.9764222,
-              42.223082
-            ],
-            [
-              60.0833407,
-              41.4251462
-            ],
-            [
-              60.465953,
-              41.2203266
-            ],
-            [
-              61.547179,
-              41.2663703
-            ],
-            [
-              61.8827141,
-              41.0848569
-            ],
-            [
-              62.3742603,
-              40.0538862
-            ],
-            [
-              63.5180148,
-              39.3632565
-            ],
-            [
-              64.170223,
-              38.8924067
-            ],
-            [
-              65.215999,
-              38.402695
-            ],
-            [
-              66.5461503,
-              37.974685
-            ],
-            [
-              66.5186068,
-              37.3627843
-            ],
-            [
-              67.0757821,
-              37.3561439
-            ],
-            [
-              67.8299996,
-              37.144994
-            ],
-            [
-              68.3920325,
-              38.1570253
-            ],
-            [
-              68.176025,
-              38.9015535
-            ],
-            [
-              67.4422197,
-              39.1401435
-            ],
-            [
-              67.7014287,
-              39.5804784
-            ],
-            [
-              68.5364165,
-              39.5334529
-            ],
-            [
-              69.0116329,
-              40.0861581
-            ],
-            [
-              69.3294947,
-              40.7278244
-            ],
-            [
-              70.6666223,
-              40.9602133
-            ],
-            [
-              70.4581596,
-              40.4964949
-            ],
-            [
-              70.6014067,
-              40.2185273
-            ],
-            [
-              71.014198,
-              40.2443655
-            ],
-            [
-              71.7748751,
-              40.1458444
-            ],
-            [
-              73.0554171,
-              40.866033
-            ],
-            [
-              71.8701148,
-              41.3929001
-            ],
-            [
-              71.1578585,
-              41.1435871
-            ],
-            [
-              70.4200224,
-              41.5199983
-            ],
-            [
-              71.2592477,
-              42.1677107
-            ],
-            [
-              70.9623149,
-              42.2661543
-            ],
-            [
-              70.3889649,
-              42.0813077
-            ],
-            [
-              69.0700273,
-              41.3842443
-            ],
-            [
-              68.6324829,
-              40.6686807
-            ],
-            [
-              68.2598959,
-              40.6623245
-            ],
-            [
-              67.9858557,
-              41.1359907
-            ],
-            [
-              66.7140471,
-              41.1684435
-            ],
-            [
-              66.5106486,
-              41.9876442
-            ],
-            [
-              66.0233916,
-              41.9946463
-            ],
-            [
-              66.0980123,
-              42.99766
-            ],
-            [
-              64.9008244,
-              43.7280806
-            ],
-            [
-              63.185787,
-              43.650075
-            ],
-            [
-              62.0133004,
-              43.5044766
-            ],
-            [
-              61.0583199,
-              44.405817
-            ],
-            [
-              60.239972,
-              44.7840368
-            ],
-            [
-              58.689989,
-              45.5000137
-            ],
-            [
-              58.5031271,
-              45.5868043
-            ],
-            [
-              55.9289173,
-              44.9958585
-            ],
-            [
-              55.9681914,
-              41.3086417
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/uzbekistan.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WYS2sjRxDH7/4Ug86mqPdjb0kg51xySViCslEWEa9kbOXgLP7uoe14sd1NoHQYRtPTP6rr8e/q+Xq1bbvLw+1h92Hb/XjYX/6+O/xwvrk5fLocz6fd9Rj+8/nx/e7D9uvVtm3b16frPPHp9aeB27vz7eHucnya9PL6tu1O+y9PE37+5/fDX8f7y/70bc627Y7359/2/DT+y/Rcnp9//3rg0/l0OZ4Op8sY++7+uN/9N/b4zZLPh/OXw+Xu4a0dL4b/dL55+Hw+vWWe7/44nvaXVwt+/r2+f/9v28ygPKlIr9+NKIFgulK8Gfh4/f+8ACyXIl7xmIWQWjyHEmayFS/Zkb3HC4h0k4nGQIFmXC1agnMhYS14YWTWM66gwpV5XiwDs2ByB+cImCKKsfCdspF6l6dutXAeATMKu7dwBKZBMfuOgN0lUJq4TA5SWvAwNc1bsXUGCWXHebkIaJLZ9J6AUSJpvudJgbiwubV4OjKWeTJPErJY0VuF6wZMVjVFQxIU2atnnIOpk83Ok4AK9WzjKB199l2AOEdqL1cCMCySp1wZPHNS6eVKQHJVlS94pFqlLVyC1CgoWwSDLJCtt9wECsclrpDMpBeNAFVmqklXpIAUSdu8QFLOFc8SNbLrPhNX8nm9BSaiTZX3AiRy4VmphsI6WbZk3guES0tnXUYIjmRtrTcQ3N0XUqAI5cgkrXQJBLUkm7NZEbRcS1v+G/YhDUFa8JjSOHr2ESAp1SQGA6cqbq30C4IIzbB540AgtdRmOATQTClWvHTHZjQIMpAW+8boqIoLex1V0JCQtJyqQwlG6Wb0eAjKiMyrDtKoqrK7XrZijTlbGMgjCFsbW4waYCFd9WjsTtbbOwJBMkcVLHiYJBi9jbcAA5Fj1VZJ6sjopvq5sOZSrdzTs+c/zxGPLFvzWFi7al8j+2zVlZJYVdM+hyBFXZQbAXlqdzcavQa65qx+BJXhqr2+zwFZpGjJK3X1XnwdsBJpofYMVdFswhUKcew4E00gODGxxxOgtJi3chVwQ4xeLBiQRBBX1hmqdldLgJZCc5erCoqWvcOuI7BUxXxcU4hUFM8Obpwmsypn4wwMEUl6R/EEQyFeFIaBDR3oCcv4VMBZtBAqhSobRd3l9T49XK3uX+4er16uH68er/4FNSEboiISAAA=';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/uzbekistan.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaUzbekistan110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

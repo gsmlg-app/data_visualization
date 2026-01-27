@@ -2,101 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/northern-cyprus.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Northern Cyprus",
-        "iso_a2": "-99",
-        "iso_a3": "-99",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              32.7317802,
-              35.1400259
-            ],
-            [
-              32.9195724,
-              35.0878327
-            ],
-            [
-              33.190977,
-              35.1731247
-            ],
-            [
-              33.3838334,
-              35.1627119
-            ],
-            [
-              33.4559221,
-              35.1014237
-            ],
-            [
-              33.4758175,
-              35.0003446
-            ],
-            [
-              33.5256853,
-              35.0386885
-            ],
-            [
-              33.6753919,
-              35.0178629
-            ],
-            [
-              33.8664397,
-              35.0935947
-            ],
-            [
-              33.9736166,
-              35.0585064
-            ],
-            [
-              33.9008045,
-              35.2457559
-            ],
-            [
-              34.5764738,
-              35.6715956
-            ],
-            [
-              33.667227,
-              35.3732158
-            ],
-            [
-              32.9469609,
-              35.3867034
-            ],
-            [
-              32.8024736,
-              35.1455036
-            ],
-            [
-              32.7317802,
-              35.1400259
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/northern-cyprus.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WUTWvkMAyG7/kVJufZIEvWh3tbCntc9r6UElq3G5jGQ8Y9DGX++zJpZ+iHoTgHo+SVHiS9OC+dc3057FJ/5fpfaSzPS7rO2226K1Oe+81Jfnj9vO+v3N/OOede1vNr4Zq+Crsl79JSprXonO5cP49Pa8HvvJR/aZnd9WG3PO8vhc710z7fjnhK+hHjF4Eqwl2eyzSnuZy0n/tp7N+046Wfx5SfUlkOH7s5t/8nbw+Pb9NemHm5n+axvBv79Xkff35zjnBQ8mqAm88KDz4AIMcPws3mO170kRVDhQemRqhNPBp8hKhaa0/JY2jFkZER1drzgup927g0BOaI6Gs88AGptb+gbF65tj4ACkEaeYwsxlTjkYkZN/JEmaKPNZ5XE2zdn4kEijV/IRLHZn+jkniRGo+NQUIrD8Ag1PzAwMqN1yMMrBKUrMIT9Ry51V8RRaytj5TQs7Xe3iBRoGYvmShQ2/pwMMCgVLPDB2agtnGb/1ZdLT5Hx+583nTH7j9h/vKrWwYAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/northern-cyprus.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaNorthernCyprus110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

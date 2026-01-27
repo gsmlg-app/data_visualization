@@ -2,161 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for africa/gabon.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Gabon",
-        "iso_a2": "GA",
-        "iso_a3": "GAB",
-        "continent": "Africa"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              11.276449,
-              2.2610509
-            ],
-            [
-              11.285079,
-              1.0576619
-            ],
-            [
-              9.8302841,
-              1.0678938
-            ],
-            [
-              9.4928886,
-              1.0101195
-            ],
-            [
-              9.2913505,
-              0.2686661
-            ],
-            [
-              9.0484196,
-              -0.4593515
-            ],
-            [
-              8.8300867,
-              -0.7790736
-            ],
-            [
-              8.7979956,
-              -1.1113014
-            ],
-            [
-              9.4052454,
-              -2.1443132
-            ],
-            [
-              10.0661353,
-              -2.9694825
-            ],
-            [
-              11.0937728,
-              -3.9788266
-            ],
-            [
-              11.8551217,
-              -3.4268706
-            ],
-            [
-              11.4780388,
-              -2.765619
-            ],
-            [
-              11.8209636,
-              -2.5141615
-            ],
-            [
-              12.4957028,
-              -2.3916883
-            ],
-            [
-              12.5752845,
-              -1.9485112
-            ],
-            [
-              13.1096188,
-              -2.4287403
-            ],
-            [
-              13.9924073,
-              -2.4708049
-            ],
-            [
-              14.2992102,
-              -1.9982756
-            ],
-            [
-              14.4254558,
-              -1.3334067
-            ],
-            [
-              14.3164185,
-              -0.5526275
-            ],
-            [
-              13.8433208,
-              0.0387576
-            ],
-            [
-              14.2762659,
-              1.1969298
-            ],
-            [
-              14.0266687,
-              1.3956774
-            ],
-            [
-              13.2826315,
-              1.3141837
-            ],
-            [
-              13.0031136,
-              1.8308963
-            ],
-            [
-              13.0758224,
-              2.2670971
-            ],
-            [
-              12.9513339,
-              2.3216157
-            ],
-            [
-              12.3593803,
-              2.1928122
-            ],
-            [
-              11.7516655,
-              2.3267575
-            ],
-            [
-              11.276449,
-              2.2610509
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for africa/gabon.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WWy0ocQRSG9/MUzaz1cO4XdyaQbLMPIUzMKAM6LWNnIeK7hx6doFZDqF401XW6Pv5zq6qn1TCsp8f77fpiWH/ZbqY/h+3n8fZ2ezXtxv36bDZfv0w/rC+G76thGIan47tdePz9aLg/jPfbw7Q7Ljr9Pgzr/ebuuODr5tcr/dWwexh/bvhoumzm5WX+01vD1bifdvvtfpptl9eH3dVm/Wp9/ifjZjvebafD43sRJ9XfxtvHm/cyrsbx8Hu330xvvH153o4/fg0DEXC4ap19MDCwExrWu/kfZ/+lpWE0NAK0cKcuWkEKciot0DyyJPtoWpyZvkAjJCrro3GRGNpHGgJ7ujv10VBTqRpt5whqJUZd4nIOHKbHAi6iMMT7cFFRZa06AiISJO1MBBqraYNjIFUh4a6aQ0B3EpMFXnlpclfwiABLIjgbnkBFJntX9IggzYipzYaAsmdgL08jUbLVxxBunU02y2Mslza7DEZK3ld7xKBlgQvhY5Aiz5ROnoVxatNp5wSlaUR95SJAWE6L4VPOUOzTJ1DFirFUfhqYqH35UOAqJuQlfys5rK9cFJRNzVp/CURE0aOTJ+RK2eYDwYydo69eBFJFGBt9CCgZFr3ucji7LRxBVF5cXYcGKSC7ezbNSyBlHtG19ZEAJ7tQEzwCIaWUvlwIIApR27s0nwBZ3lvKGJbMzc48XwYCK7oONWIoIxFZuFsIz/tKn7MMYiWJTaMxUHES9+0DBGHkbk0qZnUe1lnGnfeo1dL4NHpend4/Vs+rvz+NDeXqCgAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for africa/gabon.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get africaGabon110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

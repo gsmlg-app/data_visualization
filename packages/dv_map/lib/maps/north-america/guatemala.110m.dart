@@ -2,177 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for north-america/guatemala.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Guatemala",
-        "iso_a2": "GT",
-        "iso_a3": "GTM",
-        "continent": "North America"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -92.22775,
-              14.5388286
-            ],
-            [
-              -91.6897467,
-              14.1262182
-            ],
-            [
-              -91.2324102,
-              13.9278323
-            ],
-            [
-              -90.608624,
-              13.9097714
-            ],
-            [
-              -90.0955546,
-              13.7353376
-            ],
-            [
-              -90.0646779,
-              13.8819695
-            ],
-            [
-              -89.721934,
-              14.134228
-            ],
-            [
-              -89.5342193,
-              14.2448156
-            ],
-            [
-              -89.5873427,
-              14.3625862
-            ],
-            [
-              -89.353326,
-              14.4241328
-            ],
-            [
-              -89.145535,
-              14.6780191
-            ],
-            [
-              -89.2252201,
-              14.8742862
-            ],
-            [
-              -89.154811,
-              15.0664192
-            ],
-            [
-              -88.6806797,
-              15.3462471
-            ],
-            [
-              -88.2250228,
-              15.7277225
-            ],
-            [
-              -88.518364,
-              15.8553891
-            ],
-            [
-              -88.6045861,
-              15.7063801
-            ],
-            [
-              -88.9306128,
-              15.8872735
-            ],
-            [
-              -89.2291217,
-              15.8869376
-            ],
-            [
-              -89.150806,
-              17.0155767
-            ],
-            [
-              -89.1430804,
-              17.808319
-            ],
-            [
-              -90.0679335,
-              17.8193261
-            ],
-            [
-              -91.0015199,
-              17.8175949
-            ],
-            [
-              -91.0022693,
-              17.2546577
-            ],
-            [
-              -91.4539213,
-              17.2521772
-            ],
-            [
-              -91.0816701,
-              16.9184767
-            ],
-            [
-              -90.7118219,
-              16.687483
-            ],
-            [
-              -90.6008467,
-              16.4707779
-            ],
-            [
-              -90.438867,
-              16.4101098
-            ],
-            [
-              -90.4644726,
-              16.0695621
-            ],
-            [
-              -91.7479602,
-              16.0665648
-            ],
-            [
-              -92.2292486,
-              15.2514466
-            ],
-            [
-              -92.0872159,
-              15.0645847
-            ],
-            [
-              -92.2032295,
-              14.8301029
-            ],
-            [
-              -92.22775,
-              14.5388286
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for north-america/guatemala.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE52WS2sbQQyA7/4Vi8/pIGn0zK0U2lNLD72VUJZ0mxpsb3A2hxDy38s6cUiyA0XxYRmPZj70Gkn3q65bT3fXw/q8W38e+un2MHwat9vhctqM+/XZLP7zuH2zPu9+rrqu6+6P3+XF4/Gj4PowXg+HaXO8dDredet9vzte+HLbT8Ou3/bPV7puvbkZf/V0FP9Y7NfH/a8vBZfjftrsh/00y76Nh+lv93E3HDaX/frp0MOzRlfDuBumw91rfU4GfB+3d1dP9j7Dx8Pvzb6fXhj++Hu5fvuv6z4EFSIzOXsjQC5S3cn1leDi7D84LOphrNYAIimhUxZIlRiBFsBagswr1RwQioIrcYsHYYac5UGICGsDaFVqtaQLoYCymkUD6I6hISmgRzHCqEuLuWBlIs/ipPIMbPCI2VFyBs9At8rUypmqJK65nPEos99pGREuTIw1bzGySG09EjUHDMzyiIQIsAF0Y3qHwSjsuORJAVXGSPK8qINaLCMipbISW9Jiny0GIm8AjcyIkjntRdCrLnNaiotUz4bEiwKLa8uFBlod0sCooNi02N3IavoVEwUStmLirpGtM8ekAYflK7ECKGJq+VdSwWEZEysOXjHyddCiNp6dFceopLmQBBYAFIxlYZ2BJsFJDWcgkTYqoRUSVrGcCwMLSw3CNpDQLN09wVGtUWm0BDpngxxQDNEJlz7Uom7s7+jG4K15QQsbmFk6a7i6t3kICJGr/TNPma3RTLSAhiils9DYQhsDzQxUUU5qOE9wQexLDaWQILMmBxAq4EYoyxjP7YTFOZk0VAgqUbQaqFdAoGSQk0PrqrU+rR5Wp+/F6mH1D6K01ytjDAAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for north-america/guatemala.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get northAmericaGuatemala110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

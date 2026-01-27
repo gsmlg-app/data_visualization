@@ -2,169 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for europe/portugal.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Portugal",
-        "iso_a2": "PT",
-        "iso_a3": "PRT",
-        "continent": "Europe"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -9.0348177,
-              41.8805706
-            ],
-            [
-              -8.9907894,
-              41.5434594
-            ],
-            [
-              -8.7908532,
-              41.184334
-            ],
-            [
-              -8.768684,
-              40.7606389
-            ],
-            [
-              -8.9773535,
-              40.1593061
-            ],
-            [
-              -9.0483052,
-              39.7550931
-            ],
-            [
-              -9.4469889,
-              39.3920661
-            ],
-            [
-              -9.5265706,
-              38.7374291
-            ],
-            [
-              -9.2874638,
-              38.3584858
-            ],
-            [
-              -8.8399975,
-              38.2662434
-            ],
-            [
-              -8.7461014,
-              37.6513455
-            ],
-            [
-              -8.898857,
-              36.8688093
-            ],
-            [
-              -8.3828161,
-              36.9788801
-            ],
-            [
-              -7.8556132,
-              36.8382685
-            ],
-            [
-              -7.4537256,
-              37.0977876
-            ],
-            [
-              -7.5371055,
-              37.4289043
-            ],
-            [
-              -7.1665079,
-              37.8038944
-            ],
-            [
-              -7.0292812,
-              38.0757641
-            ],
-            [
-              -7.3740922,
-              38.3730586
-            ],
-            [
-              -7.0980367,
-              39.0300727
-            ],
-            [
-              -7.4986324,
-              39.629571
-            ],
-            [
-              -7.0665916,
-              39.7118916
-            ],
-            [
-              -7.0264131,
-              40.1845242
-            ],
-            [
-              -6.8640199,
-              40.3308719
-            ],
-            [
-              -6.8511267,
-              41.1110827
-            ],
-            [
-              -6.3890877,
-              41.3818155
-            ],
-            [
-              -6.6686055,
-              41.8833869
-            ],
-            [
-              -7.251309,
-              41.9183461
-            ],
-            [
-              -7.422513,
-              41.7920747
-            ],
-            [
-              -8.0131746,
-              41.7908861
-            ],
-            [
-              -8.263857,
-              42.2804687
-            ],
-            [
-              -8.6719458,
-              42.1346894
-            ],
-            [
-              -9.0348177,
-              41.8805706
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for europe/portugal.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WWS2vcMBCA7/srjM+pmNG8cy3tOZTeSihL6i4Lm3XYOIcQ8t+LnWxIIlMYH4SssT7PU6OnTdf10+Pd0F92/fdhOz2chq/j4TDcTPvx2F/M4r8vy/f9Zfdr03Vd97SM7cbl80VwdxrvhtO0XzadP++6/ri9XTZcjafpYbc9vO3oun5/P/7e1kX6s1mnZf3HB8HNeJz2x+E4zbJvD/Mv+1fp85smu2G8HabT40c9zopfjYfH3audb9Tx9Gd/3E7vDH553s8/v3XdlyhA7Gh28UnCWNxBDPSD4Pri/zwvEWAevMITJpbgJM8CXKiu8NCZKI1TV2+1g2IKSh5Za81ISFZ4KEGgmOJFAXYCaaylKCYCQVkes4Z7rPAoKmhaP6k650TD82JkXCPLq26s5Cs8EmcXT8bDKSKsiQd5qaqV8+nCioBNvpAVFSQWyeoX7tIUG2lxdYegJI68Oiqu8MLcHXLhsOIiim2xzfqRV/WcuVZYyKq06WIFwswtd7hYETIEacNrhasHcM5/VlBVwNrysOJAHpxLFytQozq2/vMCJqacjQcZQ9Q1HhmBeNZ/EA6kbf7NbQDAqmXjG65U2/KIojXEsuaCqgS26RLFED0wbW5VRmrKYz6dnaVyTfHmImXAaNKFoRCBG+a6hxYXxNqGY+5tiODJcGghD/DVXk6OjsnTSouq60q5LXcDItecvVaqIEHrPiyBTpxsRnPNz8AVnEUF45z3vAASGjfZt/DAPane3HFo5aznWqoDq2fVU8NgaVol14LE6smLVfrit1mbn2fPm/N4vXne/AMnfeFBoAsAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for europe/portugal.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get europePortugal110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

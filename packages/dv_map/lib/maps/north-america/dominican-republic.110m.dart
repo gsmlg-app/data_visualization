@@ -2,141 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for north-america/dominican-republic.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Dominican Republic",
-        "iso_a2": "DO",
-        "iso_a3": "DOM",
-        "continent": "North America"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -71.7083048,
-              18.0449971
-            ],
-            [
-              -71.6576619,
-              17.7575727
-            ],
-            [
-              -71.4002099,
-              17.5985644
-            ],
-            [
-              -70.9999501,
-              18.2833288
-            ],
-            [
-              -70.6692985,
-              18.4268859
-            ],
-            [
-              -70.5171372,
-              18.1842909
-            ],
-            [
-              -70.133233,
-              18.245915
-            ],
-            [
-              -69.9529339,
-              18.428307
-            ],
-            [
-              -69.6239876,
-              18.380713
-            ],
-            [
-              -69.1649458,
-              18.4226484
-            ],
-            [
-              -68.689316,
-              18.2051423
-            ],
-            [
-              -68.3179433,
-              18.6121976
-            ],
-            [
-              -68.809412,
-              18.9790744
-            ],
-            [
-              -69.2543461,
-              19.0151962
-            ],
-            [
-              -69.2221258,
-              19.3132142
-            ],
-            [
-              -69.76925,
-              19.2932671
-            ],
-            [
-              -69.9508152,
-              19.648
-            ],
-            [
-              -70.214365,
-              19.6228852
-            ],
-            [
-              -70.8067061,
-              19.8802855
-            ],
-            [
-              -71.5873045,
-              19.8849106
-            ],
-            [
-              -71.7123614,
-              19.7144559
-            ],
-            [
-              -71.6248732,
-              19.169838
-            ],
-            [
-              -71.7013027,
-              18.785417
-            ],
-            [
-              -71.9451121,
-              18.6169001
-            ],
-            [
-              -71.6877376,
-              18.3166601
-            ],
-            [
-              -71.7083048,
-              18.0449971
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for north-america/dominican-republic.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WVS2vcMBCA7/4VwudUaB6aR26lpbc+6LWEst26qWHXXhznEML+97LebEhiQZEPQtZoPmY0r8cmhHZ+OHTtdWg/dZv5fuo+jLtdt537cWivTuI/5+O79jr8aEII4XFZ14rL9UVwmMZDN839onS5HkI7bPaLwsdx3w/9djOE793h/teu3z7rhtD2d+PPDS73vq7O6Xz++aVgOw5zP3TDfJJ9Gaf5b3i/76Z+u2mfLh2fTbvtxn03Tw+vDbt48m3cPdw+Of4MH6ff/bCZX7zA+Xu5f/sXwjuFqMkosV29EYHFxOyu8Epwc/VfoGQVAV8BNWrWrKi1QE4Jk5eA2S0Lcx0wRXf3nKDgMhoRmtUCRRzdcgHIKGbZa4EZFEixAARj9FQNBCIkKnnM2SFX4cSjZ3SidUhODhuluhCLR0FyUynwyJIC1fJA2DmXkpoRha0uZcSimBOU7MOUgbHSQIsE6lwMiACCq9QCLTlDKWFcPWlljYhHzEws6xrxmCCDC1YDEQELIfFIQAhcDVRxXJecR3RCqWxbS0ong7x+QY/C1Q0BgUlKxgmiWa7zVVO0JJqK0TBLaLmugBViNqXEJQvN2CHV5d9pjACSABeACsy5tgVCFGRTKsUDxI0qQ3Kac0AJtVAhapmheio5ZwAsDREB8ZTq56apUrkHgojUAysne1PaX3bH5rLeNMfmH9GfU66TCQAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for north-america/dominican-republic.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get northAmericaDominicanRepublic110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

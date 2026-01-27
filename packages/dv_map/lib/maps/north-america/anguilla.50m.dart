@@ -2,61 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for north-america/anguilla.50m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Anguilla",
-        "iso_a2": "AI",
-        "iso_a3": "AIA",
-        "continent": "North America"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -63.0012207,
-              18.2217773
-            ],
-            [
-              -62.9795898,
-              18.2647949
-            ],
-            [
-              -63.0260254,
-              18.2697266
-            ],
-            [
-              -63.1533203,
-              18.200293
-            ],
-            [
-              -63.1600098,
-              18.1713867
-            ],
-            [
-              -63.0012207,
-              18.2217773
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for north-america/anguilla.50m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WRzWrDMBCE736KRWfX6MeWrNxModBL6b2EIlLVEdiSUZSDCX73Ejk2TmIo1kGs9tsZdtAlAUCh7zTaAXrTKpy9fnVNow/BOIvSK/4d2ye0g68EAOAS72dhHI+g867TPpgomsYBkFVtFFS2PpumUbMCAJmT+1Y00venPhv71RIcnA3Gahuu7MP5cISq1d4cFLoNDfNCtXatDr6/X2fa/9M1fX2LO5s7/2OsCovc41nWjy+AF84yjAmlWKQPiJQZpUQIwe7APv3HkGZSyKKU5Zohz4XM5TZDlmHKMS3yVUMpKOdbDUnBGMVszRBjKjcmZhnhGOPVxEQQVnKxOfG2P0nW6qkakuneJ0PyB3QDN+FDAwAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for north-america/anguilla.50m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get northAmericaAnguilla50m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

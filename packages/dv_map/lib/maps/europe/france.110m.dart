@@ -2,343 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for europe/france.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "France",
-        "iso_a2": "-99",
-        "iso_a3": "-99",
-        "continent": "Europe"
-      },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [
-                -51.6577974,
-                4.1562324
-              ],
-              [
-                -51.8233429,
-                4.5657681
-              ],
-              [
-                -52.8821413,
-                5.409851
-              ],
-              [
-                -53.6184529,
-                5.646529
-              ],
-              [
-                -53.9580446,
-                5.7565482
-              ],
-              [
-                -54.478633,
-                4.8967557
-              ],
-              [
-                -54.3995422,
-                4.2126114
-              ],
-              [
-                -54.0069305,
-                3.6200377
-              ],
-              [
-                -54.181726,
-                3.1897798
-              ],
-              [
-                -54.2697052,
-                2.7323917
-              ],
-              [
-                -54.5247542,
-                2.3118489
-              ],
-              [
-                -54.0880625,
-                2.1055565
-              ],
-              [
-                -53.7785207,
-                2.3767028
-              ],
-              [
-                -53.5548392,
-                2.3348966
-              ],
-              [
-                -53.4184651,
-                2.0533892
-              ],
-              [
-                -52.9396572,
-                2.1248577
-              ],
-              [
-                -52.5564247,
-                2.5047053
-              ],
-              [
-                -52.2493375,
-                3.2410945
-              ],
-              [
-                -51.6577974,
-                4.1562324
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                6.1863204,
-                49.4638028
-              ],
-              [
-                5.8977592,
-                49.4426671
-              ],
-              [
-                5.674052,
-                49.5294835
-              ],
-              [
-                4.7992216,
-                49.985373
-              ],
-              [
-                4.286023,
-                49.9074966
-              ],
-              [
-                3.5881844,
-                50.3789924
-              ],
-              [
-                3.1232516,
-                50.7803633
-              ],
-              [
-                2.6584221,
-                50.796848
-              ],
-              [
-                2.513573,
-                51.1485062
-              ],
-              [
-                1.6390011,
-                50.9466064
-              ],
-              [
-                1.338761,
-                50.1271732
-              ],
-              [
-                -0.989469,
-                49.3473758
-              ],
-              [
-                -1.933494,
-                49.7763419
-              ],
-              [
-                -1.6165108,
-                48.6444213
-              ],
-              [
-                -3.295814,
-                48.9016924
-              ],
-              [
-                -4.5923498,
-                48.6841605
-              ],
-              [
-                -4.4915549,
-                47.9549543
-              ],
-              [
-                -2.9632761,
-                47.5703266
-              ],
-              [
-                -2.2257242,
-                47.0643627
-              ],
-              [
-                -1.1937976,
-                46.0149177
-              ],
-              [
-                -1.3842252,
-                44.0226104
-              ],
-              [
-                -1.9013513,
-                43.422802
-              ],
-              [
-                -1.502771,
-                43.0340144
-              ],
-              [
-                0.3380469,
-                42.579546
-              ],
-              [
-                0.7015906,
-                42.7957344
-              ],
-              [
-                1.8267932,
-                42.3433847
-              ],
-              [
-                2.985999,
-                42.473015
-              ],
-              [
-                3.1004106,
-                43.0752005
-              ],
-              [
-                4.5569625,
-                43.399651
-              ],
-              [
-                6.5292452,
-                43.1288923
-              ],
-              [
-                7.4351848,
-                43.6938449
-              ],
-              [
-                7.5495964,
-                44.1279011
-              ],
-              [
-                7.0075623,
-                44.2547668
-              ],
-              [
-                6.7499553,
-                45.028518
-              ],
-              [
-                7.0966525,
-                45.3330989
-              ],
-              [
-                6.8023552,
-                45.7085798
-              ],
-              [
-                6.843593,
-                45.9911466
-              ],
-              [
-                6.5000997,
-                46.4296728
-              ],
-              [
-                6.0226095,
-                46.2729898
-              ],
-              [
-                6.037389,
-                46.7257787
-              ],
-              [
-                6.7687138,
-                47.2877082
-              ],
-              [
-                6.7365711,
-                47.5418013
-              ],
-              [
-                7.1922022,
-                47.4497655
-              ],
-              [
-                7.4667591,
-                47.620582
-              ],
-              [
-                7.5936764,
-                48.3330191
-              ],
-              [
-                8.0992786,
-                49.0177835
-              ],
-              [
-                6.6582296,
-                49.2019583
-              ],
-              [
-                6.1863204,
-                49.4638028
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                8.7460091,
-                42.6281219
-              ],
-              [
-                8.5442127,
-                42.2565166
-              ],
-              [
-                8.7757231,
-                41.583612
-              ],
-              [
-                9.2297522,
-                41.3800068
-              ],
-              [
-                9.5600163,
-                42.152492
-              ],
-              [
-                9.3900008,
-                43.0099848
-              ],
-              [
-                8.7460091,
-                42.6281219
-              ]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for europe/france.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE6VYy24bVwzd6ysGWscE349sg3ZXoPsiKAxXDQw4UuAoCyPwvxfXjtPEphdltRBmdGeOOLyHhzzzdbdt+/Pdp8P+7bb/9XB5/nJ7eHe6uTlcna9Px/2btfz348+f92+3P3bbtm1fH75f3vhw+cPCp9vTp8Pt+frhpqfLt21/vPz4eMPt5fHq3+u3bX/9+fTnJa+1i6oXC9IsXJ2O5+vj4Xhea798Wf+4/7Z6/z2QD4fTx8P59u7nMJ7i/u3Lzfn699PN3Ydvz/od+nT71/Xx8vzDQz9+fjx+fvbyfNsujMAtokLfvFhUIHMW1mcr759f2uMmiyhXh2tu4UkTXIZMJiV5iWugWGkjWAGnVOvCNXB145rBliWqegcb5qbJE1wFjXRpkqCQ5WEWM1ipMmXucJnYiUZkUED0ErSXuALOiBLDeCkpuMmuAGVFVM5g2SvQmjQwhLAUDcM11jBtcYUoNUcsU8BMdG7Sy0BoZm4z9kakMUYbb3ggj/IrYKYp1edBNMt9hquU6kYdLppI1qjaGErKLdp4iTVtRl8GM1fWNr+GGmgyw2UtkWjLjZWwdMSHSa/YvXb20z/+177lQOnC2EVSoC45oqbBEg3riLlgld1j0F4MPLSVEy0wLk0Z7IdCVDFTo35aUGkSA/YocDpy11kKCkNHtSlgmZTa7JchSGTVZMwQIBa2LgWGEIniMsgBg1sqc6MjC7Y8dUAuBiOx6AYXAtI09IE6EbgUIvWxlrqjDzJLIJLhPSpxUMhEShEqS70bCgtEQ8ImHYWgRLR6NYhwUZo0VgInN8JscBNcVZkmAi3AZUlduAmF5KNiuFCwYtF6JdxUcpzovoIWmWm3awFlWqaTNDCUC7ck0wALFB7NAQzMFtyNWRqAruI86dcEVBIVneA6IGnRaA4gkKU2bX9QQGYnnPCBFpfEOqukAsqcOKlhAkOO6HZNAEWRdBAtLsHBXhoYLMp0wAWEQLLCbssYoixkEuwytx4l3Y4xiIqkDpjAq2tX9SnQEKRB+QoQolKbAgEMY5yogq7ZtVrPobJspE+MuK9xiLUthdXsM4sHUhOgYstetbBekqqDBhGwtK+8E3JdXbKQBkkIQIw1TbewbBrugy7pEFpl1sEaIKfRADUAy91aHhiICNbE1DokslhLBIPAtJG3d0gVqz4FVUQ66TgOhohVjY9TB+XymLgRf9B+rC61DhxcOcsBSkh2KuMQbBE50C6H8AySrsQCOCNw8qrLIcQtuvF2zQhKiZMRLICKGdsXXQGqFW4DUQxQ97Dqo3VGm+QgwEo8WpnJhxKjGshMAlZxZO8fkSJGttSXeWKuHpaRynKwYyPHv3vt7H+9fEgIdcR2lxmck3hiNxJsGQruVISBzY0m4pQQYcHSRUtgKU4DThYwV1hbQGueRcRJjyowRyTvBJqBjHXyBq9gWWRsfZzAUu6RoR/x4HVK7p4f3e+evt/v7nf/AIXfSzQLGwAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for europe/france.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get europeFrance110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

@@ -2,65 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for africa/equatorial-guinea.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Equatorial Guinea",
-        "iso_a2": "GQ",
-        "iso_a3": "GNQ",
-        "continent": "Africa"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              9.6491582,
-              2.2838661
-            ],
-            [
-              9.3056132,
-              1.1609114
-            ],
-            [
-              9.4928886,
-              1.0101195
-            ],
-            [
-              9.8302841,
-              1.0678938
-            ],
-            [
-              11.285079,
-              1.0576619
-            ],
-            [
-              11.276449,
-              2.2610509
-            ],
-            [
-              9.6491582,
-              2.2838661
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for africa/equatorial-guinea.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WRQYuDMBCF7/6KIWeRTNSY9FaW3d6W3fNSltBNS8AmbhoPUvzvi7ZKrcJiDsPkvXkfGXKNAEhoKk02QN60CrXXL64s9SEYZ0nc2cebfCEb+IoAAK59nQf78d6ovKu0D6YPDeMAxKpzH3j9rVVw3qgSdrWxWo1RAGIu7luxbmz3OdPTXn+fGAdng7Hahs7bHr05KHJ32/FJJ+3OOvhm+qBhgw9XNqf7wiPV+R9jVXjY/HYe++cbgEx4JjEXLH4yWMJEKjjHib6P/6GlNOeYzmiYIKcSMVtHyyQTQvA5jSJFlPk6mkgpExku0HghZCrW0BATJnJayAVaXnCOci2t4Fk2o7GEcaQ5XUVb+6fRUj90bTTUfdRGf5MpnP+CAwAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for africa/equatorial-guinea.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get africaEquatorialGuinea110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

@@ -2,277 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for south-america/bolivia.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Bolivia",
-        "iso_a2": "BO",
-        "iso_a3": "BOL",
-        "continent": "South America"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -69.5296781,
-              -10.9517343
-            ],
-            [
-              -68.6650797,
-              -12.5613001
-            ],
-            [
-              -68.8800795,
-              -12.8997291
-            ],
-            [
-              -68.9292238,
-              -13.6026836
-            ],
-            [
-              -68.9488867,
-              -14.4536394
-            ],
-            [
-              -69.3395347,
-              -14.9531955
-            ],
-            [
-              -69.1603466,
-              -15.3239739
-            ],
-            [
-              -69.3897642,
-              -15.6601291
-            ],
-            [
-              -68.9596354,
-              -16.5006979
-            ],
-            [
-              -69.5904238,
-              -17.5800119
-            ],
-            [
-              -69.100247,
-              -18.2601254
-            ],
-            [
-              -68.9668184,
-              -18.9816834
-            ],
-            [
-              -68.4422251,
-              -19.4050685
-            ],
-            [
-              -68.7571671,
-              -20.372658
-            ],
-            [
-              -68.2199131,
-              -21.4943466
-            ],
-            [
-              -67.8281799,
-              -22.8729188
-            ],
-            [
-              -67.1066736,
-              -22.7359246
-            ],
-            [
-              -66.2733394,
-              -21.8323105
-            ],
-            [
-              -64.9648921,
-              -22.0758615
-            ],
-            [
-              -64.377021,
-              -22.7980913
-            ],
-            [
-              -63.9868381,
-              -21.9936443
-            ],
-            [
-              -62.8464685,
-              -22.0349854
-            ],
-            [
-              -62.6850571,
-              -22.2490292
-            ],
-            [
-              -62.2911794,
-              -21.0516346
-            ],
-            [
-              -62.2659613,
-              -20.5137346
-            ],
-            [
-              -61.7863265,
-              -19.6337367
-            ],
-            [
-              -60.0435646,
-              -19.3427467
-            ],
-            [
-              -59.1150425,
-              -19.356906
-            ],
-            [
-              -58.1834714,
-              -19.8683993
-            ],
-            [
-              -58.1663924,
-              -20.1767009
-            ],
-            [
-              -57.8538016,
-              -19.9699952
-            ],
-            [
-              -57.9499973,
-              -19.4000042
-            ],
-            [
-              -57.6760089,
-              -18.9618397
-            ],
-            [
-              -57.4983711,
-              -18.1741875
-            ],
-            [
-              -57.7345583,
-              -17.5524684
-            ],
-            [
-              -58.280804,
-              -17.2717103
-            ],
-            [
-              -58.3880584,
-              -16.8771091
-            ],
-            [
-              -58.2412199,
-              -16.2995733
-            ],
-            [
-              -60.1583897,
-              -16.2582838
-            ],
-            [
-              -60.5429657,
-              -15.0939104
-            ],
-            [
-              -60.2511489,
-              -15.0772189
-            ],
-            [
-              -60.2643263,
-              -14.6459791
-            ],
-            [
-              -60.4591982,
-              -14.3540073
-            ],
-            [
-              -60.503304,
-              -13.7759547
-            ],
-            [
-              -61.0841213,
-              -13.4793836
-            ],
-            [
-              -61.7132043,
-              -13.4892022
-            ],
-            [
-              -62.1270809,
-              -13.1987806
-            ],
-            [
-              -62.8030603,
-              -13.0006532
-            ],
-            [
-              -63.1964988,
-              -12.6270326
-            ],
-            [
-              -64.3163529,
-              -12.461978
-            ],
-            [
-              -65.4022815,
-              -11.5662704
-            ],
-            [
-              -65.3218988,
-              -10.8958721
-            ],
-            [
-              -65.444837,
-              -10.5114511
-            ],
-            [
-              -65.3384352,
-              -9.7619878
-            ],
-            [
-              -66.6469083,
-              -9.9313315
-            ],
-            [
-              -67.1738012,
-              -10.3068124
-            ],
-            [
-              -68.0481923,
-              -10.712059
-            ],
-            [
-              -68.2712536,
-              -11.0145212
-            ],
-            [
-              -68.7861576,
-              -11.0363803
-            ],
-            [
-              -69.5296781,
-              -10.9517343
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for south-america/bolivia.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE52Yy2ocVxCG93qKZtZKUfeLd0kgq0ACWQYThDN2BiSNkMcBYfTuoUeWkN0FoTyLpqdPn4+qqctfZz5fLMvu9HC3371Zdr/sr06f7vc/H6+v9+9Oh+Pt7nJdfv/0+OPuzfLnxbIsy+fzdbvx/Pp54e7+eLe/Px3Om55fX5bd7dXNecNPx+vDv4erlw3Lsjt8PP51xefF3zbP5en5r68X3h1vT4fb/e1pXfvj+On0z/Ljzf7+8O5q9+Wlxxd7PuyPN/vT/cPX1jyb//vx+uHDF29f4Mf7vw+3V6dXbj99Xt9/+21ZfvAC4/JIuvx2iRDKKETlq5W3l/9DTHA3jIotkcGcBJGmxEzEKOuIWRVcY2JxMUtuiQKO7Ck+JmpmeuO1gpq4lM6IBSJloi2xTKjMpkRyFHXfEg2EpUJqbGNWuHJHdEf6nshYuZhuiQ6G6BVjG61Q21gHWCISjYmEyF1gEnh12oahTij3pGycTqgkTxkTVZnZmrIuUDT0HCZPQliQx5bICBLsllMgUxVJAyTQ0jVRZ8SA5KSo2hIZcu0SObQxgNA9ZFsxzBBixTq00YFDRGobaiZIYSEcBkahXLO4+R0ZMCydxkSJwB4YlVg0lASBSk9pRIYJqsR1KjIMqa6eW0lYnRatnNYgg6ehdfnNwFrIxVMiF1H0oUYjl2nyMLBbOUlXg0YSYyJBpAt7I60FLhLiMSMioIq5NiJTIMqhQ6IVEBkqtzaKeeHMaUugFA1q2m3BmqhVs3Rcie5S3IQagcIDcaYxFpAmidT+jOVVZbN0tIDSqopt8pwlARF1TPRwxNz221W2nFJqGOoArZSgRrYSKJQyZr3MAkLULBuvA8xYPWeNwhI4MbFJngAOCsJx8kgmWqf+DhlBOByiVhOVVnXtiFxlIcN+i0CW66zXEi05ZSitCKZcbg3RAEuKcNjBEdiItEtHA4xgyuGgh8Cuwt4kj4KrVUzHWwS1ospmYFYQU8QYR8ZQpEtHgQgr02EDJ8Bcs6dxWkCjZHw2IggSRu2JWYw8llbiwMQm1AJUGTnUhHWgQEHH1kZEdJOhjashrpXNuYPBOVB4aKOCkItx4zWDOlUMa9BAkTmpUVYC89XIYQ2u50jK1mmELMvgYcUYqGpK0ybWkYfUaAwUSRXblmBB+Dl5ZkAHVy9sJKaghESm83cAxar9TZNAEPQkHh8HUZOKm+xGCGK0YWfMVerYmoMRESCpMQ3LJddJlCx6orjkUFe/46+ti+7++e7x4vn69uLx4j9Ir/lYihQAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for south-america/bolivia.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get southAmericaBolivia110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

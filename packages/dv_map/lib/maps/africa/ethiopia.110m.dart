@@ -2,273 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for africa/ethiopia.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Ethiopia",
-        "iso_a2": "ET",
-        "iso_a3": "ETH",
-        "continent": "Africa"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              47.78942,
-              8.003
-            ],
-            [
-              46.94834,
-              7.99688
-            ],
-            [
-              43.67875,
-              9.18358
-            ],
-            [
-              43.29699,
-              9.54048
-            ],
-            [
-              42.92812,
-              10.02194
-            ],
-            [
-              42.55876,
-              10.57258
-            ],
-            [
-              42.7768518,
-              10.9268786
-            ],
-            [
-              42.55493,
-              11.10511
-            ],
-            [
-              42.31414,
-              11.0342
-            ],
-            [
-              41.75557,
-              11.05091
-            ],
-            [
-              41.73959,
-              11.35511
-            ],
-            [
-              41.66176,
-              11.6312
-            ],
-            [
-              42.0,
-              12.1
-            ],
-            [
-              42.35156,
-              12.54223
-            ],
-            [
-              42.00975,
-              12.86582
-            ],
-            [
-              41.59856,
-              13.45209
-            ],
-            [
-              41.1552,
-              13.77333
-            ],
-            [
-              40.8966,
-              14.11864
-            ],
-            [
-              40.02625,
-              14.51959
-            ],
-            [
-              39.34061,
-              14.53155
-            ],
-            [
-              39.0994,
-              14.74064
-            ],
-            [
-              38.51295,
-              14.50547
-            ],
-            [
-              37.90607,
-              14.95943
-            ],
-            [
-              37.59377,
-              14.2131
-            ],
-            [
-              36.42951,
-              14.42211
-            ],
-            [
-              36.27022,
-              13.56333
-            ],
-            [
-              35.86363,
-              12.57828
-            ],
-            [
-              35.26049,
-              12.08286
-            ],
-            [
-              34.83163,
-              11.31896
-            ],
-            [
-              34.73115,
-              10.91017
-            ],
-            [
-              34.25745,
-              10.63009
-            ],
-            [
-              33.96162,
-              9.58358
-            ],
-            [
-              33.97498,
-              8.68456
-            ],
-            [
-              33.8255,
-              8.37916
-            ],
-            [
-              33.2948,
-              8.35458
-            ],
-            [
-              32.95418,
-              7.78497
-            ],
-            [
-              33.56829,
-              7.71334
-            ],
-            [
-              34.0751,
-              7.22595
-            ],
-            [
-              34.25032,
-              6.82607
-            ],
-            [
-              34.70702,
-              6.59422
-            ],
-            [
-              35.2980071,
-              5.506
-            ],
-            [
-              35.8174477,
-              5.3382321
-            ],
-            [
-              35.8174477,
-              4.7769657
-            ],
-            [
-              36.1590786,
-              4.4478641
-            ],
-            [
-              36.8550932,
-              4.4478641
-            ],
-            [
-              38.120915,
-              3.598605
-            ],
-            [
-              38.43697,
-              3.58851
-            ],
-            [
-              38.67114,
-              3.61607
-            ],
-            [
-              38.89251,
-              3.50074
-            ],
-            [
-              39.5593843,
-              3.42206
-            ],
-            [
-              39.85494,
-              3.83879
-            ],
-            [
-              40.76848,
-              4.25702
-            ],
-            [
-              41.1718,
-              3.91909
-            ],
-            [
-              41.8550831,
-              3.9189119
-            ],
-            [
-              42.12861,
-              4.23413
-            ],
-            [
-              42.76967,
-              4.25259
-            ],
-            [
-              43.66087,
-              4.95755
-            ],
-            [
-              44.9636,
-              5.00162
-            ],
-            [
-              47.78942,
-              8.003
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for africa/ethiopia.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE52Yy2ojVxCG93qKRmtT1P0yuxASsswiuzAE4WhmBB610XQWZvC7h5bHxuPTCalo0bTOUX9U1fnr0vq6m6b98nB/3L+b9j8fD8tfl+OP893d8XY5zef9zbr94Wn5y/7d9Ptumqbp6/U6Pnj9+XXj/jLfHy/L6frQ88+naX8+fL4+8NPy6TTfnw4vT0zT/vRl/uPA193fhnV5Wv/l9cbtfF5O5+N5Wfd++HA53R7233YfXyz5eJw/H5fLw/d2PBv+63z38PGbny/U+fLn6XxYXjn89Hl9//bbNGlAZCnfvFlPQJTv1t7f/DvIoTRF34ICqjyzhRLwyLC3qAJKsS6Ky6tGlClqD8VQnDREihCQqbTJMsvwDZYFN11kiPA0yg1asWekt23TkoFGQGhETZaQ0iAKIkBRbqEIwsxiC2VYPbMIQsoGVRCBWNdFAnfaOEoCF+q5yIADhqEdcSMbzWEwZe6lNANijXlIDOmW3eOzyg27BNQYq8kiszERBSJEei4iZPlolQJRei+n1zrgPEZLwais5aEUiKLTFkvIrMnCqjEFFUKx56IkGHFtuoim0WIFFDqO+axQVto6RQmwkthiMUkrf8RBuWwr8srcKw3iwIG8JVTzplDFIF18rMoMFsmtjiEG7Khj+WPA5F63EIUU2rCLQCirywohGuWFUITUk5cCW+gWywV79UYEysmHcyyw7jyyokJraNUJnmq9aAkk2+BggkRRl8SlGzaJadM9hjIdJ5F1yNTqHeCaJMmDSAOCRHplSwFjTOkAZqteLV1VhTIowSHZsSvQwMANlJVyq7eu+VyJGIOLBoY9KRgkhepYSw1EkoV7FfAfcboOreXWi5kDWWHk0LAVVCNdu/U5zbDG8/x/uARirLF+yTr6OPaUlqDiNcRNwDKta5cHjUO4gFNXtAlZPKaSgCFGLykLzEpSh9Yha6dtyrYgTcchRyAlozdcIoTnWA2v/QS7My/FWAwFiqo98a5KTdmIfFEWUQ/HQJzjeKnAotR9R1jzeCO/2bg39K6v/Y65gSqL3syrCuUyVAkDRPLeGf73/0d2W/fPd4+75+v73ePub5D6tV/AEgAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for africa/ethiopia.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get africaEthiopia110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

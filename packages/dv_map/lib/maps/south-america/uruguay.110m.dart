@@ -2,121 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for south-america/uruguay.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Uruguay",
-        "iso_a2": "UY",
-        "iso_a3": "URY",
-        "continent": "South America"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -57.6251334,
-              -30.2162949
-            ],
-            [
-              -57.8749373,
-              -31.0165561
-            ],
-            [
-              -58.1424404,
-              -32.0445037
-            ],
-            [
-              -58.1326477,
-              -33.0405669
-            ],
-            [
-              -58.3496112,
-              -33.263189
-            ],
-            [
-              -58.4270741,
-              -33.9094544
-            ],
-            [
-              -57.8178607,
-              -34.4625473
-            ],
-            [
-              -57.139685,
-              -34.4304562
-            ],
-            [
-              -56.215297,
-              -34.8598357
-            ],
-            [
-              -55.6740897,
-              -34.7526588
-            ],
-            [
-              -54.9358661,
-              -34.9526466
-            ],
-            [
-              -53.806426,
-              -34.3968149
-            ],
-            [
-              -53.3736617,
-              -33.7683778
-            ],
-            [
-              -53.650544,
-              -33.2020041
-            ],
-            [
-              -53.209589,
-              -32.7276661
-            ],
-            [
-              -53.7879516,
-              -32.0472425
-            ],
-            [
-              -54.5724515,
-              -31.4945114
-            ],
-            [
-              -55.6015102,
-              -30.8538787
-            ],
-            [
-              -55.9732446,
-              -30.8830759
-            ],
-            [
-              -56.9760258,
-              -30.1096864
-            ],
-            [
-              -57.6251334,
-              -30.2162949
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for south-america/uruguay.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WVTYvbMBCG7/4VwudUzPdIeyuFnktLD6UsxaRuGkji4HUOYcl/L/FuwmYjKPJByHo1DzOeDz83IbTTcd+3D6H93HfTYew/DZtNv5zWw65dnOU/L8dP7UP42YQQwvO83hvO12dhPw77fpzWs9HlegjtrtvOBt/Hw+rQHa8GIbTrp+FXR7P44+6c5/OvN8Jy2E3rXb+bztq34TD9DR+3/bhedu3rpdPVn1U/bPtpPN56c3H/y7A5rl6jvcKH8fd6101vwn553u7fv4XwQT0aKTLL4r3EEAmNsuQb5XHxX2Jyyex8T8QIaKqGdcQUUUgECj5SBBEF9moik4n7PZEjCKhZZdQpsmRDpBKRjDFVA4UcXLAEzJBFRaoTg54MCkFLFCMV51oicrakRSCDqFEd0CKhUi56mDQn1spEazQXSGWiK5mmVEeUmFmTWSEvErOSiVkdkWMCE7IS8Px5sbYDObKzGRar2y2xe2XQHE1BpdCAHAkIQCpb+myWNeVSRzu5We2M4OjJs2LhK55nhJOQ1iZanUSxUN0YJYsiVjagRgNUhMKMgJiUk6fq8s7OJFKIGmJKDK6VtWMxuwFpKhERsiWrHju1f5imtL/sTs1lfWxOzT/N3C1vEQgAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for south-america/uruguay.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get southAmericaUruguay110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

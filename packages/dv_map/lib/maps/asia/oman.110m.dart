@@ -2,231 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/oman.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Oman",
-        "iso_a2": "OM",
-        "iso_a3": "OMN",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [
-                55.2083411,
-                22.70833
-              ],
-              [
-                55.6666594,
-                22.0000011
-              ],
-              [
-                54.9999817,
-                19.999994
-              ],
-              [
-                52.0000098,
-                19.0000034
-              ],
-              [
-                52.7821843,
-                17.3497423
-              ],
-              [
-                53.1085726,
-                16.6510511
-              ],
-              [
-                53.5705083,
-                16.7076627
-              ],
-              [
-                54.239253,
-                17.0449806
-              ],
-              [
-                54.7910022,
-                16.9506969
-              ],
-              [
-                55.2749003,
-                17.2283544
-              ],
-              [
-                55.2699394,
-                17.6323091
-              ],
-              [
-                55.6614917,
-                17.8841283
-              ],
-              [
-                56.2835209,
-                17.8760668
-              ],
-              [
-                56.5121892,
-                18.0871133
-              ],
-              [
-                56.6096509,
-                18.5742671
-              ],
-              [
-                57.234264,
-                18.947991
-              ],
-              [
-                57.6943909,
-                18.9447096
-              ],
-              [
-                57.7887004,
-                19.0675703
-              ],
-              [
-                57.6657622,
-                19.736005
-              ],
-              [
-                57.8263725,
-                20.2430024
-              ],
-              [
-                58.0343185,
-                20.4814375
-              ],
-              [
-                58.4879859,
-                20.4289859
-              ],
-              [
-                58.8611414,
-                21.1140345
-              ],
-              [
-                59.2824077,
-                21.4338858
-              ],
-              [
-                59.4421912,
-                21.7145405
-              ],
-              [
-                59.8061483,
-                22.3105248
-              ],
-              [
-                59.8080603,
-                22.533612
-              ],
-              [
-                59.4500977,
-                22.6602709
-              ],
-              [
-                59.1805017,
-                22.9923953
-              ],
-              [
-                58.7292115,
-                23.5656678
-              ],
-              [
-                58.1369479,
-                23.7479306
-              ],
-              [
-                57.4034526,
-                23.8785945
-              ],
-              [
-                56.8451404,
-                24.2416731
-              ],
-              [
-                56.3968474,
-                24.9247322
-              ],
-              [
-                55.8862325,
-                24.9208306
-              ],
-              [
-                55.8041187,
-                24.2696042
-              ],
-              [
-                55.9812138,
-                24.1305429
-              ],
-              [
-                55.5286316,
-                23.933604
-              ],
-              [
-                55.5258411,
-                23.5248693
-              ],
-              [
-                55.2344894,
-                23.1109927
-              ],
-              [
-                55.2083411,
-                22.70833
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                56.2610417,
-                25.7146064
-              ],
-              [
-                56.3914213,
-                25.8959907
-              ],
-              [
-                56.4856792,
-                26.3091179
-              ],
-              [
-                56.3620174,
-                26.3959344
-              ],
-              [
-                56.0708208,
-                26.0554642
-              ],
-              [
-                56.2610417,
-                25.7146064
-              ]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/oman.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE51Xy24bVwzd6ysGWgcE34/sigLdpe2+CAohVQMBtmTYysII/O/FyHHgB70oZzGYubxz5lySh5f3+2ZZtuf7m/3247L9bb87f7vd/3q6utp/OR9Ox+2H1fzv4/Dd9uPy12ZZluX75f72w8v0i+Hm9nSzvz0fLh89TV+W7XF3ffngj+vd8efsZdke7k5/7/hi+fRmXB7Hf39u+HI6ng/H/fG82n65O+y2P2wPPzl83Z+u9+fb+5cMnih/+nZ1Pvx5urr/ejq+BD7d/nM47s7P1vt4PX9+/fb2fVnMgDFFiT68sTFDYIq8Mnx+PbNFdXe30hYV14togKtQVZUUb3GpLrbSAewPSpUt7MUmM9xIplRpcANEK5Qn7hUgTAv2BtfBjdBG7hWwQMPs+DoEhjvHKGwsxda7AVUr0UewUYTI3NItQy+vUfZyaCH2fJlTTCfpYMBeJZ0qKMCFBWsStlVtpNWqIiBTiXOSZg7rUhmrxw1H9xzhGjFldXFLwAyiUdVxcCy3lm+ChbLHxL8BLMrehS2hNGoUtQAvlXqHbakG1kQVAZEZiB3dAvSwwIl3A9wtvFVbQYgj2gg22SXYmq0CgVUQeSK2BBQVyh5Xk1RiwjdBMyqtCduKy7naRrjpRErdlklApCg64VvAyYrRFAcmUJFMm4i4QJWpqEkHJghS01E+FCQ6abcHMYMQGuuMb2Kid0WdGUzEiWduMMRq3cvgjhw4SYcCSjTsajozVLGUTVScEFxM1MlCwNzcY+LeBBJfa2GLGxoloz0+4JL4XavDAhlpNZKFQ6qRdlWSFVjJQyZV3UHKU6PHLdYQnuSZQaaztGVyxcWc+dcgUYmyyzNd+xVHnfGtJCZpWmpWIEFTnvVmxulCfT6UiOOsNTO27I9BAmvJ8ZodhFhUsz0ICRBh1aijHhzbNu+9vfjf/z5AOrATaluobN0HHH0SkVVIpExdvTbIsiqceM5B0zy65pMd1g6cYpKYDuKM1Ap/XYuVjA4NDhiYjJ2QHNBMfSTQUdzez6HN66eHzdP98+Zh8x+QNnTGwxEAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/oman.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaOman110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

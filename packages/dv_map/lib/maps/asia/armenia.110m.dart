@@ -2,117 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/armenia.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Armenia",
-        "iso_a2": "AM",
-        "iso_a3": "ARM",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              46.5057198,
-              38.7706054
-            ],
-            [
-              46.483499,
-              39.4641548
-            ],
-            [
-              46.0345341,
-              39.6280207
-            ],
-            [
-              45.6100122,
-              39.8999938
-            ],
-            [
-              45.8919072,
-              40.2184757
-            ],
-            [
-              45.3591748,
-              40.5615038
-            ],
-            [
-              45.5603512,
-              40.8122895
-            ],
-            [
-              45.1794959,
-              40.9853539
-            ],
-            [
-              44.9724801,
-              41.2481286
-            ],
-            [
-              43.5827458,
-              41.0921433
-            ],
-            [
-              43.7526579,
-              40.7402009
-            ],
-            [
-              43.6564364,
-              40.253564
-            ],
-            [
-              44.4000086,
-              40.0050003
-            ],
-            [
-              44.7939897,
-              39.7130026
-            ],
-            [
-              45.0019873,
-              39.7400036
-            ],
-            [
-              45.298145,
-              39.4717512
-            ],
-            [
-              45.7399785,
-              39.4739991
-            ],
-            [
-              45.7353793,
-              39.3197191
-            ],
-            [
-              46.1436231,
-              38.7412015
-            ],
-            [
-              46.5057198,
-              38.7706054
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/armenia.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WUwWrcQAyG736KwedlkEbSSMotFHorlF5LKCZ1g2HXXrzuYQn77iVONmTjgTI+DLL+0ccvyzPPTQjtcj727V1ov/bd8nfuv0z7ff+4DNPY7l7kP6/pU3sXfjYhhPC8rtvCdfsqHOfp2M/LsBZdt4fQjt1hLbifD/04dO8FIbTDafrVpVX8tsnTmv9xIzxO4zKM/bis2mno2jft8m7jqZ8O/TKfb01cXX+f9uentybfmdP8exi75UO3r8/H+PNbCJyjgCi67T4pZFEVMgjfCA+7//HYiN03OI+cGYWtEgfEQowFXk4GCbSKJzEjAKZU4Jm7O9X5k2iODrrhMcSExiq1/kgclTfjYIiSUaDan2QgwZI/w5TMpZKH6uyymS9DdBMS8ioeR9fEBpv5MsbEhslyFY+iWFKW7ffDCJ6QiSp5KimLlvpVhgRQ1y/FLJkpc+l/EZJcd9o4MgCA5QIOQACgrl2O6uTmWjgeigSQ6sYhEQDdlEq8F+tUy0tuyFK6XRRVMFXilNzVyjxyd6zmCamX2iV0xUpejsiUE21vP4vKmADrTm/1Zd+U4mt0aa7rQ3Np/gHEjGeTkQcAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/armenia.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaArmenia110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

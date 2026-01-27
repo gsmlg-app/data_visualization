@@ -2,243 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/palestine.50m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Palestine",
-        "iso_a2": "PS",
-        "iso_a3": "PSE",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [
-                34.4773438,
-                31.5848633
-              ],
-              [
-                34.3873047,
-                31.4837891
-              ],
-              [
-                34.1981445,
-                31.3226074
-              ],
-              [
-                34.2125,
-                31.2922852
-              ],
-              [
-                34.2453125,
-                31.2083008
-              ],
-              [
-                34.3483398,
-                31.2929199
-              ],
-              [
-                34.3501953,
-                31.3627441
-              ],
-              [
-                34.5255859,
-                31.5256348
-              ],
-              [
-                34.5241211,
-                31.5416504
-              ],
-              [
-                34.4773438,
-                31.5848633
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                35.5514648,
-                32.3955078
-              ],
-              [
-                35.484375,
-                32.4016602
-              ],
-              [
-                35.4026367,
-                32.4506348
-              ],
-              [
-                35.3867188,
-                32.4930176
-              ],
-              [
-                35.3621094,
-                32.5074707
-              ],
-              [
-                35.3038086,
-                32.5129395
-              ],
-              [
-                35.1932617,
-                32.5344238
-              ],
-              [
-                35.0650391,
-                32.4604492
-              ],
-              [
-                35.0105469,
-                32.3381836
-              ],
-              [
-                34.9995117,
-                32.2810547
-              ],
-              [
-                34.955957,
-                32.1609375
-              ],
-              [
-                34.9713867,
-                32.0871094
-              ],
-              [
-                34.9788086,
-                31.9916016
-              ],
-              [
-                34.9897461,
-                31.9132812
-              ],
-              [
-                34.9783203,
-                31.8664062
-              ],
-              [
-                34.9538086,
-                31.8412598
-              ],
-              [
-                34.9611328,
-                31.8233398
-              ],
-              [
-                34.9830078,
-                31.8167969
-              ],
-              [
-                35.0532227,
-                31.8379395
-              ],
-              [
-                35.1271484,
-                31.816748
-              ],
-              [
-                35.1980469,
-                31.7763184
-              ],
-              [
-                35.2037109,
-                31.75
-              ],
-              [
-                35.153418,
-                31.7344727
-              ],
-              [
-                35.034668,
-                31.6732422
-              ],
-              [
-                34.9509766,
-                31.6022949
-              ],
-              [
-                34.9291992,
-                31.5365723
-              ],
-              [
-                34.8727539,
-                31.396875
-              ],
-              [
-                34.8804688,
-                31.3681641
-              ],
-              [
-                34.9078125,
-                31.3513184
-              ],
-              [
-                35.1011719,
-                31.3662109
-              ],
-              [
-                35.2766602,
-                31.4228027
-              ],
-              [
-                35.4086914,
-                31.4829102
-              ],
-              [
-                35.4505859,
-                31.4792969
-              ],
-              [
-                35.4654297,
-                31.5623535
-              ],
-              [
-                35.4994141,
-                31.6723633
-              ],
-              [
-                35.5589844,
-                31.7655273
-              ],
-              [
-                35.5314453,
-                31.9849121
-              ],
-              [
-                35.5347656,
-                32.1030273
-              ],
-              [
-                35.5720703,
-                32.2378906
-              ],
-              [
-                35.5514648,
-                32.3955078
-              ]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/palestine.50m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE51Yy4obRxTd6ysarU1x3w/vQkh2BkOWwQThKEYgS4OmvRjM/LtpyWOPZ24vcrVouup2na4+93VKXzfTtJ0f7vbbt9P2z/1u/nLZ/34+Hvcf58P5tH2zmP+7Td9v305/b6Zpmr5er68XXh+/Gu4u57v9ZT5cFz09Pk3b0+7zdcH73XF/Px9OP5dM0/Zwf/5nR1fzX6/m+Tb/x3PDx/NpwTjNi+23+8Nu+932+GMjn/bnz/v58vDrNp72/e7LcT68Px8fPn3/1h/A58u/h9NufvbRt9/z+5ej1+NpYhnizsLx5rUNh4aEMb8wfXj5bInL4QziJa4EeyS2cDEDRbTEZSIDlxYuIdWglESh1AMV5VVcCAaIHrkSzFk7jZISM3u4CpjKNblGLtJzmpJqaNZBRmosPR6UBAmxxhU0hV4wNJJiszb65Y3/O0F1qKKYVHuhwakK3uFOh4SwV6FJQwDNoBPyOgTI2Kq8pyEKTVfr4DDHqGmQZEC3Hq4RQkqJq+Di4D1c4ICwGhcpObWFi8lkWPOrLELc4xdMgbNKJRpiIJK9eAAEFatSnwZzYHDHbzIyU3GFB4rlpR2/yUjV1BoWDZK94zYZ6bhEcIkL4UsINnFjJcxwZKIBNumNdLG6siYyBfY6YnowQd1hwkzAmri6lm44QpA0ex0mDZevrXGJly7c5JcBfAUXzdM6HVwHKBNRLbuCvV92yFGiKpO3/TarOmZAXR1wuBtjdNJCBwEvOVXjNhlQFqwd5izi1OsTwGJWw5ozCXXzAdKtzgcDopSeQryJS6qVEZs69Y4L4eTKtcM4LZplN5bwKlXDImgDrSloEzzWhD0rtuMWAdFxhQa7SpVePrgtiq4+jREFNKNXICyxLgsSlNhVkQqrBwbxpG55FFOhrMujGrFyrzhIpqDU7dKcuHeKXsR/ZEjNr5sqeROXl0N03YYzJJE6ebHgipvWqheBob1fJ/BSNtCg5c8E6Kn/xuFqszb6ef9097h5un7YPG6+ARLdyvvNEgAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/palestine.50m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaPalestine50m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

@@ -2,205 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for north-america/cuba.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Cuba",
-        "iso_a2": "CU",
-        "iso_a3": "CUB",
-        "continent": "North America"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -82.2681512,
-              23.1886107
-            ],
-            [
-              -82.5104362,
-              23.0787466
-            ],
-            [
-              -83.2675476,
-              22.9830419
-            ],
-            [
-              -83.7782399,
-              22.7881184
-            ],
-            [
-              -84.230357,
-              22.5657547
-            ],
-            [
-              -84.4470621,
-              22.2049499
-            ],
-            [
-              -84.9749111,
-              21.8960281
-            ],
-            [
-              -84.5470302,
-              21.8012277
-            ],
-            [
-              -84.0521508,
-              21.9105751
-            ],
-            [
-              -83.9088004,
-              22.1545653
-            ],
-            [
-              -83.4944588,
-              22.168518
-            ],
-            [
-              -82.775898,
-              22.6881503
-            ],
-            [
-              -81.7950018,
-              22.6369648
-            ],
-            [
-              -82.1699918,
-              22.3871093
-            ],
-            [
-              -81.8209434,
-              22.1920566
-            ],
-            [
-              -80.5175346,
-              22.037079
-            ],
-            [
-              -80.2174753,
-              21.8273243
-            ],
-            [
-              -79.285,
-              21.5591753
-            ],
-            [
-              -78.7198665,
-              21.5981135
-            ],
-            [
-              -78.4828267,
-              21.0286134
-            ],
-            [
-              -78.1372922,
-              20.7399488
-            ],
-            [
-              -77.4926546,
-              20.6731054
-            ],
-            [
-              -77.0851084,
-              20.4133538
-            ],
-            [
-              -77.7554809,
-              19.8554809
-            ],
-            [
-              -76.3236562,
-              19.9528909
-            ],
-            [
-              -75.6346801,
-              19.8737743
-            ],
-            [
-              -74.9615946,
-              19.9234354
-            ],
-            [
-              -74.2966481,
-              20.0503785
-            ],
-            [
-              -74.1780249,
-              20.2846278
-            ],
-            [
-              -74.933896,
-              20.6939051
-            ],
-            [
-              -75.6710604,
-              20.7350913
-            ],
-            [
-              -75.5982224,
-              21.0166245
-            ],
-            [
-              -76.1946201,
-              21.2205655
-            ],
-            [
-              -76.5238248,
-              21.2068196
-            ],
-            [
-              -77.1464225,
-              21.6578515
-            ],
-            [
-              -77.9932959,
-              22.2771935
-            ],
-            [
-              -78.3474345,
-              22.5121662
-            ],
-            [
-              -79.281486,
-              22.3992016
-            ],
-            [
-              -79.6795237,
-              22.7653032
-            ],
-            [
-              -80.6187687,
-              23.1059801
-            ],
-            [
-              -81.4044572,
-              23.1172714
-            ],
-            [
-              -82.2681512,
-              23.1886107
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for north-america/cuba.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WXTW8bNxCG7/oVC53dwXx/5NYG6LHopaciKFRXSQXYkqEoByPwfy9Wjg0nJFDMHhZcDvngJWc4w/26WZbt5fFhv323bH/d7y5fzvv3p7u7/e3lcDpub1bzx+fuz9t3y5+bZVmWr9f3OPE6/Gp4OJ8e9ufL4TrpZfiybI+7++uE91/+3r2OXpbt4fPprx1fLX8M/fLc/8tbw+3peDkc98fLavvtdL78u/x8vz8fbnfbb4OeXsV82p/u95fz4/dSXrT/frp7/PRtqa/w0/mfw3F3ebPm5+dt+8evZfkpGdiTjPjmBxMLUKYTxneGDzf/CzRCFZ8BMTLUvQcUYA/T8AHIUCmoVF1gRLJUTYCRSZTaAyqwoFhMeOa2au/yVAOdaQJk1NJqrlihQotoBBJkOXJSF2gaKDg6mSCRmKO9ZDQmw5wAi9DCmgoFCjMRdbKHZGpu0gVqqVqOChnI0yi75yTCsmY4zyTDpj6CKEOkKVC8XNsCyatqCpQMwmorTMZSmbqkGK2bGRCMwkRnmQElMJrHBIEpNExmUc0hrL0VRwGnTWBmtQrvwRKCKt2nwEoisS5Qk5N9zFsEyOkkvTwYCSTBxWNWQAip0uyFYARosdvEwQgeQmhNhQGYRphjCCIoiZi0FYaZJg61hAry2dIDOgiL21g+qaCMs7pAAxf1xCH3rwpDIrpBrVBOVqNTVoUsKl2nKHC5a47VCQENJbIZ2AoUiaxjgUfgVOdoelmhRLKmYVhS2CxOq0+C0CfFaT0ohkVNn9iaAZh5BBIgubM2t9CBSp3HqGECXlO1tYHGkqyzAs/oSdVL/hFA6so8S4dukUZNhQFVwmWzayFHUPXzq2io6KhwvSPz6pZ+OSHNWbmTKkZqbmGBRxnL7OIaboLSE5gIThmeI1CA0CqxeYsjUFS1mP6dUHBQ86re/t3ZzNovrafNy/vD5mnzH5vfdDeaDgAA';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for north-america/cuba.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get northAmericaCuba110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

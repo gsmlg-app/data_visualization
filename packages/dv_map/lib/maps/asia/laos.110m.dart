@@ -2,185 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for asia/laos.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Laos",
-        "iso_a2": "LA",
-        "iso_a3": "LAO",
-        "continent": "Asia"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              107.3827275,
-              14.2024409
-            ],
-            [
-              107.5645252,
-              15.2021732
-            ],
-            [
-              107.3127059,
-              15.9085383
-            ],
-            [
-              106.5560079,
-              16.604284
-            ],
-            [
-              105.9257622,
-              17.4853155
-            ],
-            [
-              105.0945984,
-              18.6669746
-            ],
-            [
-              103.896532,
-              19.265181
-            ],
-            [
-              104.1833879,
-              19.6246681
-            ],
-            [
-              104.8225737,
-              19.8866418
-            ],
-            [
-              104.4350004,
-              20.7587332
-            ],
-            [
-              103.2038611,
-              20.7665622
-            ],
-            [
-              102.7548963,
-              21.6751372
-            ],
-            [
-              102.1704358,
-              22.4647531
-            ],
-            [
-              101.6520179,
-              22.3181988
-            ],
-            [
-              101.8031197,
-              21.1743668
-            ],
-            [
-              101.2700257,
-              21.2016519
-            ],
-            [
-              101.1800053,
-              21.436573
-            ],
-            [
-              100.3291012,
-              20.7861217
-            ],
-            [
-              100.1159876,
-              20.4178496
-            ],
-            [
-              100.5488811,
-              20.109238
-            ],
-            [
-              100.6062936,
-              19.5083444
-            ],
-            [
-              101.2820146,
-              19.4625849
-            ],
-            [
-              101.0359314,
-              18.4089283
-            ],
-            [
-              101.0595476,
-              17.5124973
-            ],
-            [
-              102.1135918,
-              18.1091017
-            ],
-            [
-              102.413005,
-              17.9327817
-            ],
-            [
-              102.9987057,
-              17.9616946
-            ],
-            [
-              103.2001921,
-              18.3096321
-            ],
-            [
-              103.9564767,
-              18.2409541
-            ],
-            [
-              104.7169471,
-              17.428859
-            ],
-            [
-              104.7793205,
-              16.4418649
-            ],
-            [
-              105.5890385,
-              15.5703161
-            ],
-            [
-              105.5443384,
-              14.7239336
-            ],
-            [
-              105.2187769,
-              14.2732118
-            ],
-            [
-              106.0439462,
-              13.881091
-            ],
-            [
-              106.4963733,
-              14.5705838
-            ],
-            [
-              107.3827275,
-              14.2024409
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for asia/laos.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WWS4sTQRDH7/kUQ85LUe+HNxE8CXqXRYJGCayZJRsPi+x3l8k+WO0BqRyGTlf3j6r+V1f17800bc/3t/vtm2n7fr87/zrt3803N/uv58N83F4t5u+P03fbN9PnzTRN0+/Ld9x4WX4x3J7m2/3pfLhsel4+Tdvj7udlw4fdfPeyepq2h7v5y44vlrfDvDzOf3xt+Dofz4fj/nhebG/vDrvtk+3hxYcf+/nn/ny6/9uDZ5c/zTf3P54ifGHOp2+H4+78KtTH3+vxv/+miTBAkoPDrv41KTCyKtZfhuur/wLN1dh4ANoCpBDuAoU40GoFWJgmKT2gg5kjxgh0cFRO7fEMii2cx4gDNE3IrAvEUqvUAZjg7hXqPaBAlpuMDhawGyX1cAqUIrlygAXO6t4HJrOFxAow010pu0AVQ8ThBBkhLEO6SSjAKOlEa0B3c24CGcI0y2UAEngYSbSBFKhiOQAZ1DVMmqIQuDHSqDIzCCVVNkUhSBSiGlRmAgoV9zaQA5FtDchIbtSsXQSUiGhroqi4RbPSIAgXIQ0Xb8madGKKLpDIKsNXgEqRWs3KgGCamat5TVgsTUkQHJ1LBgepwDBFtVlcCTgZSdeA6mypbY1RrITWiqtiFnfbCQFamY6aUIARa3WzhoFIrGi4yZSLJoTdrGFQEsSxxQeUcGSfV5WB471bgE5e/f7EiFQ8ZCElCJYLN2uXQJlr+OhhAiuWabtDxRJXjB4GKGdaMwsVIkp4RRMHVUrvprWBZaHkCDSwQCFvRmxgqiIrjxCFYCmRpsgGTBnh46tBgUOYuk3eAVVKfXzWCGQuN6XL03IJGao/6XKElt1i2H5bb9bGz6OHzfP3evOw+QOQKRID/gwAAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for asia/laos.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get asiaLaos110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

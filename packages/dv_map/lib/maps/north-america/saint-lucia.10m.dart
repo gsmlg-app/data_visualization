@@ -2,237 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for north-america/saint-lucia.10m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Saint Lucia",
-        "iso_a2": "LC",
-        "iso_a3": "LCA",
-        "continent": "North America"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -60.8867895,
-              14.0100772
-            ],
-            [
-              -60.8902075,
-              14.0522322
-            ],
-            [
-              -60.8929744,
-              14.0646833
-            ],
-            [
-              -60.9010311,
-              14.073391
-            ],
-            [
-              -60.911936,
-              14.0794945
-            ],
-            [
-              -60.9186092,
-              14.0884464
-            ],
-            [
-              -60.9141333,
-              14.105699
-            ],
-            [
-              -60.9334611,
-              14.1118839
-            ],
-            [
-              -60.9476212,
-              14.102281
-            ],
-            [
-              -60.972076,
-              14.0681013
-            ],
-            [
-              -60.9760636,
-              14.061184
-            ],
-            [
-              -60.9799699,
-              14.0435245
-            ],
-            [
-              -60.9823299,
-              14.0373396
-            ],
-            [
-              -60.9872941,
-              14.0325382
-            ],
-            [
-              -60.9970597,
-              14.0271671
-            ],
-            [
-              -61.002268,
-              14.0231387
-            ],
-            [
-              -61.0266007,
-              13.9873721
-            ],
-            [
-              -61.0355525,
-              13.9649112
-            ],
-            [
-              -61.0594783,
-              13.9312198
-            ],
-            [
-              -61.0649308,
-              13.9173038
-            ],
-            [
-              -61.0668839,
-              13.909003
-            ],
-            [
-              -61.0759171,
-              13.8903669
-            ],
-            [
-              -61.0785213,
-              13.8797875
-            ],
-            [
-              -61.0781144,
-              13.869615
-            ],
-            [
-              -61.0755916,
-              13.8632673
-            ],
-            [
-              -61.0727433,
-              13.8582217
-            ],
-            [
-              -61.0711564,
-              13.8517927
-            ],
-            [
-              -61.0700577,
-              13.8320987
-            ],
-            [
-              -61.0711564,
-              13.8219669
-            ],
-            [
-              -61.0781144,
-              13.8063012
-            ],
-            [
-              -61.0742081,
-              13.7987328
-            ],
-            [
-              -61.0681046,
-              13.7921817
-            ],
-            [
-              -61.0649308,
-              13.7869327
-            ],
-            [
-              -61.0481665,
-              13.7673201
-            ],
-            [
-              -60.9733781,
-              13.7389997
-            ],
-            [
-              -60.9550675,
-              13.7146671
-            ],
-            [
-              -60.9501033,
-              13.7146671
-            ],
-            [
-              -60.9470109,
-              13.7162947
-            ],
-            [
-              -60.9407853,
-              13.7221133
-            ],
-            [
-              -60.9317521,
-              13.7603214
-            ],
-            [
-              -60.9271134,
-              13.7699242
-            ],
-            [
-              -60.9228409,
-              13.7726911
-            ],
-            [
-              -60.9103084,
-              13.7761091
-            ],
-            [
-              -60.9072973,
-              13.7773298
-            ],
-            [
-              -60.9046118,
-              13.7842471
-            ],
-            [
-              -60.8922013,
-              13.8331973
-            ],
-            [
-              -60.8950903,
-              13.8773461
-            ],
-            [
-              -60.883046,
-              13.9544132
-            ],
-            [
-              -60.8829646,
-              13.9806176
-            ],
-            [
-              -60.8867895,
-              14.0100772
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for north-america/saint-lucia.10m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE52XS0scQRCA7/srhj2boR7d9fAmQk4SAjkGCctmYgZ0R9bxIOJ/D726ok5J6N7D0NuPj+p69+Oq69bzw+2wPu3WX4fNfL8fzqfr62E7j9NufVKW/zxP361Pu5+rruu6x8N3efCw/bBwu59uh/08Hg4dt3fdere5ORz4sRl3c3dxvx03r4e6bj3eTb82VDZcnC/m+Xn+7O3CdtrN427YzWXt27Sf/3ZnN8N+3G7WL5ueXmW6GqabYd4/vJfoeIXv0/XD1cuNX+HT/ve428xvrv78ezv++K/rvgj0ZqLm+eTDEqYeEECV3i1cnvwf6ECgITATMTUAyTWlCChJjLkW6IDAiBFQmR2reYjOEuI8ecr1PBNwioBmKUmqByZk5gCIkMW9msecJFQgIppxPTCpEEY3RiCyeosogYYWEUPAeo9RAYlNLIhWbxB1F/eIlzhTg8sYMcVALj4t9UAlT2GMMGW26ih2V8iuEZAURSttjD0AkVjIY2TTah6JACwF5KILVqoXkHPOtEyE3LskR6xUIfaQPaktw5h7ZyR0qwZKcoalDrl3VAZuAEoJ/wgIDlAZd9iDZkddeiGXKsMilYmmAC0TRio0dTWtDLwDEDEoTtybuGADL2fHZaYpPCbRBhWSpiD3c2/ZiLA+ThQxS3jjjOrUAATIGgWeMYE3RPLnEhJ6m9d8ZmQQhoZI1kRgkV9rSTbUEHiGkCK3USe0Bit/mhrUxLnByslQJMqGKsoEDTWeWWMdsrl7pYTQe84gQePKvWKS6gpVgKXRjEKvFZgUEKL0qijkqf7KqSTEUEIixIbWmlEzhUYRYML6TokUkaPQU3GnVN+HEFmKdagkjg3dPzBYKKEKQsNzApRcQ6OoMtWW+QIs3Xocy4lSvR+aE0FcRZnRa4tUAWZwiMuylrdGNdA4ToeeU0Kuf4MaucRAA0Gt7q8rn92raHwcPa2O38vV0+ofSXQUGSkRAAA=';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for north-america/saint-lucia.10m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get northAmericaSaintLucia10m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

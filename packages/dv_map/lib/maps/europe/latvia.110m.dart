@@ -2,125 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for europe/latvia.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Latvia",
-        "iso_a2": "LV",
-        "iso_a3": "LVA",
-        "continent": "Europe"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              27.2881848,
-              57.4745283
-            ],
-            [
-              26.4635323,
-              57.4763887
-            ],
-            [
-              25.6028097,
-              57.8475288
-            ],
-            [
-              25.1645935,
-              57.970157
-            ],
-            [
-              24.3128626,
-              57.7934236
-            ],
-            [
-              24.1207296,
-              57.0256927
-            ],
-            [
-              23.318453,
-              57.0062365
-            ],
-            [
-              22.5243413,
-              57.7533743
-            ],
-            [
-              21.5818665,
-              57.4118706
-            ],
-            [
-              21.0904236,
-              56.7838728
-            ],
-            [
-              21.0558004,
-              56.0310764
-            ],
-            [
-              22.2011569,
-              56.3378018
-            ],
-            [
-              23.8782638,
-              56.2736714
-            ],
-            [
-              24.8606844,
-              56.3725284
-            ],
-            [
-              25.0009343,
-              56.1645307
-            ],
-            [
-              25.5330465,
-              56.1002969
-            ],
-            [
-              26.4943315,
-              55.6151069
-            ],
-            [
-              27.1024598,
-              55.7833137
-            ],
-            [
-              28.1767094,
-              56.16913
-            ],
-            [
-              27.855282,
-              56.7593265
-            ],
-            [
-              27.7700159,
-              57.2442581
-            ],
-            [
-              27.2881848,
-              57.4745283
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for europe/latvia.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WVTWvcMBCG7/4VwudFzIfmQ7mV0p566KmXEopJ3WDY2MvGKSxh/3tZb3bZxKIgH4SsV/N4RjMjvzYhtPNh17d3of3ad/PLvv88bbf9wzxMY7s5yX/Oy8/tXfjZhBDC6zKuDZfti7DbT7t+Pw+L0WV7CO3YPS0G37r579Bd94fQDs/Tr44W7cdqnc/rn26Fh2mch7Ef55P25eX0wfZNPV79eOynp37eH957cXH7+7Q9PL5FeaVO+9/D2M034Z6f2/nHtxDIIrmjJ998UMRisiTk/E643/yfpzEpCxMXecruVsWTqEAO2Qo8TybkXslDTZJZCrxsgFLnXoqM5EpawFnmRKyVPCQwyiUekGimOv84MnqSUjYAlFilCkdRKHHCEs+E2VJdtWAUR1ctZSMhukHd8WGEDKdDX/E0mrMb1VULRhBxgFTgASOYpsrzI0AUzQUeszlgnX8c3ZyU192rkYzVsM6/FF1BPZXiZSMhr+NJBIDMaV0vuvQhQ+1tIMyQCvWiEQEoa669rXJixjVPoqIgVPIsIlCSvM6HnOqPkevi9YimBrmUD9SMdd1m0UXIqdQckpkqLwOLZgAo62K2SCmROFbyKn9FTWl+mR2by3jfHJt/Ealh7DAIAAA=';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for europe/latvia.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get europeLatvia110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

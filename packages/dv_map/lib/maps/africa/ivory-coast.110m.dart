@@ -2,221 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for africa/ivory-coast.110m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Ivory Coast",
-        "iso_a2": "CI",
-        "iso_a3": "CIV",
-        "continent": "Africa"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -8.0299436,
-              10.2065349
-            ],
-            [
-              -8.2293371,
-              10.1290203
-            ],
-            [
-              -8.3096165,
-              9.789532
-            ],
-            [
-              -8.0791137,
-              9.3762239
-            ],
-            [
-              -7.8321004,
-              8.5757043
-            ],
-            [
-              -8.2034989,
-              8.4554532
-            ],
-            [
-              -8.2990486,
-              8.3164436
-            ],
-            [
-              -8.2217924,
-              8.1233288
-            ],
-            [
-              -8.2807035,
-              7.6871797
-            ],
-            [
-              -8.4392985,
-              7.6860428
-            ],
-            [
-              -8.4854455,
-              7.3952078
-            ],
-            [
-              -8.3854516,
-              6.9118006
-            ],
-            [
-              -8.6028802,
-              6.4675642
-            ],
-            [
-              -8.3113476,
-              6.1930331
-            ],
-            [
-              -7.9936926,
-              6.1261897
-            ],
-            [
-              -7.5701526,
-              5.7073522
-            ],
-            [
-              -7.5397151,
-              5.3133452
-            ],
-            [
-              -7.6353682,
-              5.1881591
-            ],
-            [
-              -7.7121594,
-              4.3645659
-            ],
-            [
-              -7.5189412,
-              4.3382885
-            ],
-            [
-              -6.5287691,
-              4.7050878
-            ],
-            [
-              -5.8344962,
-              4.9937007
-            ],
-            [
-              -4.6499174,
-              5.1682637
-            ],
-            [
-              -4.0088195,
-              5.1798133
-            ],
-            [
-              -3.3110844,
-              4.9842956
-            ],
-            [
-              -2.856125,
-              4.9944758
-            ],
-            [
-              -2.8107015,
-              5.3890512
-            ],
-            [
-              -3.2443701,
-              6.2504715
-            ],
-            [
-              -2.983585,
-              7.3797049
-            ],
-            [
-              -2.5621895,
-              8.2196278
-            ],
-            [
-              -2.8274963,
-              9.6424608
-            ],
-            [
-              -3.511899,
-              9.9003262
-            ],
-            [
-              -3.9804492,
-              9.8623441
-            ],
-            [
-              -4.330247,
-              9.6108349
-            ],
-            [
-              -4.7798836,
-              9.8219848
-            ],
-            [
-              -4.9546533,
-              10.1527139
-            ],
-            [
-              -5.4043416,
-              10.3707368
-            ],
-            [
-              -5.8169262,
-              10.2225546
-            ],
-            [
-              -6.050452,
-              10.0963608
-            ],
-            [
-              -6.2052229,
-              10.5240608
-            ],
-            [
-              -6.493965,
-              10.4113028
-            ],
-            [
-              -6.6664609,
-              10.4308107
-            ],
-            [
-              -6.8505066,
-              10.1389938
-            ],
-            [
-              -7.6227592,
-              10.1472362
-            ],
-            [
-              -7.8995898,
-              10.2973821
-            ],
-            [
-              -8.0299436,
-              10.2065349
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for africa/ivory-coast.110m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE5WXy2obWRCG93qKRmunqPslu8EwkF1W2QxhEB4lCBy1kZWACX730HJsHJ+GobRoWl19PqrOX1Wn+udmmrbnh7v99v20/Xu/O38/7a/n29v9zfkwH7dXi/nL0+P77fvpn800TdPPy3VceHn9Yrg7zXf70/lwWfT8+jRtj7tvlwUffsynh+l63t2fXxZN0/ZwP/+74+WF6w/Dc3l6/um14WY+ng/H/fG82P76cjrc7La/rY8vznzdz9/259PDn648+/5xvn34+jvUF+p8+u9w3J1fxfz0e33/9t80vUtArlLxqzcWQmB0E60/DJ+v/o/HXCJBKzziQkZp8gTLye0tryCyTLhJwygiiZEm4czSCzYghQlR3+ISLCxQu7EyilbWiFMz7QfLVag5SJsg5KribWUpileCJRbhzC4uMVAGYQM8g6KiiVMprlzFOSp3vdM0VVvBSRljdHGSpkaDFA5FlIhdKRw5E3nEqYe5dhNFiERjxTsqQRFqVkWVePEajp2yqWyABZKNOIPAEONesAEmFWRDgzIQElHr4lxMPAcpDCiTrLp7F8RkNRSZgriaW7dBGWUpDd4piCRnWgvnYJzhNeydQqBhNqvCIEW1fMW7KgnEXqIouFZRDHtnQJ7s0sUhZlINLcCAopKk19xlKTJMXVG2Urms1wIY0px4cG7ZOtWwnhIMSbhU2UpRZKFRrygEWFUChzxxYEMN6qUdQ6XYWmuXqMDmhMJgzpSjrglM5dxMYobk0HIZRwpXVsceTsCIsoYRoKAQhb0rRCWq1lBhBeksqr3utHQNZF2Znpwwu6OiQkRljqNnQTJVam/nFMrUTQYhlsnTOKg53Bkoquh4ZhOCLCePt7sdLafioMUyaTObaa8DOKCh2hoOy6WbeA6MxsxD5hGCsWKfpyU1zu2EoESCzYHMwd3Vcc09FVzaV5OXhoa+pi5JVknPvwBnDhsrbeFpsDQrNyCrLCvXsqVCknul2/7O26zdP989bp6vnzePm1+8TGDRkg8AAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for africa/ivory-coast.110m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get africaIvoryCoast110m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }

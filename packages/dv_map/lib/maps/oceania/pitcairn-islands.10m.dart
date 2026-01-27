@@ -2,203 +2,36 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:dv_geo_core/dv_geo_core.dart';
 
-/// GeoJSON data for oceania/pitcairn-islands.10m.json
-const String _kGeoJson = '''{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Pitcairn Islands",
-        "iso_a2": "PN",
-        "iso_a3": "PCN",
-        "continent": "Oceania"
-      },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [
-                -130.1203507,
-                -25.0682919
-              ],
-              [
-                -130.1136775,
-                -25.0738258
-              ],
-              [
-                -130.1053361,
-                -25.0767555
-              ],
-              [
-                -130.0959367,
-                -25.077081
-              ],
-              [
-                -130.0862524,
-                -25.0751279
-              ],
-              [
-                -130.093007,
-                -25.0679664
-              ],
-              [
-                -130.101145,
-                -25.0643857
-              ],
-              [
-                -130.110463,
-                -25.0643857
-              ],
-              [
-                -130.1203507,
-                -25.0682919
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                -124.7861629,
-                -24.6645647
-              ],
-              [
-                -124.7853898,
-                -24.6644833
-              ],
-              [
-                -124.7805883,
-                -24.6665992
-              ],
-              [
-                -124.778798,
-                -24.6687151
-              ],
-              [
-                -124.7780656,
-                -24.67254
-              ],
-              [
-                -124.7789201,
-                -24.667413
-              ],
-              [
-                -124.7805883,
-                -24.6646461
-              ],
-              [
-                -124.7855118,
-                -24.663995
-              ],
-              [
-                -124.7865291,
-                -24.663995
-              ],
-              [
-                -124.7971085,
-                -24.6670875
-              ],
-              [
-                -124.7861629,
-                -24.6645647
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                -128.3301896,
-                -24.3243141
-              ],
-              [
-                -128.3502498,
-                -24.3412411
-              ],
-              [
-                -128.3421932,
-                -24.3717587
-              ],
-              [
-                -128.3206681,
-                -24.4006487
-              ],
-              [
-                -128.3001196,
-                -24.4136695
-              ],
-              [
-                -128.2901505,
-                -24.39837
-              ],
-              [
-                -128.2908423,
-                -24.3656552
-              ],
-              [
-                -128.3037003,
-                -24.3346493
-              ],
-              [
-                -128.3301896,
-                -24.3243141
-              ]
-            ]
-          ],
-          [
-            [
-              [
-                -130.7452693,
-                -23.9244117
-              ],
-              [
-                -130.7480363,
-                -23.9273414
-              ],
-              [
-                -130.7508439,
-                -23.9271786
-              ],
-              [
-                -130.7530818,
-                -23.92962
-              ],
-              [
-                -130.7508439,
-                -23.9346656
-              ],
-              [
-                -130.7469783,
-                -23.9327939
-              ],
-              [
-                -130.7420955,
-                -23.9278297
-              ],
-              [
-                -130.7413631,
-                -23.9244117
-              ],
-              [
-                -130.7452693,
-                -23.9244117
-              ]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-}
-''';
+/// Gzipped GeoJSON data for oceania/pitcairn-islands.10m.json (base64 encoded)
+const String _kCompressedData = 'H4sIAAAAAAAAE7WWTWvkMAyG7/MrTM7dIFkflnstLOxhd3tfyhKmaQlMkzKTHkrpf1+SaUs7E7NUZeYQYst+RpJfKX5ahVCNj/dtdR6q720zPmzbi2GzaddjN/TV2WS+2U/vqvPwZxVCCE/z83jjvHw23G+H+3Y7dvOm1+UhVH1zN2+47MZ102378GO3afrr3dvOEKpuN/xt4rzq19E8zfMXHwzroR+7vu3HyfZ73TZ911Qv5uc3l27b4a4dt48fHXqN4OfDZuwuh83j7UvUb+xhe931zfgu/P3v/fvh6HgcwjckqDECCaSzY2uUGtRixnxguzpcXEIjaUpSQCeyKOZFgxApltCaRMSJhiyZtJSQlMDQSzaNErlEFozJm2rIBOVDTFmV3ZlG5NIZKpNJcssDWOkkZIemV6XRhz/9fIlFrpMpasxL7nCtyqLsinRGC1m2IpqNyI0GMVs8nwmtknP0opOlstOWUFwltieDihbQKYqrDPbgHGGx4Uw+J8YT5ZmV1Z0NE0EsJppydjXJvaQl5mI6vkLOCcEWG86caLD0Bac/XYcnawtWEwFaLmiVIhOy7+CtJoHIpQojxsjoRnPETLGATpjEfM3MaoqgagVRMYCyHw2AWMo1I6k6BWt1zIACBcFSNvL6HDMYx0JjIBUV8TXgKR2UAEpoYuXsa2c+VZ+qyAjqxBI1L0ZKdY7MiN5bRmIDWr7ATOhEjN5LVxIwpsVONaMxmbrRBLb8TZjQWV2a+q/PxKri9pk1p+VP5ISOKZP34pw4QpbF6p0zbTH79YGktNjOvi69z6u6XGSrw7fn1evzavW8+gcEmZ52kQ8AAA==';
+
+/// Cached parsed GeoJSON
+GeoJsonFeatureCollection? _cached;
 
 /// Parses the GeoJSON for oceania/pitcairn-islands.10m.json
+///
+/// The data is stored as gzipped binary to reduce package size.
+/// First access decompresses and parses; subsequent accesses use cached result.
 GeoJsonFeatureCollection get oceaniaPitcairnIslands10m {
+  if (_cached != null) return _cached!;
+
+  // Decode base64 and decompress
+  final compressed = base64Decode(_kCompressedData);
+  final decompressed = gzip.decode(compressed);
+  final jsonString = utf8.decode(decompressed);
+
+  // Parse GeoJSON
   final data = parseGeoJson(
-    jsonDecode(_kGeoJson) as Map<String, dynamic>,
+    jsonDecode(jsonString) as Map<String, dynamic>,
   );
-  if (data is GeoJsonFeatureCollection) return data;
-  throw StateError('Invalid GeoJSON format');
+
+  if (data is! GeoJsonFeatureCollection) {
+    throw StateError('Invalid GeoJSON format');
+  }
+
+  _cached = data;
+  return _cached!;
 }
