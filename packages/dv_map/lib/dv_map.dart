@@ -5,19 +5,21 @@
 ///
 /// Example:
 /// ```dart
-/// import 'package:dv_map/maps/world_110m.dart';
-/// import 'package:dv_map/maps/africa_nigeria_50m.dart';
+/// import 'package:dv_map/maps/world/110m.dart';
+/// import 'package:dv_map/maps/africa/nigeria/50m.dart';
 ///
 /// // Use the maps directly
-/// final world = world_110m;
-/// final nigeria = africa_nigeria_50m;
+/// final world = world110m;
+/// final nigeria = africaNigeria50m;
 /// ```
 library dv_map;
 
 // Export all generated maps
 export 'maps/maps.dart';
 
-// Legacy API (kept for backward compatibility, but uses dynamic loading)
-export 'src/map_assets.dart';
+// Export MapScale enum (still useful for scale selection)
+export 'src/map_assets.dart' show MapScale;
+
+// Deprecated APIs (removed in v2.0.0)
 export 'src/map_index.dart';
 export 'src/map_loader.dart';

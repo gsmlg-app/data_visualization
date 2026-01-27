@@ -21,17 +21,15 @@ The maps are Natural Earth country boundaries converted to GeoJSON at scales 110
 
 ## Usage
 
-### Tree-shakeable imports (recommended)
-
 Import only the maps you need. Your app will only bundle the imported maps:
 
 ```dart
 // Import world map
-import 'package:dv_map/maps/world.110m.dart';
+import 'package:dv_map/maps/world/110m.dart';
 
 // Import specific country maps
-import 'package:dv_map/maps/africa/nigeria.50m.dart';
-import 'package:dv_map/maps/asia/china.10m.dart';
+import 'package:dv_map/maps/africa/nigeria/50m.dart';
+import 'package:dv_map/maps/asia/china/10m.dart';
 
 // Or import all maps from a continent
 import 'package:dv_map/maps/africa/africa.dart';
@@ -51,59 +49,51 @@ void main() {
 **Directory structure:**
 ```
 lib/maps/
-├── world.{scale}.dart        # World maps
-├── index-{scale}.dart        # Country metadata indexes
+├── world/
+│   ├── 110m.dart           # World map (low resolution)
+│   ├── 50m.dart            # World map (medium resolution)
+│   ├── 10m.dart            # World map (high resolution)
+│   └── world.dart          # Exports all world scales
 ├── africa/
-│   ├── africa.dart          # Exports all African country maps
-│   ├── {country}.{scale}.dart
+│   ├── africa.dart         # Exports all African countries
+│   ├── nigeria/
+│   │   ├── 110m.dart
+│   │   ├── 50m.dart
+│   │   ├── 10m.dart
+│   │   └── nigeria.dart    # Exports all Nigeria scales
+│   └── ... (other countries)
 ├── asia/
-│   ├── asia.dart            # Exports all Asian country maps
-│   ├── {country}.{scale}.dart
+│   ├── asia.dart           # Exports all Asian countries
+│   └── {country}/{scale}.dart
 ├── europe/
-│   ├── europe.dart          # Exports all European country maps
-│   ├── {country}.{scale}.dart
+│   ├── europe.dart         # Exports all European countries
+│   └── {country}/{scale}.dart
 ├── north-america/
-│   ├── north-america.dart   # Exports all North American country maps
-│   ├── {country}.{scale}.dart
+│   ├── north-america.dart  # Exports all North American countries
+│   └── {country}/{scale}.dart
 ├── south-america/
-│   ├── south-america.dart   # Exports all South American country maps
-│   ├── {country}.{scale}.dart
+│   ├── south-america.dart  # Exports all South American countries
+│   └── {country}/{scale}.dart
 └── oceania/
-    ├── oceania.dart         # Exports all Oceanian country maps
-    └── {country}.{scale}.dart
+    ├── oceania.dart        # Exports all Oceanian countries
+    └── {country}/{scale}.dart
 ```
 
 **Naming conventions:**
-- **Files**: `{country}.{scale}.dart` (kebab-case with dots)
-- **Getters**: `{region}{Country}{Scale}` (camelCase)
+- **Directory structure**: `{continent}/{country}/{scale}.dart`
+- **Getters**: `{continent}{Country}{Scale}` (camelCase with underscores replacing hyphens)
 
 **World maps:**
-- `maps/world.110m.dart` → `world110m` getter (~921 KB)
-- `maps/world.50m.dart` → `world50m` getter (~8.4 MB)
-- `maps/world.10m.dart` → `world10m` getter (~46 MB)
+- `maps/world/110m.dart` → `world110m` getter (~171 KB compressed)
+- `maps/world/50m.dart` → `world50m` getter (~1.3 MB compressed)
+- `maps/world/10m.dart` → `world10m` getter (~7.3 MB compressed)
 
 **Examples:**
-- `maps/africa/nigeria.110m.dart` → `africaNigeria110m` getter
-- `maps/asia/japan.50m.dart` → `asiaJapan50m` getter
-- `maps/europe/france.10m.dart` → `europeFrance10m` getter
-- `maps/north-america/usa.110m.dart` → `northAmericaUsa110m` getter
-
-### Legacy API (no tree shaking)
-
-The old dynamic loading API is still available but bundles all assets:
-
-```dart
-import 'package:dv_map/dv_map.dart';
-
-Future<void> example() async {
-  // ⚠️ Warning: This bundles ALL 112MB of maps
-  final world = await DvMapLoader.loadWorld(MapScale.m110);
-  final usa = await DvMapLoader.loadCountry(
-    scale: MapScale.m110,
-    isoA3: 'USA',
-  );
-}
-```
+- `maps/africa/nigeria/110m.dart` → `africaNigeria110m` getter
+- `maps/asia/japan/50m.dart` → `asiaJapan50m` getter
+- `maps/europe/france/10m.dart` → `europeFrance10m` getter
+- `maps/north-america/united-states-of-america/110m.dart` → `northAmericaUnitedStatesOfAmerica110m` getter
+- `maps/africa/south-sudan/50m.dart` → `africaSouthSudan50m` getter (hyphens → underscores)
 
 ## Tree Shaking Benefits
 
