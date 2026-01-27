@@ -3,7 +3,10 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:dv_geo_core/dv_geo_core.dart';
+import 'package:dv_point/dv_point.dart';
+import 'package:dv_map/src/map_widget.dart';
 
 /// Gzipped GeoJSON data for europe/gibraltar.10m.json (base64 encoded)
 const String _kCompressedData = 'H4sIAAAAAAAAE5WRTWvDMAyG7/4Vwues+Cup3ePGNnbbfZThdW4xpHZw3UMo+e8jThPS1jDig5D1So9f4QsCwLFtDN4AfjM6noN58XVtdtF6h4te3g/lE97AFwIAuKT4OJjak9AE35gQbRoa2wGw08c08G5/gq6jDtMIALYn/61Zkj8e6nyoP8+FnXfROuNir72e+zfxVe0mKwfjjyaG9tbI6PzT1+3huuhE9eHXOh1nGw9nnt/fAJ7KFS8ll5Us7hReraiglChxI2yL/3mECZXlUcWkKpfyBCOciCyPlIQs9scVqXI0xqWo1stpiooyy1OSSbaYJ9drnuUJSqla7G/Z76JcPmYdGuMWdegPSGyCwIYDAAA=';
@@ -34,4 +37,64 @@ GeoJsonFeatureCollection get europeGibraltar10m {
 
   _cached = data;
   return _cached!;
+}
+
+/// Widget for rendering the europe/gibraltar.10m.json map.
+///
+/// This widget provides a convenient way to render this specific map
+/// with customizable projection and styling.
+///
+/// Example:
+/// ```dart
+/// EuropeGibraltar10mWidget(
+///   projection: MercatorProjection(),
+///   fillColor: Color(0xFFE0E0E0),
+///   strokeColor: Color(0xFF333333),
+///   onFeatureTap: (feature, position) {
+///     print('Tapped: ${feature.properties}');
+///   },
+/// )
+/// ```
+class EuropeGibraltar10mWidget extends StatelessWidget {
+  /// The projection to use for rendering.
+  final Projection projection;
+
+  /// The color to use for filling shapes.
+  final Color? fillColor;
+
+  /// The color to use for stroking shapes.
+  final Color? strokeColor;
+
+  /// The stroke width for shape outlines.
+  final double strokeWidth;
+
+  /// Optional callback when a feature is tapped.
+  final void Function(GeoJsonFeature feature, Point position)? onFeatureTap;
+
+  /// Whether to enable anti-aliasing.
+  final bool antiAlias;
+
+  /// Creates a EuropeGibraltar10mWidget.
+  const EuropeGibraltar10mWidget({
+    super.key,
+    required this.projection,
+    this.fillColor,
+    this.strokeColor,
+    this.strokeWidth = 1.0,
+    this.onFeatureTap,
+    this.antiAlias = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MapWidget(
+      geoJson: europeGibraltar10m,
+      projection: projection,
+      fillColor: fillColor,
+      strokeColor: strokeColor,
+      strokeWidth: strokeWidth,
+      onFeatureTap: onFeatureTap,
+      antiAlias: antiAlias,
+    );
+  }
 }

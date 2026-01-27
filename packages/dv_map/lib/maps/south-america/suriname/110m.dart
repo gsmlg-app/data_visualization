@@ -3,7 +3,10 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:dv_geo_core/dv_geo_core.dart';
+import 'package:dv_point/dv_point.dart';
+import 'package:dv_map/src/map_widget.dart';
 
 /// Gzipped GeoJSON data for south-america/suriname.110m.json (base64 encoded)
 const String _kCompressedData = 'H4sIAAAAAAAAE5WVTWvbQBCG7/4Vi87uMt+zk1sp9FxaeiqhmFRNBbZlFOUQQv57sRKniddQVodlNLP7MK9mZvW4SqmbHw59d5W6z/1mvp/6T+N229/Mw7jv1sfw72f3XXeVfqxSSulxWeuDy/YlcJjGQz/Nw3LotD2lbr/ZLQe+3U/DYq//xYa78eeGlujXys+L//u7wM24n4d9v5+X2Hg//0kfd/003Gy6l01Prwnd9uOun6eH9+mc8v8ybh9uX+S+wsfp17DfzG90Pz9v7fO3lD6oZCVxFVqfhSgzYpES7/zX6//yyMJBL/CciQO9lYcFnewcxxlLuEdpxQFYMGjNMwJgb06PI1SokiuZkAxRWnnixZhrXAlz1cb0OIcWEKk+n2ZXUynUxtMMzKRQ5WcZSCla5Wougscq1vmFMpJyKy8kGItc0OtU3Bu72TOKC1vVLprDGSWaeQxOolHzwFnNrJUXKFRKxZNckIxMW3nFgCAqvZLVrQBiG6/kY/OFVPWQDAbFuFmvAapVcjkzi6k046igMF+4DZhZAtvbRQHCq3am7FaCrJFnWTm4qJ/zMJcIJWrUqzlCrZ42zAXdzBurqzlADQBruUAYoY2Xsx2HgAUvfD4i8Ghs5mVGmehCeorAxo3V0KwWrlWzUBZCBWu+qyBci1ezQVmJXUpjNVr/5KtL9sl6Wp3W69XT6i9Bmq69eAkAAA==';
@@ -34,4 +37,64 @@ GeoJsonFeatureCollection get southAmericaSuriname110m {
 
   _cached = data;
   return _cached!;
+}
+
+/// Widget for rendering the south-america/suriname.110m.json map.
+///
+/// This widget provides a convenient way to render this specific map
+/// with customizable projection and styling.
+///
+/// Example:
+/// ```dart
+/// SouthAmericaSuriname110mWidget(
+///   projection: MercatorProjection(),
+///   fillColor: Color(0xFFE0E0E0),
+///   strokeColor: Color(0xFF333333),
+///   onFeatureTap: (feature, position) {
+///     print('Tapped: ${feature.properties}');
+///   },
+/// )
+/// ```
+class SouthAmericaSuriname110mWidget extends StatelessWidget {
+  /// The projection to use for rendering.
+  final Projection projection;
+
+  /// The color to use for filling shapes.
+  final Color? fillColor;
+
+  /// The color to use for stroking shapes.
+  final Color? strokeColor;
+
+  /// The stroke width for shape outlines.
+  final double strokeWidth;
+
+  /// Optional callback when a feature is tapped.
+  final void Function(GeoJsonFeature feature, Point position)? onFeatureTap;
+
+  /// Whether to enable anti-aliasing.
+  final bool antiAlias;
+
+  /// Creates a SouthAmericaSuriname110mWidget.
+  const SouthAmericaSuriname110mWidget({
+    super.key,
+    required this.projection,
+    this.fillColor,
+    this.strokeColor,
+    this.strokeWidth = 1.0,
+    this.onFeatureTap,
+    this.antiAlias = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MapWidget(
+      geoJson: southAmericaSuriname110m,
+      projection: projection,
+      fillColor: fillColor,
+      strokeColor: strokeColor,
+      strokeWidth: strokeWidth,
+      onFeatureTap: onFeatureTap,
+      antiAlias: antiAlias,
+    );
+  }
 }

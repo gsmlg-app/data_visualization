@@ -3,7 +3,10 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:dv_geo_core/dv_geo_core.dart';
+import 'package:dv_point/dv_point.dart';
+import 'package:dv_map/src/map_widget.dart';
 
 /// Gzipped GeoJSON data for africa/equatorial-guinea.10m.json (base64 encoded)
 const String _kCompressedData = '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';
@@ -34,4 +37,64 @@ GeoJsonFeatureCollection get africaEquatorialGuinea10m {
 
   _cached = data;
   return _cached!;
+}
+
+/// Widget for rendering the africa/equatorial-guinea.10m.json map.
+///
+/// This widget provides a convenient way to render this specific map
+/// with customizable projection and styling.
+///
+/// Example:
+/// ```dart
+/// AfricaEquatorialGuinea10mWidget(
+///   projection: MercatorProjection(),
+///   fillColor: Color(0xFFE0E0E0),
+///   strokeColor: Color(0xFF333333),
+///   onFeatureTap: (feature, position) {
+///     print('Tapped: ${feature.properties}');
+///   },
+/// )
+/// ```
+class AfricaEquatorialGuinea10mWidget extends StatelessWidget {
+  /// The projection to use for rendering.
+  final Projection projection;
+
+  /// The color to use for filling shapes.
+  final Color? fillColor;
+
+  /// The color to use for stroking shapes.
+  final Color? strokeColor;
+
+  /// The stroke width for shape outlines.
+  final double strokeWidth;
+
+  /// Optional callback when a feature is tapped.
+  final void Function(GeoJsonFeature feature, Point position)? onFeatureTap;
+
+  /// Whether to enable anti-aliasing.
+  final bool antiAlias;
+
+  /// Creates a AfricaEquatorialGuinea10mWidget.
+  const AfricaEquatorialGuinea10mWidget({
+    super.key,
+    required this.projection,
+    this.fillColor,
+    this.strokeColor,
+    this.strokeWidth = 1.0,
+    this.onFeatureTap,
+    this.antiAlias = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MapWidget(
+      geoJson: africaEquatorialGuinea10m,
+      projection: projection,
+      fillColor: fillColor,
+      strokeColor: strokeColor,
+      strokeWidth: strokeWidth,
+      onFeatureTap: onFeatureTap,
+      antiAlias: antiAlias,
+    );
+  }
 }

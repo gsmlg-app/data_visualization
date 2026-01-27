@@ -3,7 +3,10 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:dv_geo_core/dv_geo_core.dart';
+import 'package:dv_point/dv_point.dart';
+import 'package:dv_map/src/map_widget.dart';
 
 /// Gzipped GeoJSON data for oceania/ashmore-and-cartier-islands.50m.json (base64 encoded)
 const String _kCompressedData = 'H4sIAAAAAAAAE5WQO2vDMBCAd/2KQ7MTqpdtZSuBQqd2L6EIW00EtmQkdTDB/71YiU0ehmINx0nf3cedzggAx77TeAf4Tav46/XeNY2uonEWZyP+uTwHvIMvBABwTvG5MZUn0HnXaR9NaprKAbBVbWp4DafWeQ3K1rBXY6GH99AoW4dZAoBNcN+Kjg0bKZ8AWwCVs9FYbePIPiqtrFH4iod5vKN2rY6+vx9u2ubTNf3xuvysdb42VsWbX7ic2/zxBkAo2wrJBSM0e0AbQrecirxk+R05ZP8bC8rzF7lsZJKKcr2REc7FopFxUshitVEKSni5bBSSFWK9cd0/oqV8ygY0xQMa0B+nFYuCBgMAAA==';
@@ -34,4 +37,64 @@ GeoJsonFeatureCollection get oceaniaAshmoreAndCartierIslands50m {
 
   _cached = data;
   return _cached!;
+}
+
+/// Widget for rendering the oceania/ashmore-and-cartier-islands.50m.json map.
+///
+/// This widget provides a convenient way to render this specific map
+/// with customizable projection and styling.
+///
+/// Example:
+/// ```dart
+/// OceaniaAshmoreAndCartierIslands50mWidget(
+///   projection: MercatorProjection(),
+///   fillColor: Color(0xFFE0E0E0),
+///   strokeColor: Color(0xFF333333),
+///   onFeatureTap: (feature, position) {
+///     print('Tapped: ${feature.properties}');
+///   },
+/// )
+/// ```
+class OceaniaAshmoreAndCartierIslands50mWidget extends StatelessWidget {
+  /// The projection to use for rendering.
+  final Projection projection;
+
+  /// The color to use for filling shapes.
+  final Color? fillColor;
+
+  /// The color to use for stroking shapes.
+  final Color? strokeColor;
+
+  /// The stroke width for shape outlines.
+  final double strokeWidth;
+
+  /// Optional callback when a feature is tapped.
+  final void Function(GeoJsonFeature feature, Point position)? onFeatureTap;
+
+  /// Whether to enable anti-aliasing.
+  final bool antiAlias;
+
+  /// Creates a OceaniaAshmoreAndCartierIslands50mWidget.
+  const OceaniaAshmoreAndCartierIslands50mWidget({
+    super.key,
+    required this.projection,
+    this.fillColor,
+    this.strokeColor,
+    this.strokeWidth = 1.0,
+    this.onFeatureTap,
+    this.antiAlias = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MapWidget(
+      geoJson: oceaniaAshmoreAndCartierIslands50m,
+      projection: projection,
+      fillColor: fillColor,
+      strokeColor: strokeColor,
+      strokeWidth: strokeWidth,
+      onFeatureTap: onFeatureTap,
+      antiAlias: antiAlias,
+    );
+  }
 }

@@ -3,7 +3,10 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:dv_geo_core/dv_geo_core.dart';
+import 'package:dv_point/dv_point.dart';
+import 'package:dv_map/src/map_widget.dart';
 
 /// Gzipped GeoJSON data for seven-seas-open-ocean/british-indian-ocean-territory.10m.json (base64 encoded)
 const String _kCompressedData = 'H4sIAAAAAAAAE7Wa32sbRxDH3/VXHHpqIT3m9488tlDIQ0mheSuhCOeaChzJyErBBP/vZZXEOPaug4fKD0Knvfvc3Mzsd2f2/Gk1TevjzdWyfjmtf102x4+H5Zf95eVycdzud+sXbfjvzz9fr19Of66maZo+nT4fX3g6/TRwddhfLYfj9nTR19Onab3bfDhd8PNhe9xe/zO92r3bbnbT64tls5veLIfD9rg/3Nxxpmm9vd7/taF2zavXj37nz7+/uT9wsd8dt7tld2xjfyz/LrvpetlcTz/sr5bdtG93+nH95fTbO4PfL/sPy/Fw8625X5/vt4+Xx+3v+8ub9198cnev/eHddrc53nPO57/73x8ePT6eJqdZzJUzXzwa+8lnDo4QeTD09uG5fa4wgVOXK2jCpjUuUzj27RVSjuAiN9JV+34QIBP73+1lNEjxGpcA3azPBY7wmr3skIJ9LjlgGtW46jaylyyYpJYP7ElC0uemBXiRG4Ep/fxlIAUp+iHN1H3AlbAiVzBFRvaiM2pxHpMBD9KMKBnOMC3EvBg1IUvGgeoAZ2hVHZ5QHSaiatREEAbZKyQZWIyak5kN3JuZ6UXVCTAhHHBBtRq3EBQcqG+QAmSVa5TR57omJBa5jCYD/zpQctVeYBypuol5FKebu+Mgz9gp0Ir54OJBAzVzU4PivHBU8kE+eEJQ0b/Pr3ZWo6Nv7lipvEKIqG8LeZBWn1FBFPpzlFhQJIoamA4+sJfMOYuxVvMcrIikilKd++5Nl0f+FdTiXApTGGkVkBAV/evgyIO5xIxRrJDEAigGlYGAJhQ10EEsB1olEVmOm6SMKnE1lWrJ4QkoA65hIlY1UFlH2qrk6VX/CuXIXrFkr+YZB9gwH4CgWnMkD7xAjF7tcyI1eaDYkEFRtDbFOPvepTTUan/6fFU/0wqDMysMMtNmU9JapL/HZclKqBsWnbXnuoZVS6kU742rxNpL+MY1llJTgDMbgXebjZN7k7xq77PDdrYUIkMB7hXQ1lpkg9L2UONKEI64mhiVxaNxXSN6i2jjkpfW0IaNgOyHhD0QrOoGZ5HeGtq4ANWpREYcMLKXs1T6NCxkdtvKkxuAqt59dpKdTzNbG9BdF2zG1EirrOY4s4hzdz/UZgIJ8VrCsyKE9H1HAJSlaqlxzaHbRdiMEc6l/dAmmqDU7ZxtRvfWnxTtZYruzkTjBmcWxVgcUPv+xaju/DQuUQ65AcFF/z4/f882l9yZuiKkswhgZk0u3AUDeo+obRu/7Dp30fCBvaxOZS46Zy81G5fZuOiHocg37qmWKnLFdGxvKFYaj0o6nCkzaSZCkW4PpDOTB3Ktq2ilP/Y9x9Sev0gddZgnLAnXeiuiGGhm40oA1XbLiSHNe1WNzoxJFrXeqhC182kb+6D415lCSbEoFhwp3f6xcSWpiBVigxGWkbVWaLqoKHOf6+GCtXLJxSFG9lqmUpH7/LCdL4WsvVbur2PEplF61XpaFxy6fXTjelqxqXATSRvEmrP4cqJxG7gvb8SJWdymcAs1Hdlb3Qgvxe1sOZTWtqpGvhNPrT3j01x0KC2Qjeug3X8v0LmtnVFsV9LahsIA6+JFNU4j5xiEmiyDa11FGtqohCUG8HLYnrCXkVBrspkmhjDwLxNrcRuokL7jqbR6+O129fXz7ep29R/i/w9IdSYAAA==';
@@ -34,4 +37,64 @@ GeoJsonFeatureCollection get sevenSeasOpenOceanBritishIndianOceanTerritory10m {
 
   _cached = data;
   return _cached!;
+}
+
+/// Widget for rendering the seven-seas-open-ocean/british-indian-ocean-territory.10m.json map.
+///
+/// This widget provides a convenient way to render this specific map
+/// with customizable projection and styling.
+///
+/// Example:
+/// ```dart
+/// SevenSeasOpenOceanBritishIndianOceanTerritory10mWidget(
+///   projection: MercatorProjection(),
+///   fillColor: Color(0xFFE0E0E0),
+///   strokeColor: Color(0xFF333333),
+///   onFeatureTap: (feature, position) {
+///     print('Tapped: ${feature.properties}');
+///   },
+/// )
+/// ```
+class SevenSeasOpenOceanBritishIndianOceanTerritory10mWidget extends StatelessWidget {
+  /// The projection to use for rendering.
+  final Projection projection;
+
+  /// The color to use for filling shapes.
+  final Color? fillColor;
+
+  /// The color to use for stroking shapes.
+  final Color? strokeColor;
+
+  /// The stroke width for shape outlines.
+  final double strokeWidth;
+
+  /// Optional callback when a feature is tapped.
+  final void Function(GeoJsonFeature feature, Point position)? onFeatureTap;
+
+  /// Whether to enable anti-aliasing.
+  final bool antiAlias;
+
+  /// Creates a SevenSeasOpenOceanBritishIndianOceanTerritory10mWidget.
+  const SevenSeasOpenOceanBritishIndianOceanTerritory10mWidget({
+    super.key,
+    required this.projection,
+    this.fillColor,
+    this.strokeColor,
+    this.strokeWidth = 1.0,
+    this.onFeatureTap,
+    this.antiAlias = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MapWidget(
+      geoJson: sevenSeasOpenOceanBritishIndianOceanTerritory10m,
+      projection: projection,
+      fillColor: fillColor,
+      strokeColor: strokeColor,
+      strokeWidth: strokeWidth,
+      onFeatureTap: onFeatureTap,
+      antiAlias: antiAlias,
+    );
+  }
 }

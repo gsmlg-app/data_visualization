@@ -26,33 +26,54 @@ The maps are Natural Earth country boundaries converted to GeoJSON at scales 110
 
 ### Map Widgets (Recommended)
 
-Use the provided widgets to render maps in your Flutter app:
+Each map file exports both the GeoJSON data AND a ready-to-use widget:
 
 ```dart
 import 'package:flutter/material.dart';
-import 'package:dv_map/dv_map.dart';
 import 'package:dv_geo_core/dv_geo_core.dart';
+
+// Import specific maps - each exports both data and widget
 import 'package:dv_map/maps/world/110m.dart';
+import 'package:dv_map/maps/asia/china/110m.dart';
 
 class MyMapApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: WorldMapWidget(
-        geoJson: world110m,
-        projection: MercatorProjection(),
-        fillColor: Colors.grey.shade300,
-        strokeColor: Colors.grey.shade700,
-        onCountryTap: (country, position) {
-          print('Tapped: ${country.properties!['name']}');
-        },
+      body: Column(
+        children: [
+          // Use the generated World110mWidget
+          Expanded(
+            child: World110mWidget(
+              projection: MercatorProjection(),
+              fillColor: Colors.grey.shade300,
+              strokeColor: Colors.grey.shade700,
+              onFeatureTap: (feature, position) {
+                print('Tapped: ${feature.properties!['name']}');
+              },
+            ),
+          ),
+          // Use the generated AsiaChina110mWidget
+          Expanded(
+            child: AsiaChina110mWidget(
+              projection: MercatorProjection(),
+              fillColor: Colors.red.shade200,
+              strokeColor: Colors.red.shade700,
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 ```
 
-**Available widgets:**
+**Generated widgets:**
+Each map file (e.g., `world/110m.dart`, `asia/china/110m.dart`) exports:
+- **Data getter**: `world110m`, `asiaChina110m`, etc.
+- **Widget class**: `World110mWidget`, `AsiaChina110mWidget`, etc.
+
+**Base widgets** (for custom use):
 - `MapWidget` - Base widget for rendering any GeoJSON data
 - `WorldMapWidget` - Specialized for world maps with default styling
 - `CountryMapWidget` - Specialized for country maps with default styling
@@ -166,19 +187,28 @@ lib/maps/
 
 **Naming conventions:**
 - **Directory structure**: `{continent}/{country}/{scale}.dart`
-- **Getters**: `{continent}{Country}{Scale}` (camelCase with underscores replacing hyphens)
+- **Data getters**: `{continent}{Country}{Scale}` (camelCase)
+- **Widget classes**: `{Continent}{Country}{Scale}Widget` (PascalCase + Widget)
 
 **World maps:**
-- `maps/world/110m.dart` → `world110m` getter (~171 KB compressed)
-- `maps/world/50m.dart` → `world50m` getter (~1.3 MB compressed)
-- `maps/world/10m.dart` → `world10m` getter (~7.3 MB compressed)
 
-**Examples:**
-- `maps/africa/nigeria/110m.dart` → `africaNigeria110m` getter
-- `maps/asia/japan/50m.dart` → `asiaJapan50m` getter
-- `maps/europe/france/10m.dart` → `europeFrance10m` getter
-- `maps/north-america/united-states-of-america/110m.dart` → `northAmericaUnitedStatesOfAmerica110m` getter
-- `maps/africa/south-sudan/50m.dart` → `africaSouthSudan50m` getter (hyphens → underscores)
+| File | Data Getter | Widget Class | Size |
+|------|-------------|--------------|------|
+| `maps/world/110m.dart` | `world110m` | `World110mWidget` | ~171 KB |
+| `maps/world/50m.dart` | `world50m` | `World50mWidget` | ~1.3 MB |
+| `maps/world/10m.dart` | `world10m` | `World10mWidget` | ~7.3 MB |
+
+**Country maps examples:**
+
+| File | Data Getter | Widget Class |
+|------|-------------|--------------|
+| `maps/africa/nigeria/110m.dart` | `africaNigeria110m` | `AfricaNigeria110mWidget` |
+| `maps/asia/japan/50m.dart` | `asiaJapan50m` | `AsiaJapan50mWidget` |
+| `maps/europe/france/10m.dart` | `europeFrance10m` | `EuropeFrance10mWidget` |
+| `maps/asia/china/110m.dart` | `asiaChina110m` | `AsiaChina110mWidget` |
+| `maps/africa/south-sudan/50m.dart` | `africaSouthSudan50m` | `AfricaSouthSudan50mWidget` |
+
+**Note:** Hyphens in country names are converted to underscores in data getters and removed in widget class names.
 
 ## Choosing the Right API
 

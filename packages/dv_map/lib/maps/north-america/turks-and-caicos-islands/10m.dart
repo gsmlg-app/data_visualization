@@ -3,7 +3,10 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:dv_geo_core/dv_geo_core.dart';
+import 'package:dv_point/dv_point.dart';
+import 'package:dv_map/src/map_widget.dart';
 
 /// Gzipped GeoJSON data for north-america/turks-and-caicos-islands.10m.json (base64 encoded)
 const String _kCompressedData = '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';
@@ -34,4 +37,64 @@ GeoJsonFeatureCollection get northAmericaTurksAndCaicosIslands10m {
 
   _cached = data;
   return _cached!;
+}
+
+/// Widget for rendering the north-america/turks-and-caicos-islands.10m.json map.
+///
+/// This widget provides a convenient way to render this specific map
+/// with customizable projection and styling.
+///
+/// Example:
+/// ```dart
+/// NorthAmericaTurksAndCaicosIslands10mWidget(
+///   projection: MercatorProjection(),
+///   fillColor: Color(0xFFE0E0E0),
+///   strokeColor: Color(0xFF333333),
+///   onFeatureTap: (feature, position) {
+///     print('Tapped: ${feature.properties}');
+///   },
+/// )
+/// ```
+class NorthAmericaTurksAndCaicosIslands10mWidget extends StatelessWidget {
+  /// The projection to use for rendering.
+  final Projection projection;
+
+  /// The color to use for filling shapes.
+  final Color? fillColor;
+
+  /// The color to use for stroking shapes.
+  final Color? strokeColor;
+
+  /// The stroke width for shape outlines.
+  final double strokeWidth;
+
+  /// Optional callback when a feature is tapped.
+  final void Function(GeoJsonFeature feature, Point position)? onFeatureTap;
+
+  /// Whether to enable anti-aliasing.
+  final bool antiAlias;
+
+  /// Creates a NorthAmericaTurksAndCaicosIslands10mWidget.
+  const NorthAmericaTurksAndCaicosIslands10mWidget({
+    super.key,
+    required this.projection,
+    this.fillColor,
+    this.strokeColor,
+    this.strokeWidth = 1.0,
+    this.onFeatureTap,
+    this.antiAlias = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MapWidget(
+      geoJson: northAmericaTurksAndCaicosIslands10m,
+      projection: projection,
+      fillColor: fillColor,
+      strokeColor: strokeColor,
+      strokeWidth: strokeWidth,
+      onFeatureTap: onFeatureTap,
+      antiAlias: antiAlias,
+    );
+  }
 }

@@ -3,7 +3,10 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:dv_geo_core/dv_geo_core.dart';
+import 'package:dv_point/dv_point.dart';
+import 'package:dv_map/src/map_widget.dart';
 
 /// Gzipped GeoJSON data for asia/spratly-islands.10m.json (base64 encoded)
 const String _kCompressedData = 'H4sIAAAAAAAAE7WaS2sbSRDH7/oUg85ZUe9HbstCIIeFhT0uYRGJEgSKZGTlYIK/+9Lj2CR2txcVjA1C4575uaYe/+rume+raVpf7m5267fT+t1ue/l23v1xOhx2Hy/703H9pg1/fvjz7frt9M9qmqbp+/z58sL59Hng5ny62Z0v+/mix9OnaX3cfp0v+PvmvL0c7qb3t4ft8dPt04XTtN7fnv7dUjvpt8wXA9wZ+Hg6XvbH3fHSxn6/3W/XP8bun+z5sjt93V3Od79a82j+n98Ol/1fp8Pdlx+3/AQ+nT/tj9vLT/f+8PPz9+dHL4+nCVE3bI4Z+OblIGyIXVLo2dCH5+cOwcmgA3CikVbBmu6yBPhqV6xGR7/8y+vjIht2JgJ6aUxuLNwkonKTjQthI66gZMl5M9fQOs5rXOQgq3KZg7tYT0Uou8HEtZOdzVxAwlLWy4YDwvtUIxKvUjHErM9Nk7JzX+EmoGOdC0x9PyQRGFajFuZDrqVIlSsWOkjebKlSTt4ri3g5QQFK404hIWwAMcyLsQbmFOvc4wwmTquCBUCyE+wZnOJlMLt7X+aBEIyLEgiUDN7veIAugMX0BHLzzAFYkaiogtfnxIINz1TA++FGV4laW29FiGSDeGOAhFdVwzKA+u7D4ATlKng8w8FwgnJ3MgYZ+TgcPKtgjUgfukLQq4qvYcp9dUFPlmr/N2CjEddItdr6rk/j5WpKTAgGBc7m7MW+JhbCvX75wHXhYh6JQ6r3lY6dGKAoAmLp7P14s5tpdeogZum9Fj+Dg42LIiAmhkOwZ1ZLSgwtBgszbuKi5ay4NtuW7CbsAcMMbaJSrW9L7UszW4CV12XmITkKNwRXo8JmHDKIigtAecX3ioSyh5pVXaGBJiMRcCGvWvxKl2InlfI8//psW1D0VUKks6hrxkQwU1XqNAMi+uAkp6puaLDwIN6pgVk2WJIGjkgnoKxyMXGUoGnG5fYnmYYjD4uwli0GAh1YHOnp1S51fbItlfm6CQYdTL2cxUCLW5lBgaz9m3TWjChlvm4CPQJHFitkbSnawGJk/R7vLExQKqkGpuDeNl8Dk1t4KUP/x2JiZilNdxo4eOBhgqinhAwr1cm8zGUQHHRrJxfhUlNtYLKkvgI4uVOUFjwNzJmjuKVwbV+pcZETBh5mwYySZFVUYkHFEmAZtKggxih7T9RxkPdBJChVZRFLlv4EOIg5q2UqETDYRgwyASqDlai309/AjARljRUZLikbOKQqhYISIy45lF3Mbaewr93BLIJVT1AaDFaUwehemw/NpUqKAzC5Q/XhZDC7DsQlSEDq2XZ1QS+lLrIhD/XuNg223fXyLg01CR1hEQCLCwEKC9deVBrYDK04/aUg72sAbkDBojqvftXDCsA1DWhgIupuATdXaBTnAQ2M1m9/DcxKtcZQSbbl2ipgCFA/3giOxMXyhtYutO89hCTP4koAaBwWRFGrrYFni926gtTAnsWnHzo/2wvoZyiiMmBxpgrYfvsqgKiJVBR9gETSXmNtYCaqPVBsFnObZYzSzbTaTQp5vFw3YUPm/ssNbo5YfRzLRgHcfQnBLRFrS9W225ep2n11xB1ArLwDfK0fxjFZPf92v3r8/LC6X/0HCv7BNQgnAAA=';
@@ -34,4 +37,64 @@ GeoJsonFeatureCollection get asiaSpratlyIslands10m {
 
   _cached = data;
   return _cached!;
+}
+
+/// Widget for rendering the asia/spratly-islands.10m.json map.
+///
+/// This widget provides a convenient way to render this specific map
+/// with customizable projection and styling.
+///
+/// Example:
+/// ```dart
+/// AsiaSpratlyIslands10mWidget(
+///   projection: MercatorProjection(),
+///   fillColor: Color(0xFFE0E0E0),
+///   strokeColor: Color(0xFF333333),
+///   onFeatureTap: (feature, position) {
+///     print('Tapped: ${feature.properties}');
+///   },
+/// )
+/// ```
+class AsiaSpratlyIslands10mWidget extends StatelessWidget {
+  /// The projection to use for rendering.
+  final Projection projection;
+
+  /// The color to use for filling shapes.
+  final Color? fillColor;
+
+  /// The color to use for stroking shapes.
+  final Color? strokeColor;
+
+  /// The stroke width for shape outlines.
+  final double strokeWidth;
+
+  /// Optional callback when a feature is tapped.
+  final void Function(GeoJsonFeature feature, Point position)? onFeatureTap;
+
+  /// Whether to enable anti-aliasing.
+  final bool antiAlias;
+
+  /// Creates a AsiaSpratlyIslands10mWidget.
+  const AsiaSpratlyIslands10mWidget({
+    super.key,
+    required this.projection,
+    this.fillColor,
+    this.strokeColor,
+    this.strokeWidth = 1.0,
+    this.onFeatureTap,
+    this.antiAlias = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MapWidget(
+      geoJson: asiaSpratlyIslands10m,
+      projection: projection,
+      fillColor: fillColor,
+      strokeColor: strokeColor,
+      strokeWidth: strokeWidth,
+      onFeatureTap: onFeatureTap,
+      antiAlias: antiAlias,
+    );
+  }
 }

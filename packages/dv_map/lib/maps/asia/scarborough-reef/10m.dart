@@ -3,7 +3,10 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:dv_geo_core/dv_geo_core.dart';
+import 'package:dv_point/dv_point.dart';
+import 'package:dv_map/src/map_widget.dart';
 
 /// Gzipped GeoJSON data for asia/scarborough-reef.10m.json (base64 encoded)
 const String _kCompressedData = 'H4sIAAAAAAAAE72Qy2rDMBBF9/qKQWs3RFbkR3al0HVJliUUxZ24AkdjZGVhgv+9WIlNHg60XVSLYaQz9+pKRwbAfVsjXwJ/Re0PDl+oqrDwhiyPerw7HTd8Ce8MAOAY6r0wjAdQO6rReRNEwzgAt3ofBOtCuy05OpRfsELcjUoAbhr60HE/9ZTnd0BOgIKsNxat79lzYzQ/s24MVCLt0bv2Os6Q/42qtjw/d/Qk92ms9hfvPq3L/nYHIEQ6S5XMsjSObpGaCbWQSS6vwCb6gaHIVLKYNBT9Vb83fJxwPs/+4KeSPJb/E3DiC9lUP3QdG+qGdewbbuGcUPICAAA=';
@@ -34,4 +37,64 @@ GeoJsonFeatureCollection get asiaScarboroughReef10m {
 
   _cached = data;
   return _cached!;
+}
+
+/// Widget for rendering the asia/scarborough-reef.10m.json map.
+///
+/// This widget provides a convenient way to render this specific map
+/// with customizable projection and styling.
+///
+/// Example:
+/// ```dart
+/// AsiaScarboroughReef10mWidget(
+///   projection: MercatorProjection(),
+///   fillColor: Color(0xFFE0E0E0),
+///   strokeColor: Color(0xFF333333),
+///   onFeatureTap: (feature, position) {
+///     print('Tapped: ${feature.properties}');
+///   },
+/// )
+/// ```
+class AsiaScarboroughReef10mWidget extends StatelessWidget {
+  /// The projection to use for rendering.
+  final Projection projection;
+
+  /// The color to use for filling shapes.
+  final Color? fillColor;
+
+  /// The color to use for stroking shapes.
+  final Color? strokeColor;
+
+  /// The stroke width for shape outlines.
+  final double strokeWidth;
+
+  /// Optional callback when a feature is tapped.
+  final void Function(GeoJsonFeature feature, Point position)? onFeatureTap;
+
+  /// Whether to enable anti-aliasing.
+  final bool antiAlias;
+
+  /// Creates a AsiaScarboroughReef10mWidget.
+  const AsiaScarboroughReef10mWidget({
+    super.key,
+    required this.projection,
+    this.fillColor,
+    this.strokeColor,
+    this.strokeWidth = 1.0,
+    this.onFeatureTap,
+    this.antiAlias = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MapWidget(
+      geoJson: asiaScarboroughReef10m,
+      projection: projection,
+      fillColor: fillColor,
+      strokeColor: strokeColor,
+      strokeWidth: strokeWidth,
+      onFeatureTap: onFeatureTap,
+      antiAlias: antiAlias,
+    );
+  }
 }

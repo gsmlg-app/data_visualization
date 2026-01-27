@@ -3,7 +3,10 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:dv_geo_core/dv_geo_core.dart';
+import 'package:dv_point/dv_point.dart';
+import 'package:dv_map/src/map_widget.dart';
 
 /// Gzipped GeoJSON data for europe/vatican.10m.json (base64 encoded)
 const String _kCompressedData = 'H4sIAAAAAAAAE62RTYvCMBCG7/kVQ85Fmo+mxpss69mDeBFZQjcrgZqUGA9F+t+l6VZa7bJ02RyGyTx538wkNwSAQ11pvAK80SpcvX5zZamLYJzFSYu/uvIFr+CAAABuMb4K4/EIKu8q7YOJov44ALbqHAV7FUyh7EMAgM3FfSga4fqlzrr6bggKZ4Ox2oaWvV/bG/E3bR6NnLQ76+DrcRt931tX1idnx67OfxqrwmDebg3z5x0AoQueMcKETJ4IJwuZ0jwjcgSOye9+PGUZ/0c/JpdUTPqxpfiLX8oInfaThOez/Wgufng/xtn89mhOOJm2S4mg88ed871oKu+zBvXxiBp0By+7BIWFAwAA';
@@ -34,4 +37,64 @@ GeoJsonFeatureCollection get europeVatican10m {
 
   _cached = data;
   return _cached!;
+}
+
+/// Widget for rendering the europe/vatican.10m.json map.
+///
+/// This widget provides a convenient way to render this specific map
+/// with customizable projection and styling.
+///
+/// Example:
+/// ```dart
+/// EuropeVatican10mWidget(
+///   projection: MercatorProjection(),
+///   fillColor: Color(0xFFE0E0E0),
+///   strokeColor: Color(0xFF333333),
+///   onFeatureTap: (feature, position) {
+///     print('Tapped: ${feature.properties}');
+///   },
+/// )
+/// ```
+class EuropeVatican10mWidget extends StatelessWidget {
+  /// The projection to use for rendering.
+  final Projection projection;
+
+  /// The color to use for filling shapes.
+  final Color? fillColor;
+
+  /// The color to use for stroking shapes.
+  final Color? strokeColor;
+
+  /// The stroke width for shape outlines.
+  final double strokeWidth;
+
+  /// Optional callback when a feature is tapped.
+  final void Function(GeoJsonFeature feature, Point position)? onFeatureTap;
+
+  /// Whether to enable anti-aliasing.
+  final bool antiAlias;
+
+  /// Creates a EuropeVatican10mWidget.
+  const EuropeVatican10mWidget({
+    super.key,
+    required this.projection,
+    this.fillColor,
+    this.strokeColor,
+    this.strokeWidth = 1.0,
+    this.onFeatureTap,
+    this.antiAlias = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MapWidget(
+      geoJson: europeVatican10m,
+      projection: projection,
+      fillColor: fillColor,
+      strokeColor: strokeColor,
+      strokeWidth: strokeWidth,
+      onFeatureTap: onFeatureTap,
+      antiAlias: antiAlias,
+    );
+  }
 }

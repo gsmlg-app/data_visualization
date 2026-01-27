@@ -3,7 +3,10 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:dv_geo_core/dv_geo_core.dart';
+import 'package:dv_point/dv_point.dart';
+import 'package:dv_map/src/map_widget.dart';
 
 /// Gzipped GeoJSON data for europe/poland.110m.json (base64 encoded)
 const String _kCompressedData = 'H4sIAAAAAAAAE5WXS4sbORCA7/4Vjc9DUe9HrsvuaSG5L2ExiTcYJu7BcQ5DmP8e2skMmUiwlA+NrJK+LtVT/W23LPvr48Nx/2bZ/3U8XL9ejn+s9/fHD9fTet7fbeL/fkx/2b9Z/tkty7J8uz3HjbflN8HDZX04Xq6n26bn5cuyPx8+3za8W+8P548v65dlf/qy/nvgm+zvYV5u829fCT6s5+vpfDxfN9mfX7cX7n9Kn170+HRcPx+vl8fXWjyr/W69f/z085Qv1PXy8XQ+XH857o/fr+Pf/y0LC2gqcfjdbxITKGKtiFeC93f/x2OVypCBp8CM5t7jMYQQVsaEJxwmXi0eQhazqs14xMba4lGBO7oiTXjKjik9XoKXs031U8mgzC6PMS1H/yp4sqO1/EEBzpxCM3+kkYm3cA7iojGjGQlZ9rRTSORC1AkPDQNdmjyi8vQxmgXCArmoyRMTIRu9u+VNUlBXPww1pjH6GCqJna3JUwmrGv3B4KxpyE2eb3t8PC8DZpWGdnkYWDn6lyDUKLPnDwMkr7Ka8AjdQ7s8Lazg0R8IkRpcvWrgwJLOPvoDwStCuJcfDhTOJmM8IyizY/TizyGoNCb2Q2CyUO+Wg/QML57pF1Ih3WplpuYx84c4k1rPHwGuNWseCKiFkr1wTpDiIhnMpwWV6Zw98yWkCakO5tMCLWeubvMoLAvNGU8su+YrEMYgHuynBRZbvDRxyYbMM/WYtve0eIygZCk1U0+F1KTLy4wyG6qVbobICG5lG9NW/RJziOZNv0BqZi8zmCXJePfTAkwLaUXLdlULV8pZNCOHlLXVo1Qbr1a343pE766xXXXZDSfNA0EwDa13XoFiDotpsWLNpFbzYAXkqrQhnLfmgabYK6YsYBwYOPIILFKt19w2HiYij+dlQBZvFnsWoCotGfVj0NzaWy/dBKKKKmc8L8KqLi9RS3RsbrJdXkKoy7Ptg2XiX7mlL1M7nnufbrvZ+Hn0tHt+vt897b4DvrAe5GAPAAA=';
@@ -34,4 +37,64 @@ GeoJsonFeatureCollection get europePoland110m {
 
   _cached = data;
   return _cached!;
+}
+
+/// Widget for rendering the europe/poland.110m.json map.
+///
+/// This widget provides a convenient way to render this specific map
+/// with customizable projection and styling.
+///
+/// Example:
+/// ```dart
+/// EuropePoland110mWidget(
+///   projection: MercatorProjection(),
+///   fillColor: Color(0xFFE0E0E0),
+///   strokeColor: Color(0xFF333333),
+///   onFeatureTap: (feature, position) {
+///     print('Tapped: ${feature.properties}');
+///   },
+/// )
+/// ```
+class EuropePoland110mWidget extends StatelessWidget {
+  /// The projection to use for rendering.
+  final Projection projection;
+
+  /// The color to use for filling shapes.
+  final Color? fillColor;
+
+  /// The color to use for stroking shapes.
+  final Color? strokeColor;
+
+  /// The stroke width for shape outlines.
+  final double strokeWidth;
+
+  /// Optional callback when a feature is tapped.
+  final void Function(GeoJsonFeature feature, Point position)? onFeatureTap;
+
+  /// Whether to enable anti-aliasing.
+  final bool antiAlias;
+
+  /// Creates a EuropePoland110mWidget.
+  const EuropePoland110mWidget({
+    super.key,
+    required this.projection,
+    this.fillColor,
+    this.strokeColor,
+    this.strokeWidth = 1.0,
+    this.onFeatureTap,
+    this.antiAlias = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MapWidget(
+      geoJson: europePoland110m,
+      projection: projection,
+      fillColor: fillColor,
+      strokeColor: strokeColor,
+      strokeWidth: strokeWidth,
+      onFeatureTap: onFeatureTap,
+      antiAlias: antiAlias,
+    );
+  }
 }

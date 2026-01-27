@@ -3,7 +3,10 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:dv_geo_core/dv_geo_core.dart';
+import 'package:dv_point/dv_point.dart';
+import 'package:dv_map/src/map_widget.dart';
 
 /// Gzipped GeoJSON data for europe/san-marino.10m.json (base64 encoded)
 const String _kCompressedData = 'H4sIAAAAAAAAE5WUwWrkMAyG73kKk/NQZMmypV5LeyuU7nEpS+hmS2AaD2l6GMq8+zKZzjBtVYpyMLZ/68svW/ZbE0I7bzd9exnam76bX6f+qq7X/eM81LFd7eV/h+mX9jL8bkII4W1pvwYuyxdhM9VNP83DEnRcHkI7ds9LwK9uDLfdNIz1FBNCO7zUPx0u+u2XeTrM358Lj3Wch7Ef5712/br/afuu7k5envr63M/T9qOTo/W7ut4+vWd6otbp7zB281nKh++8/3kUQsSLhJoY0uqTkuhCFIGZPwgPqx95GRJnNHmMrG5eEZQsBk9jASrq5pWkpBYPATj67QGa6SoSxpzcPOWS2eSxAKCXJxgzkMkrGt27JwSabHuKkNw8BUI2t480smQ3D0nRTJdziuKuPtEoYvIKRXexfH8YgpyzeHlMhMms5aLA6OZhJBHzruWCUdynGyMkKeZpaM7e7SPlzNZLpUkSSPHihDPa7jAxJe9VI1WWaPoDwljctex7mRurf+ztmmP70Oya/3eZGrpDBwAA';
@@ -34,4 +37,64 @@ GeoJsonFeatureCollection get europeSanMarino10m {
 
   _cached = data;
   return _cached!;
+}
+
+/// Widget for rendering the europe/san-marino.10m.json map.
+///
+/// This widget provides a convenient way to render this specific map
+/// with customizable projection and styling.
+///
+/// Example:
+/// ```dart
+/// EuropeSanMarino10mWidget(
+///   projection: MercatorProjection(),
+///   fillColor: Color(0xFFE0E0E0),
+///   strokeColor: Color(0xFF333333),
+///   onFeatureTap: (feature, position) {
+///     print('Tapped: ${feature.properties}');
+///   },
+/// )
+/// ```
+class EuropeSanMarino10mWidget extends StatelessWidget {
+  /// The projection to use for rendering.
+  final Projection projection;
+
+  /// The color to use for filling shapes.
+  final Color? fillColor;
+
+  /// The color to use for stroking shapes.
+  final Color? strokeColor;
+
+  /// The stroke width for shape outlines.
+  final double strokeWidth;
+
+  /// Optional callback when a feature is tapped.
+  final void Function(GeoJsonFeature feature, Point position)? onFeatureTap;
+
+  /// Whether to enable anti-aliasing.
+  final bool antiAlias;
+
+  /// Creates a EuropeSanMarino10mWidget.
+  const EuropeSanMarino10mWidget({
+    super.key,
+    required this.projection,
+    this.fillColor,
+    this.strokeColor,
+    this.strokeWidth = 1.0,
+    this.onFeatureTap,
+    this.antiAlias = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MapWidget(
+      geoJson: europeSanMarino10m,
+      projection: projection,
+      fillColor: fillColor,
+      strokeColor: strokeColor,
+      strokeWidth: strokeWidth,
+      onFeatureTap: onFeatureTap,
+      antiAlias: antiAlias,
+    );
+  }
 }

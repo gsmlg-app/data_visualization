@@ -3,7 +3,10 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:dv_geo_core/dv_geo_core.dart';
+import 'package:dv_point/dv_point.dart';
+import 'package:dv_map/src/map_widget.dart';
 
 /// Gzipped GeoJSON data for europe/slovenia.10m.json (base64 encoded)
 const String _kCompressedData = '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';
@@ -34,4 +37,64 @@ GeoJsonFeatureCollection get europeSlovenia10m {
 
   _cached = data;
   return _cached!;
+}
+
+/// Widget for rendering the europe/slovenia.10m.json map.
+///
+/// This widget provides a convenient way to render this specific map
+/// with customizable projection and styling.
+///
+/// Example:
+/// ```dart
+/// EuropeSlovenia10mWidget(
+///   projection: MercatorProjection(),
+///   fillColor: Color(0xFFE0E0E0),
+///   strokeColor: Color(0xFF333333),
+///   onFeatureTap: (feature, position) {
+///     print('Tapped: ${feature.properties}');
+///   },
+/// )
+/// ```
+class EuropeSlovenia10mWidget extends StatelessWidget {
+  /// The projection to use for rendering.
+  final Projection projection;
+
+  /// The color to use for filling shapes.
+  final Color? fillColor;
+
+  /// The color to use for stroking shapes.
+  final Color? strokeColor;
+
+  /// The stroke width for shape outlines.
+  final double strokeWidth;
+
+  /// Optional callback when a feature is tapped.
+  final void Function(GeoJsonFeature feature, Point position)? onFeatureTap;
+
+  /// Whether to enable anti-aliasing.
+  final bool antiAlias;
+
+  /// Creates a EuropeSlovenia10mWidget.
+  const EuropeSlovenia10mWidget({
+    super.key,
+    required this.projection,
+    this.fillColor,
+    this.strokeColor,
+    this.strokeWidth = 1.0,
+    this.onFeatureTap,
+    this.antiAlias = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MapWidget(
+      geoJson: europeSlovenia10m,
+      projection: projection,
+      fillColor: fillColor,
+      strokeColor: strokeColor,
+      strokeWidth: strokeWidth,
+      onFeatureTap: onFeatureTap,
+      antiAlias: antiAlias,
+    );
+  }
 }

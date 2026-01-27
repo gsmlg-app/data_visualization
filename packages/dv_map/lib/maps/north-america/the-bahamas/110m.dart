@@ -3,7 +3,10 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:dv_geo_core/dv_geo_core.dart';
+import 'package:dv_point/dv_point.dart';
+import 'package:dv_map/src/map_widget.dart';
 
 /// Gzipped GeoJSON data for north-america/the-bahamas.110m.json (base64 encoded)
 const String _kCompressedData = 'H4sIAAAAAAAAE7VUS2vDMAy+51eYnDvjZ+T0tg7GLhuD7TbGCJ3XBpK4pO6hlP730fRBm6iwCuaDsV6fJeuTNwljaVwvfDpm6aMv4qr1D6Gq/DSWoUlHO/PPXr1Mx+wjYYyxTbcPAzv3zrBow8K3seyCju6MpU1RdwHvc88mxbyoi+UpiLG0XIavQu0cJm8Dve70TxeGaWhi2fgm7mwvoY1zdl/7tpwW6cFpe8pp5kPtY7u+zOhYwvOqiuVrqNazQ9mnG0L7XTZFPKt/v87PfWkoM3YHjuduNNCrjEPe03723a7ASRTOKAoccKdQOOuIcBaFc4ZWrMWLdUB8u7+2IrkmXVx0OxuAQ46kAFyQHgg4OCfwDubKyowGqg3OCU2Es5nB+ygEaEsDlaAsxjXLHeSSyF6B102a1Bta/V9sc1zmwgH6SkoKUjsdN8IZbI4Mt2Az4qALbQTWTsOVyySRI4ClqTlIGpzVJstwRJsDMUeLzZrhmvgfOIxzlkvih3kbf67zOOmftslx/0y2yS8sAIcFkggAAA==';
@@ -34,4 +37,64 @@ GeoJsonFeatureCollection get northAmericaTheBahamas110m {
 
   _cached = data;
   return _cached!;
+}
+
+/// Widget for rendering the north-america/the-bahamas.110m.json map.
+///
+/// This widget provides a convenient way to render this specific map
+/// with customizable projection and styling.
+///
+/// Example:
+/// ```dart
+/// NorthAmericaTheBahamas110mWidget(
+///   projection: MercatorProjection(),
+///   fillColor: Color(0xFFE0E0E0),
+///   strokeColor: Color(0xFF333333),
+///   onFeatureTap: (feature, position) {
+///     print('Tapped: ${feature.properties}');
+///   },
+/// )
+/// ```
+class NorthAmericaTheBahamas110mWidget extends StatelessWidget {
+  /// The projection to use for rendering.
+  final Projection projection;
+
+  /// The color to use for filling shapes.
+  final Color? fillColor;
+
+  /// The color to use for stroking shapes.
+  final Color? strokeColor;
+
+  /// The stroke width for shape outlines.
+  final double strokeWidth;
+
+  /// Optional callback when a feature is tapped.
+  final void Function(GeoJsonFeature feature, Point position)? onFeatureTap;
+
+  /// Whether to enable anti-aliasing.
+  final bool antiAlias;
+
+  /// Creates a NorthAmericaTheBahamas110mWidget.
+  const NorthAmericaTheBahamas110mWidget({
+    super.key,
+    required this.projection,
+    this.fillColor,
+    this.strokeColor,
+    this.strokeWidth = 1.0,
+    this.onFeatureTap,
+    this.antiAlias = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MapWidget(
+      geoJson: northAmericaTheBahamas110m,
+      projection: projection,
+      fillColor: fillColor,
+      strokeColor: strokeColor,
+      strokeWidth: strokeWidth,
+      onFeatureTap: onFeatureTap,
+      antiAlias: antiAlias,
+    );
+  }
 }

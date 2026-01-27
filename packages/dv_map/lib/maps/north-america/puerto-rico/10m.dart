@@ -3,7 +3,10 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:dv_geo_core/dv_geo_core.dart';
+import 'package:dv_point/dv_point.dart';
+import 'package:dv_map/src/map_widget.dart';
 
 /// Gzipped GeoJSON data for north-america/puerto-rico.10m.json (base64 encoded)
 const String _kCompressedData = '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';
@@ -34,4 +37,64 @@ GeoJsonFeatureCollection get northAmericaPuertoRico10m {
 
   _cached = data;
   return _cached!;
+}
+
+/// Widget for rendering the north-america/puerto-rico.10m.json map.
+///
+/// This widget provides a convenient way to render this specific map
+/// with customizable projection and styling.
+///
+/// Example:
+/// ```dart
+/// NorthAmericaPuertoRico10mWidget(
+///   projection: MercatorProjection(),
+///   fillColor: Color(0xFFE0E0E0),
+///   strokeColor: Color(0xFF333333),
+///   onFeatureTap: (feature, position) {
+///     print('Tapped: ${feature.properties}');
+///   },
+/// )
+/// ```
+class NorthAmericaPuertoRico10mWidget extends StatelessWidget {
+  /// The projection to use for rendering.
+  final Projection projection;
+
+  /// The color to use for filling shapes.
+  final Color? fillColor;
+
+  /// The color to use for stroking shapes.
+  final Color? strokeColor;
+
+  /// The stroke width for shape outlines.
+  final double strokeWidth;
+
+  /// Optional callback when a feature is tapped.
+  final void Function(GeoJsonFeature feature, Point position)? onFeatureTap;
+
+  /// Whether to enable anti-aliasing.
+  final bool antiAlias;
+
+  /// Creates a NorthAmericaPuertoRico10mWidget.
+  const NorthAmericaPuertoRico10mWidget({
+    super.key,
+    required this.projection,
+    this.fillColor,
+    this.strokeColor,
+    this.strokeWidth = 1.0,
+    this.onFeatureTap,
+    this.antiAlias = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MapWidget(
+      geoJson: northAmericaPuertoRico10m,
+      projection: projection,
+      fillColor: fillColor,
+      strokeColor: strokeColor,
+      strokeWidth: strokeWidth,
+      onFeatureTap: onFeatureTap,
+      antiAlias: antiAlias,
+    );
+  }
 }

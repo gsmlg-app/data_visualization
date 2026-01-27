@@ -3,7 +3,10 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:dv_geo_core/dv_geo_core.dart';
+import 'package:dv_point/dv_point.dart';
+import 'package:dv_map/src/map_widget.dart';
 
 /// Gzipped GeoJSON data for europe/guernsey.10m.json (base64 encoded)
 const String _kCompressedData = 'H4sIAAAAAAAAE7VYyWobQRC96ysGnR1T++JrSHwK5BqCCcaZGIEsGXl8MMb/HiQveFEFXMQ6DDNT3a9rql69rtbtbBjm083lOD8a5l/H0+l6M35eL5fj2bRYr+YHW/Of+9dX86Ph52wYhuF2d307cTd8Z7jcrC/HzbTYTXocPgzz1enFbsLx9bhZXY03TzOGYb64Wv86pZ31+M17vn//47nhbL2aFqtxNW1tX663S84frHdPnpyP64tx2ty89OPR8W/Xy2nxfb28OX/42Cfo9eb3YnU6Pfvq+9/z+9dPb5+H4RMdagAx8MEbm+ShJGu6vzKdvB67F9dIjJj245o6aQ+WPSmigOVQ5h6uAqlnhWsJTX/V1KTA1RSMJiyGVLCihE49XKNULtgg7NmMroObFlnj8Iimu86iWLjLLBnSDEOyoBW4ECm9OKgzQur/xzUJSdmPS6kIPZqphoMWRUyOib2qUCVw8gLXHLjHBxXM+Ii8sUB44S8bkfREUpk8tPI3EqEZB6aUKPggFNqUByVzoqKONSSoi0tIUuB6plmTZ6BuXsQhPZOafAC0LOKrYKbZjAMGYezng6IqZZdngVnEQSGDGZt1nKpZ1EUmczNt7+9JZtXTixUb/REbu0a101qI9KSVzRBLXHWxHoXYMozK0oeQXqrZyajaYjhAtUdNdhUvpVVF0bq4EVJuBQJdWEb0ApaErNnQsUuQFbiY6NorJfaAwEJZkVyaysrOSlJ0MojaVWw2MRUscD2cex0dqwhA2ckEdPOmxnXDDOzaLLf3y86HSSD6dsX93HRGTuiVPnpYJYHOkEC9XGNKIBf+knhGtnAJxKE4bTgJQrOrIgzJost2DEvtxYHIiGy/ZDt4MPa4SWhhhQY6MHS7FAII1v1bgYM6ai++GB5pRd4QjKPLX2CMIm/EhE13/wkbLtqTqkYZf5ikiLJV55PA8F6BiiqYF5uSKzRPf6KyPSwU/w0ZMnbdZdYo3DVC6forSgRVGES7eiLiQVK0asGp0iP8u8lQ03L2+u5u9ng9md3N/gKLf9FQURYAAA==';
@@ -34,4 +37,64 @@ GeoJsonFeatureCollection get europeGuernsey10m {
 
   _cached = data;
   return _cached!;
+}
+
+/// Widget for rendering the europe/guernsey.10m.json map.
+///
+/// This widget provides a convenient way to render this specific map
+/// with customizable projection and styling.
+///
+/// Example:
+/// ```dart
+/// EuropeGuernsey10mWidget(
+///   projection: MercatorProjection(),
+///   fillColor: Color(0xFFE0E0E0),
+///   strokeColor: Color(0xFF333333),
+///   onFeatureTap: (feature, position) {
+///     print('Tapped: ${feature.properties}');
+///   },
+/// )
+/// ```
+class EuropeGuernsey10mWidget extends StatelessWidget {
+  /// The projection to use for rendering.
+  final Projection projection;
+
+  /// The color to use for filling shapes.
+  final Color? fillColor;
+
+  /// The color to use for stroking shapes.
+  final Color? strokeColor;
+
+  /// The stroke width for shape outlines.
+  final double strokeWidth;
+
+  /// Optional callback when a feature is tapped.
+  final void Function(GeoJsonFeature feature, Point position)? onFeatureTap;
+
+  /// Whether to enable anti-aliasing.
+  final bool antiAlias;
+
+  /// Creates a EuropeGuernsey10mWidget.
+  const EuropeGuernsey10mWidget({
+    super.key,
+    required this.projection,
+    this.fillColor,
+    this.strokeColor,
+    this.strokeWidth = 1.0,
+    this.onFeatureTap,
+    this.antiAlias = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MapWidget(
+      geoJson: europeGuernsey10m,
+      projection: projection,
+      fillColor: fillColor,
+      strokeColor: strokeColor,
+      strokeWidth: strokeWidth,
+      onFeatureTap: onFeatureTap,
+      antiAlias: antiAlias,
+    );
+  }
 }

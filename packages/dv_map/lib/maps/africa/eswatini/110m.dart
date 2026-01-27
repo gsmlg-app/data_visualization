@@ -3,7 +3,10 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:dv_geo_core/dv_geo_core.dart';
+import 'package:dv_point/dv_point.dart';
+import 'package:dv_map/src/map_widget.dart';
 
 /// Gzipped GeoJSON data for africa/eswatini.110m.json (base64 encoded)
 const String _kCompressedData = 'H4sIAAAAAAAAE5WTS2sCMRSF9/MrQtY25Hlv4q4Uui64KLRIGWyUwDiRMaWI+N/LjI6oEwqZRbi5J+fj5DHHihCaDjtP54S++jr9dP4lNo1fpRBbOuvl9bm9p3PyWRFCyHEYp8Zh+SDsurjzXQqDaVxOCG3r7WDwi986hTZcHYTQsI9ftezVxcekr4b++52wim0KrW9Trz2vu7Cq6UU9XZNsfNz61B3uc4zB32Jz2Fz2eaXG7ju0dbrZ8Pm7rR9nhCjJOAoAY2YPypMEhkpZycWdspz9DxTMWYPoZA4onUB0rhBoFSKimwINs1opJWwhsPcYhBwQgAvHTSGQa83RZYGohDZSFQE5c9oBgM2dIZcSdNkRcgYIwG32kpWzHG1pQLDGgcjcCTDUympTBhRMWomoxBSITFpj0enSVwOWA1c5YP8IJZYlLP9Rqlw9VqdqHJfVqfoDrzsky9EEAAA=';
@@ -34,4 +37,64 @@ GeoJsonFeatureCollection get africaEswatini110m {
 
   _cached = data;
   return _cached!;
+}
+
+/// Widget for rendering the africa/eswatini.110m.json map.
+///
+/// This widget provides a convenient way to render this specific map
+/// with customizable projection and styling.
+///
+/// Example:
+/// ```dart
+/// AfricaEswatini110mWidget(
+///   projection: MercatorProjection(),
+///   fillColor: Color(0xFFE0E0E0),
+///   strokeColor: Color(0xFF333333),
+///   onFeatureTap: (feature, position) {
+///     print('Tapped: ${feature.properties}');
+///   },
+/// )
+/// ```
+class AfricaEswatini110mWidget extends StatelessWidget {
+  /// The projection to use for rendering.
+  final Projection projection;
+
+  /// The color to use for filling shapes.
+  final Color? fillColor;
+
+  /// The color to use for stroking shapes.
+  final Color? strokeColor;
+
+  /// The stroke width for shape outlines.
+  final double strokeWidth;
+
+  /// Optional callback when a feature is tapped.
+  final void Function(GeoJsonFeature feature, Point position)? onFeatureTap;
+
+  /// Whether to enable anti-aliasing.
+  final bool antiAlias;
+
+  /// Creates a AfricaEswatini110mWidget.
+  const AfricaEswatini110mWidget({
+    super.key,
+    required this.projection,
+    this.fillColor,
+    this.strokeColor,
+    this.strokeWidth = 1.0,
+    this.onFeatureTap,
+    this.antiAlias = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MapWidget(
+      geoJson: africaEswatini110m,
+      projection: projection,
+      fillColor: fillColor,
+      strokeColor: strokeColor,
+      strokeWidth: strokeWidth,
+      onFeatureTap: onFeatureTap,
+      antiAlias: antiAlias,
+    );
+  }
 }

@@ -3,7 +3,10 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:dv_geo_core/dv_geo_core.dart';
+import 'package:dv_point/dv_point.dart';
+import 'package:dv_map/src/map_widget.dart';
 
 /// Gzipped GeoJSON data for oceania/federated-states-of-micronesia.10m.json (base64 encoded)
 const String _kCompressedData = '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';
@@ -34,4 +37,64 @@ GeoJsonFeatureCollection get oceaniaFederatedStatesOfMicronesia10m {
 
   _cached = data;
   return _cached!;
+}
+
+/// Widget for rendering the oceania/federated-states-of-micronesia.10m.json map.
+///
+/// This widget provides a convenient way to render this specific map
+/// with customizable projection and styling.
+///
+/// Example:
+/// ```dart
+/// OceaniaFederatedStatesOfMicronesia10mWidget(
+///   projection: MercatorProjection(),
+///   fillColor: Color(0xFFE0E0E0),
+///   strokeColor: Color(0xFF333333),
+///   onFeatureTap: (feature, position) {
+///     print('Tapped: ${feature.properties}');
+///   },
+/// )
+/// ```
+class OceaniaFederatedStatesOfMicronesia10mWidget extends StatelessWidget {
+  /// The projection to use for rendering.
+  final Projection projection;
+
+  /// The color to use for filling shapes.
+  final Color? fillColor;
+
+  /// The color to use for stroking shapes.
+  final Color? strokeColor;
+
+  /// The stroke width for shape outlines.
+  final double strokeWidth;
+
+  /// Optional callback when a feature is tapped.
+  final void Function(GeoJsonFeature feature, Point position)? onFeatureTap;
+
+  /// Whether to enable anti-aliasing.
+  final bool antiAlias;
+
+  /// Creates a OceaniaFederatedStatesOfMicronesia10mWidget.
+  const OceaniaFederatedStatesOfMicronesia10mWidget({
+    super.key,
+    required this.projection,
+    this.fillColor,
+    this.strokeColor,
+    this.strokeWidth = 1.0,
+    this.onFeatureTap,
+    this.antiAlias = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MapWidget(
+      geoJson: oceaniaFederatedStatesOfMicronesia10m,
+      projection: projection,
+      fillColor: fillColor,
+      strokeColor: strokeColor,
+      strokeWidth: strokeWidth,
+      onFeatureTap: onFeatureTap,
+      antiAlias: antiAlias,
+    );
+  }
 }

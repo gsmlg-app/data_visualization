@@ -3,7 +3,10 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:dv_geo_core/dv_geo_core.dart';
+import 'package:dv_point/dv_point.dart';
+import 'package:dv_map/src/map_widget.dart';
 
 /// Gzipped GeoJSON data for north-america/barbados.10m.json (base64 encoded)
 const String _kCompressedData = 'H4sIAAAAAAAAE52WS2vcQAzH7/spjM9p0PuRW1PosZReSyjbxE0XknVw3EMI+e5lnWzIQ6XM+mDGo9EPySP9Z+5XXdfPdzdDf9L1n4f1/GcaPo1XV8P5vBm3/dHO/Otx+rY/6b6vuq7r7pf3e8dl+WK4mcabYZo3i9N+edf12/X14nC6nn6uL8bbZ4+u6ze34481LdbTd/O8zH97ZTgft/NmO2znne3LOM2/u4/Xw7Q5X/dPix6eA7ocxuthnu5eh7OP/+t4dXf5lO4zfJwuNtv1/CLvx+fl+O1X133QPBayxKM3BuRjNOAwfWU4O/o/jsMovAK6hBM2A9URqOIFo1M289zMpeQlZ7QnnBgIZcLpKSytQMUA1SiAhK6o7UA2Q9AKyMgJ3gyUXWZV0ZAkOnEz0CK1rEKKNI3mTVbXRK+ADMIR7SkHOIZVQBQlsGZgijhWu8wsHkKtQEMK46oOWUQlm/+hMSRD+Q/ZU6O5k00UueQRO7ZLjSkRYglEMJTmMjQVAsmqDFMRsbnzTAzMKuCB6mrMSLV6oSZSe9UQqmMFhJ0aQjsQAqUsQwgxOyBCAJKsGgVCkLkZqGEJXKYcjOkHqJeIUKWv4AGUB+irpmV15oG5pRxyAiBRCVREbxcbpdypTQlUOUANiRHqMlQT4/YDAM2xjs84qD1AiNC6CtUZo3lLJFw5yi3xUG0/ocTVPeo+Mcn2PhHVfxx5CADt6iq88yqvmqRJ2H6Ta7m5rqrxfvSw2r/PVg+rv8qh6exnDAAA';
@@ -34,4 +37,64 @@ GeoJsonFeatureCollection get northAmericaBarbados10m {
 
   _cached = data;
   return _cached!;
+}
+
+/// Widget for rendering the north-america/barbados.10m.json map.
+///
+/// This widget provides a convenient way to render this specific map
+/// with customizable projection and styling.
+///
+/// Example:
+/// ```dart
+/// NorthAmericaBarbados10mWidget(
+///   projection: MercatorProjection(),
+///   fillColor: Color(0xFFE0E0E0),
+///   strokeColor: Color(0xFF333333),
+///   onFeatureTap: (feature, position) {
+///     print('Tapped: ${feature.properties}');
+///   },
+/// )
+/// ```
+class NorthAmericaBarbados10mWidget extends StatelessWidget {
+  /// The projection to use for rendering.
+  final Projection projection;
+
+  /// The color to use for filling shapes.
+  final Color? fillColor;
+
+  /// The color to use for stroking shapes.
+  final Color? strokeColor;
+
+  /// The stroke width for shape outlines.
+  final double strokeWidth;
+
+  /// Optional callback when a feature is tapped.
+  final void Function(GeoJsonFeature feature, Point position)? onFeatureTap;
+
+  /// Whether to enable anti-aliasing.
+  final bool antiAlias;
+
+  /// Creates a NorthAmericaBarbados10mWidget.
+  const NorthAmericaBarbados10mWidget({
+    super.key,
+    required this.projection,
+    this.fillColor,
+    this.strokeColor,
+    this.strokeWidth = 1.0,
+    this.onFeatureTap,
+    this.antiAlias = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MapWidget(
+      geoJson: northAmericaBarbados10m,
+      projection: projection,
+      fillColor: fillColor,
+      strokeColor: strokeColor,
+      strokeWidth: strokeWidth,
+      onFeatureTap: onFeatureTap,
+      antiAlias: antiAlias,
+    );
+  }
 }

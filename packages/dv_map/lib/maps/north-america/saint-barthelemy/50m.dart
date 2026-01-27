@@ -3,7 +3,10 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:dv_geo_core/dv_geo_core.dart';
+import 'package:dv_point/dv_point.dart';
+import 'package:dv_map/src/map_widget.dart';
 
 /// Gzipped GeoJSON data for north-america/saint-barthelemy.50m.json (base64 encoded)
 const String _kCompressedData = 'H4sIAAAAAAAAE5WTTWvDMAyG7/kVwueuxF+y3Ns62Gkbgx1HGaHz2kASF9c7hNL/Ppo2pR+GYR+MrFd6eGXjXQHAYr9xbAbs2VXxN7gn3zRuGWvfsclB/jmmt2wGnwUAwG7Y7xuH8kHYBL9xIdZD01gOwLqqHRo+qrqLMK9CXLvGtf25E4DVW/9ViUPV/OUuL4/510th6btYd66LB+3Nh7iGx9aFelmxU9H+bGzlfOti6K9tjXO8+6ZfncY+w334rrsqXsx/XJfx7QngAcWUJLdS4uRG4mZKBhUquhIWk/+BnDgqngKSVsqKbGBpSslFCmgNaswGGmtNaRI8WxJarrINolbCJoGcBHKTDTRKcEoChRCoMR+olbQ66VBqo/LfBK0kRck3IU35V6jJSp0ySCRRifyJFVohkwaN5lbLbGDePylS8Rjti3FfFPviD4483CDfBAAA';
@@ -34,4 +37,64 @@ GeoJsonFeatureCollection get northAmericaSaintBarthelemy50m {
 
   _cached = data;
   return _cached!;
+}
+
+/// Widget for rendering the north-america/saint-barthelemy.50m.json map.
+///
+/// This widget provides a convenient way to render this specific map
+/// with customizable projection and styling.
+///
+/// Example:
+/// ```dart
+/// NorthAmericaSaintBarthelemy50mWidget(
+///   projection: MercatorProjection(),
+///   fillColor: Color(0xFFE0E0E0),
+///   strokeColor: Color(0xFF333333),
+///   onFeatureTap: (feature, position) {
+///     print('Tapped: ${feature.properties}');
+///   },
+/// )
+/// ```
+class NorthAmericaSaintBarthelemy50mWidget extends StatelessWidget {
+  /// The projection to use for rendering.
+  final Projection projection;
+
+  /// The color to use for filling shapes.
+  final Color? fillColor;
+
+  /// The color to use for stroking shapes.
+  final Color? strokeColor;
+
+  /// The stroke width for shape outlines.
+  final double strokeWidth;
+
+  /// Optional callback when a feature is tapped.
+  final void Function(GeoJsonFeature feature, Point position)? onFeatureTap;
+
+  /// Whether to enable anti-aliasing.
+  final bool antiAlias;
+
+  /// Creates a NorthAmericaSaintBarthelemy50mWidget.
+  const NorthAmericaSaintBarthelemy50mWidget({
+    super.key,
+    required this.projection,
+    this.fillColor,
+    this.strokeColor,
+    this.strokeWidth = 1.0,
+    this.onFeatureTap,
+    this.antiAlias = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MapWidget(
+      geoJson: northAmericaSaintBarthelemy50m,
+      projection: projection,
+      fillColor: fillColor,
+      strokeColor: strokeColor,
+      strokeWidth: strokeWidth,
+      onFeatureTap: onFeatureTap,
+      antiAlias: antiAlias,
+    );
+  }
 }

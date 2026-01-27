@@ -3,7 +3,10 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:dv_geo_core/dv_geo_core.dart';
+import 'package:dv_point/dv_point.dart';
+import 'package:dv_map/src/map_widget.dart';
 
 /// Gzipped GeoJSON data for africa/eritrea.110m.json (base64 encoded)
 const String _kCompressedData = 'H4sIAAAAAAAAE5WWS2vcMBCA7/srhM9h0DylyS2UFnorvZZQltQJhmS9OO5hCfnvZTfZkESiMD4IeUbzMQ/N2E+blIb1sB+HyzR8G7fr32X8Mt/fjzfrNO+Gi6P69kX8OFymX5uUUno6ra3h6fhJsV/m/bis08nofDylYbd9OBl8XaZ1GbdvBikN0+P8e0sn5c9Gzi/y7+8VN/NunXbjbj3qrm6X6WY7vGqf3xy5G+eHcV0OH904+/1jvj/cvYb5Rp2XP9Nuu76L9+V5v//8lhIbCLnixSc5CggR4gfx9cX/WQXUuZQOi5CjKM+WeyhXFw6xKiiSa4elWaWEWA7ZXTqoItkkiGLJ1su8MqpGWJIhk1E3RHT1IKu6WQeFWGMhCgKqUoNiKIU5VERBUK/ausUgSjkWIUHOXtpsEVTTSkEWK3b8IlAhisVIUIqbUHu/CERVUGuIx5ArEvWcM3fjakH3tLoWaxPHkHMWwmi4VKxyp8sZWNg9VgmEwuKKvTvihJktdksQsDgV8d5sdMzFQ+ljh4pCzm24CsJqUmJjzYHMEHM7QRScqBCHZghXcM9G3OAMqmQji03wCoI5t8kr4H4semxYHr8HbVsUECoaJaEVaYtQgIwxxjKoStrLmKvFRjgbFOXa5suAHGOdygZMTO3gFahEEmqD2A/Cprc/75435/V687z5B1I4mX3DCQAA';
@@ -34,4 +37,64 @@ GeoJsonFeatureCollection get africaEritrea110m {
 
   _cached = data;
   return _cached!;
+}
+
+/// Widget for rendering the africa/eritrea.110m.json map.
+///
+/// This widget provides a convenient way to render this specific map
+/// with customizable projection and styling.
+///
+/// Example:
+/// ```dart
+/// AfricaEritrea110mWidget(
+///   projection: MercatorProjection(),
+///   fillColor: Color(0xFFE0E0E0),
+///   strokeColor: Color(0xFF333333),
+///   onFeatureTap: (feature, position) {
+///     print('Tapped: ${feature.properties}');
+///   },
+/// )
+/// ```
+class AfricaEritrea110mWidget extends StatelessWidget {
+  /// The projection to use for rendering.
+  final Projection projection;
+
+  /// The color to use for filling shapes.
+  final Color? fillColor;
+
+  /// The color to use for stroking shapes.
+  final Color? strokeColor;
+
+  /// The stroke width for shape outlines.
+  final double strokeWidth;
+
+  /// Optional callback when a feature is tapped.
+  final void Function(GeoJsonFeature feature, Point position)? onFeatureTap;
+
+  /// Whether to enable anti-aliasing.
+  final bool antiAlias;
+
+  /// Creates a AfricaEritrea110mWidget.
+  const AfricaEritrea110mWidget({
+    super.key,
+    required this.projection,
+    this.fillColor,
+    this.strokeColor,
+    this.strokeWidth = 1.0,
+    this.onFeatureTap,
+    this.antiAlias = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MapWidget(
+      geoJson: africaEritrea110m,
+      projection: projection,
+      fillColor: fillColor,
+      strokeColor: strokeColor,
+      strokeWidth: strokeWidth,
+      onFeatureTap: onFeatureTap,
+      antiAlias: antiAlias,
+    );
+  }
 }

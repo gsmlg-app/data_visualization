@@ -3,7 +3,10 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:dv_geo_core/dv_geo_core.dart';
+import 'package:dv_point/dv_point.dart';
+import 'package:dv_map/src/map_widget.dart';
 
 /// Gzipped GeoJSON data for oceania/tuvalu.10m.json (base64 encoded)
 const String _kCompressedData = 'H4sIAAAAAAAAE7WYTYsbRxCG7/oVg85OU99d5WvAN5McklyCCWKjGIEsLbI2sJj976HH3sW7WxNQGekgNNMzj6qr3n7748tqmtbn+9vt+u20frfdnO9O25+P+/325rw7HtZvRvM/X29/Xr+d/lxN0zR9mb9fvzg/Pjfcno6329N5N7/0+Pg0rQ+bT/MLv939u9nfPT0/Tevd5+NfG5rb/nh1n+f7vz9ruDkezrvD9nAebb/cbDeH3Wb9rfnhKZCP2+On7fl0/zyMx7jf3+3Pu1+P+/uP3/r6xD6e/t4dNufvOv318/3vl1evr6cJezQMJBV886rxJ28qBN71RdOHl8/mYILo1CUHU4ShF8HYlSMWwGDAWAWrgi5EjMik1YihE4ilYAkX670KNg7wHNwFlK0GxggOylUhBkYaVXBXgjzH4qgC5Ygdck1IdEcrZ5iYMM+wQlg4VcGCSLQgNo+u5XEHILwAplCVcukudorV0tWzv7zctryxg4poGgx0AIBSL71xgLHmYxXIVLgKdkbxBTAHcZSU5I27SniufVADrxV8gJkBFyK2ABKupuLi4l1LSb2hkoZnwfThVmw1Jf0/mAAoalY3wMycmt2IOFCxVJcZDPkEOMBaHVQDDNC152B3tJLXzVwBzLxuBAxsVBpTc+1YZTkTTuUUX6y2a0nfGqMwZIZujYFYUCqdtMZEwpk+rVEohJeEP3ODOudgd+daVUYiAp2zWX6Ay95cyfD1jI5FwC0PBgmBrKhpVqNIVxzWEL1LbXk7gw09s40BFsXaKnSkwh1sKWJQ8moquKN5LiQER6stFwfYUVJrHhEjlC2UOTx3uh/O8cVyu57TIStZuuLQZkEOtY2SNRQX8ayX2jpYxyhpf4CBAxci9o7uRXNGCg/OCq7NeleQotchKalk2h/gQK5t+EvFu5aSogVYl3S1HY0jWKy4gQ1ASusdjb2Hcqne0TzcMF0tDrA5SvG4JEDAOJuNowmAePWMIIYBpxvNaEJgRROdawfR81QIujEXTwkKorieQt26S2STWzQWxqht22awCOUFZxHm6mmTd+yaTm7RWAGjGnC3MM7WD9HYKKxmzgPsQulefoChd6oO1sUt90ixuVoVfLkorqVQb+bUA7Je9iaBYsUDCwsUtHxjLOHGUFokDbAgUL4dlGCncsCcyrM3cS4eLc5pgMBsnPYmXVm1JPtRN2da2BVLF+7VIywzJVzKrwpwbY4a4B49FsDGVjP8ioKXR9Pq5a+H1eP3h9XD6j/wMhufBRsAAA==';
@@ -34,4 +37,64 @@ GeoJsonFeatureCollection get oceaniaTuvalu10m {
 
   _cached = data;
   return _cached!;
+}
+
+/// Widget for rendering the oceania/tuvalu.10m.json map.
+///
+/// This widget provides a convenient way to render this specific map
+/// with customizable projection and styling.
+///
+/// Example:
+/// ```dart
+/// OceaniaTuvalu10mWidget(
+///   projection: MercatorProjection(),
+///   fillColor: Color(0xFFE0E0E0),
+///   strokeColor: Color(0xFF333333),
+///   onFeatureTap: (feature, position) {
+///     print('Tapped: ${feature.properties}');
+///   },
+/// )
+/// ```
+class OceaniaTuvalu10mWidget extends StatelessWidget {
+  /// The projection to use for rendering.
+  final Projection projection;
+
+  /// The color to use for filling shapes.
+  final Color? fillColor;
+
+  /// The color to use for stroking shapes.
+  final Color? strokeColor;
+
+  /// The stroke width for shape outlines.
+  final double strokeWidth;
+
+  /// Optional callback when a feature is tapped.
+  final void Function(GeoJsonFeature feature, Point position)? onFeatureTap;
+
+  /// Whether to enable anti-aliasing.
+  final bool antiAlias;
+
+  /// Creates a OceaniaTuvalu10mWidget.
+  const OceaniaTuvalu10mWidget({
+    super.key,
+    required this.projection,
+    this.fillColor,
+    this.strokeColor,
+    this.strokeWidth = 1.0,
+    this.onFeatureTap,
+    this.antiAlias = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MapWidget(
+      geoJson: oceaniaTuvalu10m,
+      projection: projection,
+      fillColor: fillColor,
+      strokeColor: strokeColor,
+      strokeWidth: strokeWidth,
+      onFeatureTap: onFeatureTap,
+      antiAlias: antiAlias,
+    );
+  }
 }

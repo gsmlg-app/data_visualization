@@ -3,7 +3,10 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:dv_geo_core/dv_geo_core.dart';
+import 'package:dv_point/dv_point.dart';
+import 'package:dv_map/src/map_widget.dart';
 
 /// Gzipped GeoJSON data for north-america/jamaica.110m.json (base64 encoded)
 const String _kCompressedData = 'H4sIAAAAAAAAE5WTwWrDMAyG73kKkXNnbNmW7N7KYIfBxu6jjNB5XaCJS+odSum7j6ZNaZfAsA9G1i99/LLxoQAo034byjmUT6FKP114jJtNWKU6tuXsJH+d07tyDu8FAMCh38eNfXkvbLu4DV2q+6ahHKBsq6ZveK6aql5V1waAst7Fjwp78WWU131+cSesYpvqNrTppL3GLn3DogndCXspOl79rENsQur2924G+29xs19fpr3CY/dZt1W6Gfu8buO/J4AHZmHJk5Ru9kdSThgvLVpzJyxn/wLZsybDE0CLBpWzeUAnUDEj0ZRDa6xGlwvUmll5PQFEtJ7YZ49MJBH9CMjCkbKes+8QJWmjxg5ZsFRKEeYBSXiJlpSZdOhQc+YdklDek3XjR2HhHDnibIearLZeTTyKIslSUi7QeSI14dAJI6Ujyhw5+6cUU/EQHYthXxbH4hd+uAeg2AQAAA==';
@@ -34,4 +37,64 @@ GeoJsonFeatureCollection get northAmericaJamaica110m {
 
   _cached = data;
   return _cached!;
+}
+
+/// Widget for rendering the north-america/jamaica.110m.json map.
+///
+/// This widget provides a convenient way to render this specific map
+/// with customizable projection and styling.
+///
+/// Example:
+/// ```dart
+/// NorthAmericaJamaica110mWidget(
+///   projection: MercatorProjection(),
+///   fillColor: Color(0xFFE0E0E0),
+///   strokeColor: Color(0xFF333333),
+///   onFeatureTap: (feature, position) {
+///     print('Tapped: ${feature.properties}');
+///   },
+/// )
+/// ```
+class NorthAmericaJamaica110mWidget extends StatelessWidget {
+  /// The projection to use for rendering.
+  final Projection projection;
+
+  /// The color to use for filling shapes.
+  final Color? fillColor;
+
+  /// The color to use for stroking shapes.
+  final Color? strokeColor;
+
+  /// The stroke width for shape outlines.
+  final double strokeWidth;
+
+  /// Optional callback when a feature is tapped.
+  final void Function(GeoJsonFeature feature, Point position)? onFeatureTap;
+
+  /// Whether to enable anti-aliasing.
+  final bool antiAlias;
+
+  /// Creates a NorthAmericaJamaica110mWidget.
+  const NorthAmericaJamaica110mWidget({
+    super.key,
+    required this.projection,
+    this.fillColor,
+    this.strokeColor,
+    this.strokeWidth = 1.0,
+    this.onFeatureTap,
+    this.antiAlias = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MapWidget(
+      geoJson: northAmericaJamaica110m,
+      projection: projection,
+      fillColor: fillColor,
+      strokeColor: strokeColor,
+      strokeWidth: strokeWidth,
+      onFeatureTap: onFeatureTap,
+      antiAlias: antiAlias,
+    );
+  }
 }

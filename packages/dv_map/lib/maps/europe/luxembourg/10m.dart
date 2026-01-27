@@ -3,7 +3,10 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:dv_geo_core/dv_geo_core.dart';
+import 'package:dv_point/dv_point.dart';
+import 'package:dv_map/src/map_widget.dart';
 
 /// Gzipped GeoJSON data for europe/luxembourg.10m.json (base64 encoded)
 const String _kCompressedData = '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';
@@ -34,4 +37,64 @@ GeoJsonFeatureCollection get europeLuxembourg10m {
 
   _cached = data;
   return _cached!;
+}
+
+/// Widget for rendering the europe/luxembourg.10m.json map.
+///
+/// This widget provides a convenient way to render this specific map
+/// with customizable projection and styling.
+///
+/// Example:
+/// ```dart
+/// EuropeLuxembourg10mWidget(
+///   projection: MercatorProjection(),
+///   fillColor: Color(0xFFE0E0E0),
+///   strokeColor: Color(0xFF333333),
+///   onFeatureTap: (feature, position) {
+///     print('Tapped: ${feature.properties}');
+///   },
+/// )
+/// ```
+class EuropeLuxembourg10mWidget extends StatelessWidget {
+  /// The projection to use for rendering.
+  final Projection projection;
+
+  /// The color to use for filling shapes.
+  final Color? fillColor;
+
+  /// The color to use for stroking shapes.
+  final Color? strokeColor;
+
+  /// The stroke width for shape outlines.
+  final double strokeWidth;
+
+  /// Optional callback when a feature is tapped.
+  final void Function(GeoJsonFeature feature, Point position)? onFeatureTap;
+
+  /// Whether to enable anti-aliasing.
+  final bool antiAlias;
+
+  /// Creates a EuropeLuxembourg10mWidget.
+  const EuropeLuxembourg10mWidget({
+    super.key,
+    required this.projection,
+    this.fillColor,
+    this.strokeColor,
+    this.strokeWidth = 1.0,
+    this.onFeatureTap,
+    this.antiAlias = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MapWidget(
+      geoJson: europeLuxembourg10m,
+      projection: projection,
+      fillColor: fillColor,
+      strokeColor: strokeColor,
+      strokeWidth: strokeWidth,
+      onFeatureTap: onFeatureTap,
+      antiAlias: antiAlias,
+    );
+  }
 }

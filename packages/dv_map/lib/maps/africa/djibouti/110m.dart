@@ -3,7 +3,10 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:dv_geo_core/dv_geo_core.dart';
+import 'package:dv_point/dv_point.dart';
+import 'package:dv_map/src/map_widget.dart';
 
 /// Gzipped GeoJSON data for africa/djibouti.110m.json (base64 encoded)
 const String _kCompressedData = 'H4sIAAAAAAAAE5WUTWvDMAyG7/kVJudiLMnyR29jY7Cddh9lZF1aMtq4pO6hlP730bQp7WLYnIOR9VoPr5CdQyFEGfebupyK8rmu4q6rH8NqVc9jE9pycpIX5/S2nIr3QgghDv06LuyP98KmC5u6i01fNBwXomyrdV/w9N18hl1srhVClM02fFTYq6+jPJ3zL7fCPLSxaes2nrSHRdfMq/KiHq9OlnVY17Hb3/sYjL+F1X556fNKDd1X01bxpuHzdxv/3gmhURIDm8mvPKBkjUh36dnkL5ZKcCCLAdIYsGM/IA0BZqIsefYJFDFDri3LzDbBUqx8HgslgQadYpHOaxEls/aUQIHKbRGltcYxuBFNSY/GWWeyeCRBMyk95oHUBhV5m+sP2FlKDcESG61y/aEz5IATPG+1R5d3+0kSWMc4HixK8gq005k85QAx9TSN94Yyx3Earzc6aU8za2CXe4v//+MoUvEQHYthnRXH4gdUpHch3AUAAA==';
@@ -34,4 +37,64 @@ GeoJsonFeatureCollection get africaDjibouti110m {
 
   _cached = data;
   return _cached!;
+}
+
+/// Widget for rendering the africa/djibouti.110m.json map.
+///
+/// This widget provides a convenient way to render this specific map
+/// with customizable projection and styling.
+///
+/// Example:
+/// ```dart
+/// AfricaDjibouti110mWidget(
+///   projection: MercatorProjection(),
+///   fillColor: Color(0xFFE0E0E0),
+///   strokeColor: Color(0xFF333333),
+///   onFeatureTap: (feature, position) {
+///     print('Tapped: ${feature.properties}');
+///   },
+/// )
+/// ```
+class AfricaDjibouti110mWidget extends StatelessWidget {
+  /// The projection to use for rendering.
+  final Projection projection;
+
+  /// The color to use for filling shapes.
+  final Color? fillColor;
+
+  /// The color to use for stroking shapes.
+  final Color? strokeColor;
+
+  /// The stroke width for shape outlines.
+  final double strokeWidth;
+
+  /// Optional callback when a feature is tapped.
+  final void Function(GeoJsonFeature feature, Point position)? onFeatureTap;
+
+  /// Whether to enable anti-aliasing.
+  final bool antiAlias;
+
+  /// Creates a AfricaDjibouti110mWidget.
+  const AfricaDjibouti110mWidget({
+    super.key,
+    required this.projection,
+    this.fillColor,
+    this.strokeColor,
+    this.strokeWidth = 1.0,
+    this.onFeatureTap,
+    this.antiAlias = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MapWidget(
+      geoJson: africaDjibouti110m,
+      projection: projection,
+      fillColor: fillColor,
+      strokeColor: strokeColor,
+      strokeWidth: strokeWidth,
+      onFeatureTap: onFeatureTap,
+      antiAlias: antiAlias,
+    );
+  }
 }

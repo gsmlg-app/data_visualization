@@ -3,7 +3,10 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:dv_geo_core/dv_geo_core.dart';
+import 'package:dv_point/dv_point.dart';
+import 'package:dv_map/src/map_widget.dart';
 
 /// Gzipped GeoJSON data for europe/iceland.110m.json (base64 encoded)
 const String _kCompressedData = 'H4sIAAAAAAAAE51US2vbQBC++1csOrvDzmPnkWtpodBDoccSinHUYHAk4ygHE/zfi+XYOJGgbHVYZvfb+fTNa18XKTXDYdc2d6n52q6Gl337ud9u2/Ww6btmeYL/nI+fm7v0a5FSSq/jOnUcr4/Abt/v2v2wGZ0u11NqutXT6PBt3W5X3cPVIaVm89z/XtEI/pyc8/n8+y2w7rth07XdcMK+vJz+2Lyhx6uQx7Z/aof94b2Mi+4f/fbw+BbmlbXfP2y61XAT7/m7tT/uUvqEAiW7RpHlB0gVpBQPonfA/fIfhAqo5hgzfIXUgriOz8DCldgnhAUi2AtXEgbkoi6oMwrJVHOOKkLKUEzJ2WYUGhMiYR0hAbIEUZmrCWZRtzpCBi25oEwVKpBSwcqIBZgUfdozBRQRPepKQgREJsQ8Q8jmJbgyYAJ0kUzTGhfILqFe19XEEKVk4WlbC3ggUlSmEMHMxWUasoBkQixeG7IphdGEjyE0o3mdQAwIIyszPcOgwsqljs9Bi5KUaQYZJJT9P94FkZlngUHNTaJu6FAgcjjPTLEAq2SvHBJk0BzGNK1IASRVqxZoHMo2N3We3aQ2g9VP/2LOvljHxWW9XxwXfwFmWWlFogcAAA==';
@@ -34,4 +37,64 @@ GeoJsonFeatureCollection get europeIceland110m {
 
   _cached = data;
   return _cached!;
+}
+
+/// Widget for rendering the europe/iceland.110m.json map.
+///
+/// This widget provides a convenient way to render this specific map
+/// with customizable projection and styling.
+///
+/// Example:
+/// ```dart
+/// EuropeIceland110mWidget(
+///   projection: MercatorProjection(),
+///   fillColor: Color(0xFFE0E0E0),
+///   strokeColor: Color(0xFF333333),
+///   onFeatureTap: (feature, position) {
+///     print('Tapped: ${feature.properties}');
+///   },
+/// )
+/// ```
+class EuropeIceland110mWidget extends StatelessWidget {
+  /// The projection to use for rendering.
+  final Projection projection;
+
+  /// The color to use for filling shapes.
+  final Color? fillColor;
+
+  /// The color to use for stroking shapes.
+  final Color? strokeColor;
+
+  /// The stroke width for shape outlines.
+  final double strokeWidth;
+
+  /// Optional callback when a feature is tapped.
+  final void Function(GeoJsonFeature feature, Point position)? onFeatureTap;
+
+  /// Whether to enable anti-aliasing.
+  final bool antiAlias;
+
+  /// Creates a EuropeIceland110mWidget.
+  const EuropeIceland110mWidget({
+    super.key,
+    required this.projection,
+    this.fillColor,
+    this.strokeColor,
+    this.strokeWidth = 1.0,
+    this.onFeatureTap,
+    this.antiAlias = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MapWidget(
+      geoJson: europeIceland110m,
+      projection: projection,
+      fillColor: fillColor,
+      strokeColor: strokeColor,
+      strokeWidth: strokeWidth,
+      onFeatureTap: onFeatureTap,
+      antiAlias: antiAlias,
+    );
+  }
 }

@@ -3,7 +3,10 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:dv_geo_core/dv_geo_core.dart';
+import 'package:dv_point/dv_point.dart';
+import 'package:dv_map/src/map_widget.dart';
 
 /// Gzipped GeoJSON data for north-america/united-states-minor-outlying-islands.10m.json (base64 encoded)
 const String _kCompressedData = 'H4sIAAAAAAAAE7WaTW8bRxKG7/oVA52TQX1/5LYIECAH7y4Q5LQIFoLNeAnIpCHRByPwf1900zYSu0aJiqEOgsghH9W8VV1VXT2/3SzL7en9293td8vtD7u707uH3ffH+/vdy9P+eLj9Zlz+9fz24+13y39ulmVZfpu/v/7i/Pi88Pbh+Hb3cNrPL336+LLcHu7ezC/8fNifdq+Wn053p93j8mJ/OD4s/3p3un+/P7xefny8vzu8evxMW5bb/ePxv3c0v/niq/f5/P6Pv7/w8ng47Q+7w2lc++fx4fS/5R9vdg/7l3e3Hz/04bOxr3fHN7vTw/s/mvrp3l68uz/t/328f//6ox6f/8Px4dX+MG7gszDnn9///eWrr18vy7douSoDGcU3X11FW90AM/mLS798+dlNMmkQ1WQNSeiTnQg2bFaTNG2TE102wCJGbS6Tc26BPbxtMQUn4pYWIJFtMisEX8N/6AKyFXMk7G2dCYLIt8jWdt+zF8nN1qs//M/GkoUVKNMLY76Fld1QueeXARa3LNQb5Ai3pl9gBSQRsA0yQUoXDJEAuiEGSSK2xXiuytdyudsqoUFZ5FJYMU2xl6QnmCKz0G+Ahanl8MlFciwS3uCiOHsX7MkYhV8GGJilFUkTrJRVJA0wI2BbYrfwqqgMsItqK0LPUiDqFjiB2hoHIdkG2Cz6QfHcKL7mktJU4fImiTSyV5EH2Di5DFAiDMu2eproXqpHmET9yH+2Eld0i7Gh1zHiCRjeamfOYCgTOqwBLNhOdcZjqZWJI8BSLwEbb1ksqdF1uAmASFHnpxTK0rZYQJKKlnGAMSP6vntmUFwnQtFsNUzOKutirhRo0qgTkytCaFW7nSu5akCjTkzwaORly2Ah8S54FHkqmroBTne1rhQs7lbtHHNlUGds5OazxRCeVR8/LBZAakTo2eLAlNpiChPpJOcJpnSGakMzwCRoXec9O4yvlvR9ZYqkKOSjWAkRohNJZzIruRYeH2QQau4Pps0SmUWHeyZndGLpIxlRq/ZrkjW8D6awyucT7GbNitJy4DXDSd106z5RhKjXRPjKFiZYLMdJVsZoh5MHlBvZSabg1uxigENJuKgr0+mWbn1yanoxeqIYGxDT6JPByWqZMaPZQg+RCQO3sgExt1eWiWg13zivLI3eVqwVytdaWOeRLldbmzEGYwZtjxrFzav0McDkbNSbDw1yKlSd4ySzaKd+frJ51JYNMgJKy+eTjJZV9J/JCdkf6ZJAVh3bcOBoP1sLoBMZ14xSZDPcGFzL2FS19UNys41huwhzp0f/CzarZqfl7apxJd+4jgkzE1UCxiroZNwRcIA3J/SXg4OpqMsTzOKt85UphaZUw/YBhgCyTs6bYHalqrMfYEuLTij9OVg422CQrCZbE0zWS6V/CgZB72qMkQjVooqVM4KhK8WTYHfGToaeYA+sOtcJNvNWUpxgw6iD4kKuQpQb1AlGaE2pJhiDoQ6KC8HgjFV1HWAF0E4/PMAQIFfhWkbU2fgyJUAZyznLxWBG4y3fXbI8ngALsGPrUHWCybicDA2wuGNbiqfAl2Tjp8AIRK2zu7PGzlQ9BDHBntzNxk/EsaCitM6tzyu63jv/DeDNVCGoxtoupQhmWxpfBH5253alNhKNVjAIqzbyukb4OK9t3OUEO7JWmUvXSEDjXhtOKwI6Vkl8gkmktycZYDaqpjBDitDmeGeCoT4QH2DrnRENhZPDcAOrAdm1F8IZoWgYBphDmw+FDTA5Vn3vAAv2jsNnrAVmNZueSkjz/H6CFaw6mJlgJent8qfEYNXBjK7h4zSi9+TRCArwKmsNrgQ1n2gaXOFykzXAykp9MCLrhhJo0iq+Z98xWPV8i65hyQ5t3xki6IbGLJxtsLqBbUQbibclfnaOv2LBEQD06iZtFVFk7ar3FJhn0W2Cx9y/2pddkXs1IWrwtrtvvvzrw82n37/cfLj5PyLH/rt9LgAA';
@@ -34,4 +37,64 @@ GeoJsonFeatureCollection get northAmericaUnitedStatesMinorOutlyingIslands10m {
 
   _cached = data;
   return _cached!;
+}
+
+/// Widget for rendering the north-america/united-states-minor-outlying-islands.10m.json map.
+///
+/// This widget provides a convenient way to render this specific map
+/// with customizable projection and styling.
+///
+/// Example:
+/// ```dart
+/// NorthAmericaUnitedStatesMinorOutlyingIslands10mWidget(
+///   projection: MercatorProjection(),
+///   fillColor: Color(0xFFE0E0E0),
+///   strokeColor: Color(0xFF333333),
+///   onFeatureTap: (feature, position) {
+///     print('Tapped: ${feature.properties}');
+///   },
+/// )
+/// ```
+class NorthAmericaUnitedStatesMinorOutlyingIslands10mWidget extends StatelessWidget {
+  /// The projection to use for rendering.
+  final Projection projection;
+
+  /// The color to use for filling shapes.
+  final Color? fillColor;
+
+  /// The color to use for stroking shapes.
+  final Color? strokeColor;
+
+  /// The stroke width for shape outlines.
+  final double strokeWidth;
+
+  /// Optional callback when a feature is tapped.
+  final void Function(GeoJsonFeature feature, Point position)? onFeatureTap;
+
+  /// Whether to enable anti-aliasing.
+  final bool antiAlias;
+
+  /// Creates a NorthAmericaUnitedStatesMinorOutlyingIslands10mWidget.
+  const NorthAmericaUnitedStatesMinorOutlyingIslands10mWidget({
+    super.key,
+    required this.projection,
+    this.fillColor,
+    this.strokeColor,
+    this.strokeWidth = 1.0,
+    this.onFeatureTap,
+    this.antiAlias = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MapWidget(
+      geoJson: northAmericaUnitedStatesMinorOutlyingIslands10m,
+      projection: projection,
+      fillColor: fillColor,
+      strokeColor: strokeColor,
+      strokeWidth: strokeWidth,
+      onFeatureTap: onFeatureTap,
+      antiAlias: antiAlias,
+    );
+  }
 }

@@ -3,7 +3,10 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:dv_geo_core/dv_geo_core.dart';
+import 'package:dv_point/dv_point.dart';
+import 'package:dv_map/src/map_widget.dart';
 
 /// Gzipped GeoJSON data for asia/kuwait.10m.json (base64 encoded)
 const String _kCompressedData = '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';
@@ -34,4 +37,64 @@ GeoJsonFeatureCollection get asiaKuwait10m {
 
   _cached = data;
   return _cached!;
+}
+
+/// Widget for rendering the asia/kuwait.10m.json map.
+///
+/// This widget provides a convenient way to render this specific map
+/// with customizable projection and styling.
+///
+/// Example:
+/// ```dart
+/// AsiaKuwait10mWidget(
+///   projection: MercatorProjection(),
+///   fillColor: Color(0xFFE0E0E0),
+///   strokeColor: Color(0xFF333333),
+///   onFeatureTap: (feature, position) {
+///     print('Tapped: ${feature.properties}');
+///   },
+/// )
+/// ```
+class AsiaKuwait10mWidget extends StatelessWidget {
+  /// The projection to use for rendering.
+  final Projection projection;
+
+  /// The color to use for filling shapes.
+  final Color? fillColor;
+
+  /// The color to use for stroking shapes.
+  final Color? strokeColor;
+
+  /// The stroke width for shape outlines.
+  final double strokeWidth;
+
+  /// Optional callback when a feature is tapped.
+  final void Function(GeoJsonFeature feature, Point position)? onFeatureTap;
+
+  /// Whether to enable anti-aliasing.
+  final bool antiAlias;
+
+  /// Creates a AsiaKuwait10mWidget.
+  const AsiaKuwait10mWidget({
+    super.key,
+    required this.projection,
+    this.fillColor,
+    this.strokeColor,
+    this.strokeWidth = 1.0,
+    this.onFeatureTap,
+    this.antiAlias = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MapWidget(
+      geoJson: asiaKuwait10m,
+      projection: projection,
+      fillColor: fillColor,
+      strokeColor: strokeColor,
+      strokeWidth: strokeWidth,
+      onFeatureTap: onFeatureTap,
+      antiAlias: antiAlias,
+    );
+  }
 }

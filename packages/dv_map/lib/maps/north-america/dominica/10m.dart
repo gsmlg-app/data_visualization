@@ -3,7 +3,10 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:dv_geo_core/dv_geo_core.dart';
+import 'package:dv_point/dv_point.dart';
+import 'package:dv_map/src/map_widget.dart';
 
 /// Gzipped GeoJSON data for north-america/dominica.10m.json (base64 encoded)
 const String _kCompressedData = 'H4sIAAAAAAAAE61Yy2ocVxDd6yuaWSumHqde3pmE7BKyDyYIZ+IMSDNiPFkIo38PI1lCtkuEajKLpufevod6nHrc+nyxLJvT3e1283bZ/Ly9Ov1z3P54uL7efjjtDvvN5Xn7r8flT5u3y+8Xy7Isnx+e3x98+Pxh4/Z4uN0eT7uHQ0+fL8tmf3XzcOCnw81uv/tw9XxiWTa7T4c/ruRh95fv1vVx/d3LjQ+H/Wm33+5P571fD8fT38u7m+3xDPvlo/tngT5uDzfb0/Hua3Ge5P/tcH338Yu6z+CH45+7/dXphd6Pv5fv3/5blh+c36hLusblN1tsb4Q4qb5af3/533hGocktnjHMx4BwTUgHyOzlMQe0Um81ZlHECkDxZLSA5cFzG0qGoJVQzELmeGoV2eFpWkmOATk5vcODakHneJxRLR5Mdc4ZUg20CkMsyaaAUiok2mucKWMJJUvqFQtazTkoCbC2UQIkJ8aAEcLcxrGRKI1JKObu0qqcprAxCcU0VDrWqMBLeQ4IsuziWFXcV9jQzKR1ijrMaw6IEuvyAohplYAQ4U5AkNSK7C+WGmwtoCvHPPBcSrKLZFAUYYXKTtxLqFZaK2gYHtVKGOLE89TgwU5doBhFVK4ATBfrVDaqYsydkqC2PJmyVs5NmOXS+sRA5fNArjJUlxnMgsvHpFGyrGhdEgKzsYRK4S2rLUqM5gLaORW2GldK6RzQK0BdLrSyUp2X+IT32doy1ccc1Iqz7VsB3WXuErCGeAfoXBbzpgZyNlQLKIm0sU+gZ7J12dpVXOcVFCihtld3Vco5a+BZqV0gu2ra3MtIcqGe10w0z9bIzFbjlYGHZK4+WUea5biRgxc5Wo0Dkj7uu+DCeC13VWIeKB4SaLO1S8W8JCO1Kjtem7ElzyV81ckwCpr7JLOE+4JnwXOXnMNfejxSzNsuRKlV6xIxWM4tGCZUrQk5wmPcgyAg0bbCKEXY3Cch1LIayVorfOxmbi1gOINXABJpSxqEZK7IhYbzlacDdKSsyIWoiHYsAINbzCseIt26igcYrypQENLu2g311LkJhYV7PEaA5hpzUlJ/gbKyFamBzaONZM1wrOD1q22NJpnTfLZSZe7tpdZ4TaBoGVG293hVCpu3mqXSj6eUUmpFq0mlbXMt5VI8b64jzzOPdhQihJoPDEOipB3WBHnNI/k8Wcm2/Rd3CP5PCTWE5qMQDWfJV6a4uWJkGKDqx8yEFJpf8UaD9Yvu/ent/uLp+f7i/uJfZpqFbwcZAAA=';
@@ -34,4 +37,64 @@ GeoJsonFeatureCollection get northAmericaDominica10m {
 
   _cached = data;
   return _cached!;
+}
+
+/// Widget for rendering the north-america/dominica.10m.json map.
+///
+/// This widget provides a convenient way to render this specific map
+/// with customizable projection and styling.
+///
+/// Example:
+/// ```dart
+/// NorthAmericaDominica10mWidget(
+///   projection: MercatorProjection(),
+///   fillColor: Color(0xFFE0E0E0),
+///   strokeColor: Color(0xFF333333),
+///   onFeatureTap: (feature, position) {
+///     print('Tapped: ${feature.properties}');
+///   },
+/// )
+/// ```
+class NorthAmericaDominica10mWidget extends StatelessWidget {
+  /// The projection to use for rendering.
+  final Projection projection;
+
+  /// The color to use for filling shapes.
+  final Color? fillColor;
+
+  /// The color to use for stroking shapes.
+  final Color? strokeColor;
+
+  /// The stroke width for shape outlines.
+  final double strokeWidth;
+
+  /// Optional callback when a feature is tapped.
+  final void Function(GeoJsonFeature feature, Point position)? onFeatureTap;
+
+  /// Whether to enable anti-aliasing.
+  final bool antiAlias;
+
+  /// Creates a NorthAmericaDominica10mWidget.
+  const NorthAmericaDominica10mWidget({
+    super.key,
+    required this.projection,
+    this.fillColor,
+    this.strokeColor,
+    this.strokeWidth = 1.0,
+    this.onFeatureTap,
+    this.antiAlias = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MapWidget(
+      geoJson: northAmericaDominica10m,
+      projection: projection,
+      fillColor: fillColor,
+      strokeColor: strokeColor,
+      strokeWidth: strokeWidth,
+      onFeatureTap: onFeatureTap,
+      antiAlias: antiAlias,
+    );
+  }
 }

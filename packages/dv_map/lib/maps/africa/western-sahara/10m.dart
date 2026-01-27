@@ -3,7 +3,10 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:dv_geo_core/dv_geo_core.dart';
+import 'package:dv_point/dv_point.dart';
+import 'package:dv_map/src/map_widget.dart';
 
 /// Gzipped GeoJSON data for africa/western-sahara.10m.json (base64 encoded)
 const String _kCompressedData = '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';
@@ -34,4 +37,64 @@ GeoJsonFeatureCollection get africaWesternSahara10m {
 
   _cached = data;
   return _cached!;
+}
+
+/// Widget for rendering the africa/western-sahara.10m.json map.
+///
+/// This widget provides a convenient way to render this specific map
+/// with customizable projection and styling.
+///
+/// Example:
+/// ```dart
+/// AfricaWesternSahara10mWidget(
+///   projection: MercatorProjection(),
+///   fillColor: Color(0xFFE0E0E0),
+///   strokeColor: Color(0xFF333333),
+///   onFeatureTap: (feature, position) {
+///     print('Tapped: ${feature.properties}');
+///   },
+/// )
+/// ```
+class AfricaWesternSahara10mWidget extends StatelessWidget {
+  /// The projection to use for rendering.
+  final Projection projection;
+
+  /// The color to use for filling shapes.
+  final Color? fillColor;
+
+  /// The color to use for stroking shapes.
+  final Color? strokeColor;
+
+  /// The stroke width for shape outlines.
+  final double strokeWidth;
+
+  /// Optional callback when a feature is tapped.
+  final void Function(GeoJsonFeature feature, Point position)? onFeatureTap;
+
+  /// Whether to enable anti-aliasing.
+  final bool antiAlias;
+
+  /// Creates a AfricaWesternSahara10mWidget.
+  const AfricaWesternSahara10mWidget({
+    super.key,
+    required this.projection,
+    this.fillColor,
+    this.strokeColor,
+    this.strokeWidth = 1.0,
+    this.onFeatureTap,
+    this.antiAlias = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MapWidget(
+      geoJson: africaWesternSahara10m,
+      projection: projection,
+      fillColor: fillColor,
+      strokeColor: strokeColor,
+      strokeWidth: strokeWidth,
+      onFeatureTap: onFeatureTap,
+      antiAlias: antiAlias,
+    );
+  }
 }
