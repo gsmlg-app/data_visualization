@@ -1,7 +1,7 @@
 name: dv_geo_core
 description: Core geographic projections and GeoJSON parsing.
 repository: https://github.com/gsmlg-app/data_visualization/tree/main/packages/dv_geo_core
-homepage: https://github.com/gsmlg-app/data_visualization
+homepage: https://gsmlg-app.github.io/data_visualization/
 version: 1.0.0
 resolution: workspace
 

@@ -1,7 +1,7 @@
 name: dv_stats
 description: Statistical functions for data analysis.
 repository: https://github.com/gsmlg-app/data_visualization/tree/main/packages/dv_stats
-homepage: https://github.com/gsmlg-app/data_visualization
+homepage: https://gsmlg-app.github.io/data_visualization/
 version: 1.0.0
 resolution: workspace
 
