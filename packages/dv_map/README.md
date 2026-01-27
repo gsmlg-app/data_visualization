@@ -21,6 +21,10 @@ The maps are Natural Earth country boundaries converted to GeoJSON at scales 110
 
 ## Usage
 
+Two APIs are available depending on your use case:
+
+### 1. Tree-shakeable imports (recommended)
+
 Import only the maps you need. Your app will only bundle the imported maps:
 
 ```dart
@@ -43,6 +47,41 @@ void main() {
   print('World has ${world.features.length} countries');
 }
 ```
+
+**Best for:** Apps that know which maps they need at compile time.
+
+### 2. Dynamic asset loading
+
+Load maps at runtime based on user input or dynamic data:
+
+```dart
+import 'package:dv_map/dv_map.dart';
+
+Future<void> example() async {
+  // Load world map
+  final world = await DvMapLoader.loadWorld(MapScale.m110);
+
+  // Load country by ISO code
+  final usa = await DvMapLoader.loadCountry(
+    scale: MapScale.m110,
+    isoA3: 'USA',
+  );
+
+  // Load country by name
+  final japan = await DvMapLoader.loadCountry(
+    scale: MapScale.m50,
+    name: 'Japan',
+  );
+
+  // Get metadata about available countries
+  final index = await DvMapIndex.load(MapScale.m110);
+  print('${index.countries.length} countries available');
+}
+```
+
+**Best for:** Apps that need to load maps dynamically (e.g., user selects country from dropdown).
+
+**Note:** Dynamic loading bundles ALL assets (~112 MB), so use tree-shakeable imports when possible.
 
 ### Available maps
 
@@ -95,24 +134,33 @@ lib/maps/
 - `maps/north-america/united-states-of-america/110m.dart` → `northAmericaUnitedStatesOfAmerica110m` getter
 - `maps/africa/south-sudan/50m.dart` → `africaSouthSudan50m` getter (hyphens → underscores)
 
-## Tree Shaking Benefits
+## Choosing the Right API
 
-**Data format:**
-- Maps stored as gzipped binary (base64 encoded)
-- 80-85% size reduction vs raw JSON
+### Tree-shakeable imports vs Dynamic loading
+
+| Feature | Tree-shakeable imports | Dynamic asset loading |
+|---------|----------------------|----------------------|
+| Bundle size | Only imported maps | All maps (~112 MB) |
+| Async loading | ❌ No (synchronous) | ✅ Yes (async) |
+| Runtime selection | ❌ Compile-time only | ✅ ISO/name lookup |
+| Tree shaking | ✅ Yes | ❌ No |
+| Use case | Known maps at build time | User-driven selection |
+
+**Data format** (both APIs):
+- Maps stored as gzipped binary (base64 encoded) in generated code
+- Assets stored as raw JSON for dynamic loading
+- 80-85% size reduction with generated code
 - Decompressed on first access, then cached
 
-**Without tree shaking** (legacy API):
-- Bundle size: All 680+ maps (~112 MB uncompressed)
-- ❌ No tree shaking support
+**Bundle size examples:**
 
-**With tree shaking** (direct imports):
-- Bundle size: Only what you import
-- Examples:
-  - `world.110m` only: ~171 KB (after gzip)
-  - `world.50m` only: ~1.3 MB (after gzip)
-  - `world.110m` + 5 countries (110m): ~350 KB
-  - Custom selection: You decide
+Tree-shakeable imports:
+- `world.110m` only: ~171 KB
+- `world.50m` only: ~1.3 MB
+- `world.110m` + 5 countries: ~350 KB
+
+Dynamic asset loading:
+- All maps bundled: ~112 MB (assets must be included)
 
 **Size comparison:**
 
