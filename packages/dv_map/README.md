@@ -8,7 +8,7 @@ Prebuilt Natural Earth Admin 0 GeoJSON maps packaged for Flutter with **tree sha
 - ✅ **Tree shaking** - Only imports the maps you use
 - ✅ **No asset bundling** - Maps are embedded as Dart constants
 - ✅ **Type safe** - Each map is a named getter
-- ✅ **450+ maps** - World maps and individual countries at 2 resolutions (110m, 50m)
+- ✅ **600+ maps** - World maps and individual countries at 2 resolutions (110m, 50m)
 - ✅ **Interactive** - Tap detection and event handling
 - ✅ **Customizable** - Full control over styling and projections
 
