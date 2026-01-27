@@ -21,7 +21,7 @@ void main() async {
   await for (final entity in assetsDir.list(recursive: true)) {
     if (entity is File && entity.path.endsWith('.json')) {
       // Skip 10m resolution maps (too large for pub.dev)
-      if (entity.path.contains('10m.json')) {
+      if (entity.path.contains('.10m.json')) {
         continue;
       }
 
