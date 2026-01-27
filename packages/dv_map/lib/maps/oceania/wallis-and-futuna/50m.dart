@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get oceaniaWallisAndFutuna50m {
 ///
 /// Example:
 /// ```dart
-/// OceaniaWallisAndFutuna50mWidget(
+/// WallisAndFutuna50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get oceaniaWallisAndFutuna50m {
 ///   },
 /// )
 /// ```
-class OceaniaWallisAndFutuna50mWidget extends StatelessWidget {
+class WallisAndFutuna50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class OceaniaWallisAndFutuna50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a OceaniaWallisAndFutuna50mWidget.
-  const OceaniaWallisAndFutuna50mWidget({
+  /// Creates a WallisAndFutuna50mWidget.
+  const WallisAndFutuna50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

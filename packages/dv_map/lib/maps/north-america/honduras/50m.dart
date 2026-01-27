@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get northAmericaHonduras50m {
 ///
 /// Example:
 /// ```dart
-/// NorthAmericaHonduras50mWidget(
+/// Honduras50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get northAmericaHonduras50m {
 ///   },
 /// )
 /// ```
-class NorthAmericaHonduras50mWidget extends StatelessWidget {
+class Honduras50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class NorthAmericaHonduras50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a NorthAmericaHonduras50mWidget.
-  const NorthAmericaHonduras50mWidget({
+  /// Creates a Honduras50mWidget.
+  const Honduras50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get sevenSeasOpenOceanClippertonIsland10m {
 ///
 /// Example:
 /// ```dart
-/// SevenSeasOpenOceanClippertonIsland10mWidget(
+/// ClippertonIsland10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get sevenSeasOpenOceanClippertonIsland10m {
 ///   },
 /// )
 /// ```
-class SevenSeasOpenOceanClippertonIsland10mWidget extends StatelessWidget {
+class ClippertonIsland10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class SevenSeasOpenOceanClippertonIsland10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a SevenSeasOpenOceanClippertonIsland10mWidget.
-  const SevenSeasOpenOceanClippertonIsland10mWidget({
+  /// Creates a ClippertonIsland10mWidget.
+  const ClippertonIsland10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

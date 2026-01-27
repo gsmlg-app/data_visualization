@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get northAmericaCaymanIslands50m {
 ///
 /// Example:
 /// ```dart
-/// NorthAmericaCaymanIslands50mWidget(
+/// CaymanIslands50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get northAmericaCaymanIslands50m {
 ///   },
 /// )
 /// ```
-class NorthAmericaCaymanIslands50mWidget extends StatelessWidget {
+class CaymanIslands50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class NorthAmericaCaymanIslands50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a NorthAmericaCaymanIslands50mWidget.
-  const NorthAmericaCaymanIslands50mWidget({
+  /// Creates a CaymanIslands50mWidget.
+  const CaymanIslands50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

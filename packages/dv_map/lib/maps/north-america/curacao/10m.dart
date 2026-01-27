@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get northAmericaCuracao10m {
 ///
 /// Example:
 /// ```dart
-/// NorthAmericaCuracao10mWidget(
+/// Curacao10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get northAmericaCuracao10m {
 ///   },
 /// )
 /// ```
-class NorthAmericaCuracao10mWidget extends StatelessWidget {
+class Curacao10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class NorthAmericaCuracao10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a NorthAmericaCuracao10mWidget.
-  const NorthAmericaCuracao10mWidget({
+  /// Creates a Curacao10mWidget.
+  const Curacao10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

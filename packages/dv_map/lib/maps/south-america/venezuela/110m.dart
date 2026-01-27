@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get southAmericaVenezuela110m {
 ///
 /// Example:
 /// ```dart
-/// SouthAmericaVenezuela110mWidget(
+/// Venezuela110mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get southAmericaVenezuela110m {
 ///   },
 /// )
 /// ```
-class SouthAmericaVenezuela110mWidget extends StatelessWidget {
+class Venezuela110mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class SouthAmericaVenezuela110mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a SouthAmericaVenezuela110mWidget.
-  const SouthAmericaVenezuela110mWidget({
+  /// Creates a Venezuela110mWidget.
+  const Venezuela110mWidget({
     super.key,
     required this.projection,
     this.fillColor,

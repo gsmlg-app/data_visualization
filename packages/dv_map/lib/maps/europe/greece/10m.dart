@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get europeGreece10m {
 ///
 /// Example:
 /// ```dart
-/// EuropeGreece10mWidget(
+/// Greece10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get europeGreece10m {
 ///   },
 /// )
 /// ```
-class EuropeGreece10mWidget extends StatelessWidget {
+class Greece10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class EuropeGreece10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a EuropeGreece10mWidget.
-  const EuropeGreece10mWidget({
+  /// Creates a Greece10mWidget.
+  const Greece10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

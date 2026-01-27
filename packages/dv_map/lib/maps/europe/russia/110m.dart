@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get europeRussia110m {
 ///
 /// Example:
 /// ```dart
-/// EuropeRussia110mWidget(
+/// Russia110mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get europeRussia110m {
 ///   },
 /// )
 /// ```
-class EuropeRussia110mWidget extends StatelessWidget {
+class Russia110mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class EuropeRussia110mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a EuropeRussia110mWidget.
-  const EuropeRussia110mWidget({
+  /// Creates a Russia110mWidget.
+  const Russia110mWidget({
     super.key,
     required this.projection,
     this.fillColor,

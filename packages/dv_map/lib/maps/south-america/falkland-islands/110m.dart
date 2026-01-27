@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get southAmericaFalklandIslands110m {
 ///
 /// Example:
 /// ```dart
-/// SouthAmericaFalklandIslands110mWidget(
+/// FalklandIslands110mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get southAmericaFalklandIslands110m {
 ///   },
 /// )
 /// ```
-class SouthAmericaFalklandIslands110mWidget extends StatelessWidget {
+class FalklandIslands110mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class SouthAmericaFalklandIslands110mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a SouthAmericaFalklandIslands110mWidget.
-  const SouthAmericaFalklandIslands110mWidget({
+  /// Creates a FalklandIslands110mWidget.
+  const FalklandIslands110mWidget({
     super.key,
     required this.projection,
     this.fillColor,

@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get africaSudan110m {
 ///
 /// Example:
 /// ```dart
-/// AfricaSudan110mWidget(
+/// Sudan110mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get africaSudan110m {
 ///   },
 /// )
 /// ```
-class AfricaSudan110mWidget extends StatelessWidget {
+class Sudan110mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AfricaSudan110mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AfricaSudan110mWidget.
-  const AfricaSudan110mWidget({
+  /// Creates a Sudan110mWidget.
+  const Sudan110mWidget({
     super.key,
     required this.projection,
     this.fillColor,

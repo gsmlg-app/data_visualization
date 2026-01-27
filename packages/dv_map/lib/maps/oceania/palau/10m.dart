@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get oceaniaPalau10m {
 ///
 /// Example:
 /// ```dart
-/// OceaniaPalau10mWidget(
+/// Palau10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get oceaniaPalau10m {
 ///   },
 /// )
 /// ```
-class OceaniaPalau10mWidget extends StatelessWidget {
+class Palau10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class OceaniaPalau10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a OceaniaPalau10mWidget.
-  const OceaniaPalau10mWidget({
+  /// Creates a Palau10mWidget.
+  const Palau10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

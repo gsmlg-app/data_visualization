@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get asiaCyprusNoMansArea10m {
 ///
 /// Example:
 /// ```dart
-/// AsiaCyprusNoMansArea10mWidget(
+/// CyprusNoMansArea10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get asiaCyprusNoMansArea10m {
 ///   },
 /// )
 /// ```
-class AsiaCyprusNoMansArea10mWidget extends StatelessWidget {
+class CyprusNoMansArea10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AsiaCyprusNoMansArea10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AsiaCyprusNoMansArea10mWidget.
-  const AsiaCyprusNoMansArea10mWidget({
+  /// Creates a CyprusNoMansArea10mWidget.
+  const CyprusNoMansArea10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

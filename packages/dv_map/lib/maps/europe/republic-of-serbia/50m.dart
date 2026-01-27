@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get europeRepublicOfSerbia50m {
 ///
 /// Example:
 /// ```dart
-/// EuropeRepublicOfSerbia50mWidget(
+/// RepublicOfSerbia50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get europeRepublicOfSerbia50m {
 ///   },
 /// )
 /// ```
-class EuropeRepublicOfSerbia50mWidget extends StatelessWidget {
+class RepublicOfSerbia50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class EuropeRepublicOfSerbia50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a EuropeRepublicOfSerbia50mWidget.
-  const EuropeRepublicOfSerbia50mWidget({
+  /// Creates a RepublicOfSerbia50mWidget.
+  const RepublicOfSerbia50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

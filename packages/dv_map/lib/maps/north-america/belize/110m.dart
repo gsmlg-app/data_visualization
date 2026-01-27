@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get northAmericaBelize110m {
 ///
 /// Example:
 /// ```dart
-/// NorthAmericaBelize110mWidget(
+/// Belize110mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get northAmericaBelize110m {
 ///   },
 /// )
 /// ```
-class NorthAmericaBelize110mWidget extends StatelessWidget {
+class Belize110mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class NorthAmericaBelize110mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a NorthAmericaBelize110mWidget.
-  const NorthAmericaBelize110mWidget({
+  /// Creates a Belize110mWidget.
+  const Belize110mWidget({
     super.key,
     required this.projection,
     this.fillColor,

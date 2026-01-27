@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get oceaniaSolomonIslands110m {
 ///
 /// Example:
 /// ```dart
-/// OceaniaSolomonIslands110mWidget(
+/// SolomonIslands110mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get oceaniaSolomonIslands110m {
 ///   },
 /// )
 /// ```
-class OceaniaSolomonIslands110mWidget extends StatelessWidget {
+class SolomonIslands110mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class OceaniaSolomonIslands110mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a OceaniaSolomonIslands110mWidget.
-  const OceaniaSolomonIslands110mWidget({
+  /// Creates a SolomonIslands110mWidget.
+  const SolomonIslands110mWidget({
     super.key,
     required this.projection,
     this.fillColor,

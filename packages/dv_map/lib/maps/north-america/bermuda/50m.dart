@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get northAmericaBermuda50m {
 ///
 /// Example:
 /// ```dart
-/// NorthAmericaBermuda50mWidget(
+/// Bermuda50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get northAmericaBermuda50m {
 ///   },
 /// )
 /// ```
-class NorthAmericaBermuda50mWidget extends StatelessWidget {
+class Bermuda50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class NorthAmericaBermuda50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a NorthAmericaBermuda50mWidget.
-  const NorthAmericaBermuda50mWidget({
+  /// Creates a Bermuda50mWidget.
+  const Bermuda50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

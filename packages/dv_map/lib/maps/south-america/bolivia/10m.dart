@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get southAmericaBolivia10m {
 ///
 /// Example:
 /// ```dart
-/// SouthAmericaBolivia10mWidget(
+/// Bolivia10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get southAmericaBolivia10m {
 ///   },
 /// )
 /// ```
-class SouthAmericaBolivia10mWidget extends StatelessWidget {
+class Bolivia10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class SouthAmericaBolivia10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a SouthAmericaBolivia10mWidget.
-  const SouthAmericaBolivia10mWidget({
+  /// Creates a Bolivia10mWidget.
+  const Bolivia10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

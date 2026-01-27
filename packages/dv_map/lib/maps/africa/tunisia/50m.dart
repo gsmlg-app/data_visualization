@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get africaTunisia50m {
 ///
 /// Example:
 /// ```dart
-/// AfricaTunisia50mWidget(
+/// Tunisia50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get africaTunisia50m {
 ///   },
 /// )
 /// ```
-class AfricaTunisia50mWidget extends StatelessWidget {
+class Tunisia50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AfricaTunisia50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AfricaTunisia50mWidget.
-  const AfricaTunisia50mWidget({
+  /// Creates a Tunisia50mWidget.
+  const Tunisia50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

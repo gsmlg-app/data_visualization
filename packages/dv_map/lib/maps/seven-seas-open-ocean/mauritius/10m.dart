@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get sevenSeasOpenOceanMauritius10m {
 ///
 /// Example:
 /// ```dart
-/// SevenSeasOpenOceanMauritius10mWidget(
+/// Mauritius10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get sevenSeasOpenOceanMauritius10m {
 ///   },
 /// )
 /// ```
-class SevenSeasOpenOceanMauritius10mWidget extends StatelessWidget {
+class Mauritius10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class SevenSeasOpenOceanMauritius10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a SevenSeasOpenOceanMauritius10mWidget.
-  const SevenSeasOpenOceanMauritius10mWidget({
+  /// Creates a Mauritius10mWidget.
+  const Mauritius10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

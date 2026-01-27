@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get asiaNepal110m {
 ///
 /// Example:
 /// ```dart
-/// AsiaNepal110mWidget(
+/// Nepal110mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get asiaNepal110m {
 ///   },
 /// )
 /// ```
-class AsiaNepal110mWidget extends StatelessWidget {
+class Nepal110mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AsiaNepal110mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AsiaNepal110mWidget.
-  const AsiaNepal110mWidget({
+  /// Creates a Nepal110mWidget.
+  const Nepal110mWidget({
     super.key,
     required this.projection,
     this.fillColor,

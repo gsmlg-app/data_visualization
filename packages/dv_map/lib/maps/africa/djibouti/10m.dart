@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get africaDjibouti10m {
 ///
 /// Example:
 /// ```dart
-/// AfricaDjibouti10mWidget(
+/// Djibouti10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get africaDjibouti10m {
 ///   },
 /// )
 /// ```
-class AfricaDjibouti10mWidget extends StatelessWidget {
+class Djibouti10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AfricaDjibouti10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AfricaDjibouti10mWidget.
-  const AfricaDjibouti10mWidget({
+  /// Creates a Djibouti10mWidget.
+  const Djibouti10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

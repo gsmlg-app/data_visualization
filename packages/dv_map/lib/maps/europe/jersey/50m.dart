@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get europeJersey50m {
 ///
 /// Example:
 /// ```dart
-/// EuropeJersey50mWidget(
+/// Jersey50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get europeJersey50m {
 ///   },
 /// )
 /// ```
-class EuropeJersey50mWidget extends StatelessWidget {
+class Jersey50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class EuropeJersey50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a EuropeJersey50mWidget.
-  const EuropeJersey50mWidget({
+  /// Creates a Jersey50mWidget.
+  const Jersey50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

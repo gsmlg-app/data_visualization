@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get africaGabon50m {
 ///
 /// Example:
 /// ```dart
-/// AfricaGabon50mWidget(
+/// Gabon50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get africaGabon50m {
 ///   },
 /// )
 /// ```
-class AfricaGabon50mWidget extends StatelessWidget {
+class Gabon50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AfricaGabon50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AfricaGabon50mWidget.
-  const AfricaGabon50mWidget({
+  /// Creates a Gabon50mWidget.
+  const Gabon50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

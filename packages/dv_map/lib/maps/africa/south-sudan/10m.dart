@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get africaSouthSudan10m {
 ///
 /// Example:
 /// ```dart
-/// AfricaSouthSudan10mWidget(
+/// SouthSudan10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get africaSouthSudan10m {
 ///   },
 /// )
 /// ```
-class AfricaSouthSudan10mWidget extends StatelessWidget {
+class SouthSudan10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AfricaSouthSudan10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AfricaSouthSudan10mWidget.
-  const AfricaSouthSudan10mWidget({
+  /// Creates a SouthSudan10mWidget.
+  const SouthSudan10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

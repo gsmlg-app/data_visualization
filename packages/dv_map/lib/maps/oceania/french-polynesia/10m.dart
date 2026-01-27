@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get oceaniaFrenchPolynesia10m {
 ///
 /// Example:
 /// ```dart
-/// OceaniaFrenchPolynesia10mWidget(
+/// FrenchPolynesia10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get oceaniaFrenchPolynesia10m {
 ///   },
 /// )
 /// ```
-class OceaniaFrenchPolynesia10mWidget extends StatelessWidget {
+class FrenchPolynesia10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class OceaniaFrenchPolynesia10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a OceaniaFrenchPolynesia10mWidget.
-  const OceaniaFrenchPolynesia10mWidget({
+  /// Creates a FrenchPolynesia10mWidget.
+  const FrenchPolynesia10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

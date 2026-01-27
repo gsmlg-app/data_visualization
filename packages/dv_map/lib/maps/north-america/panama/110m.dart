@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get northAmericaPanama110m {
 ///
 /// Example:
 /// ```dart
-/// NorthAmericaPanama110mWidget(
+/// Panama110mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get northAmericaPanama110m {
 ///   },
 /// )
 /// ```
-class NorthAmericaPanama110mWidget extends StatelessWidget {
+class Panama110mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class NorthAmericaPanama110mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a NorthAmericaPanama110mWidget.
-  const NorthAmericaPanama110mWidget({
+  /// Creates a Panama110mWidget.
+  const Panama110mWidget({
     super.key,
     required this.projection,
     this.fillColor,

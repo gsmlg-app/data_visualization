@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get europeCroatia10m {
 ///
 /// Example:
 /// ```dart
-/// EuropeCroatia10mWidget(
+/// Croatia10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get europeCroatia10m {
 ///   },
 /// )
 /// ```
-class EuropeCroatia10mWidget extends StatelessWidget {
+class Croatia10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class EuropeCroatia10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a EuropeCroatia10mWidget.
-  const EuropeCroatia10mWidget({
+  /// Creates a Croatia10mWidget.
+  const Croatia10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

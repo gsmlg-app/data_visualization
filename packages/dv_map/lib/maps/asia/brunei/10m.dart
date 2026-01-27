@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get asiaBrunei10m {
 ///
 /// Example:
 /// ```dart
-/// AsiaBrunei10mWidget(
+/// Brunei10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get asiaBrunei10m {
 ///   },
 /// )
 /// ```
-class AsiaBrunei10mWidget extends StatelessWidget {
+class Brunei10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AsiaBrunei10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AsiaBrunei10mWidget.
-  const AsiaBrunei10mWidget({
+  /// Creates a Brunei10mWidget.
+  const Brunei10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

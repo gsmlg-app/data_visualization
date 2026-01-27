@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get northAmericaGrenada50m {
 ///
 /// Example:
 /// ```dart
-/// NorthAmericaGrenada50mWidget(
+/// Grenada50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get northAmericaGrenada50m {
 ///   },
 /// )
 /// ```
-class NorthAmericaGrenada50mWidget extends StatelessWidget {
+class Grenada50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class NorthAmericaGrenada50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a NorthAmericaGrenada50mWidget.
-  const NorthAmericaGrenada50mWidget({
+  /// Creates a Grenada50mWidget.
+  const Grenada50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

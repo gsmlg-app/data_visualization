@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get northAmericaGuatemala50m {
 ///
 /// Example:
 /// ```dart
-/// NorthAmericaGuatemala50mWidget(
+/// Guatemala50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get northAmericaGuatemala50m {
 ///   },
 /// )
 /// ```
-class NorthAmericaGuatemala50mWidget extends StatelessWidget {
+class Guatemala50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class NorthAmericaGuatemala50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a NorthAmericaGuatemala50mWidget.
-  const NorthAmericaGuatemala50mWidget({
+  /// Creates a Guatemala50mWidget.
+  const Guatemala50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

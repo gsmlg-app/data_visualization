@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get southAmericaParaguay50m {
 ///
 /// Example:
 /// ```dart
-/// SouthAmericaParaguay50mWidget(
+/// Paraguay50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get southAmericaParaguay50m {
 ///   },
 /// )
 /// ```
-class SouthAmericaParaguay50mWidget extends StatelessWidget {
+class Paraguay50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class SouthAmericaParaguay50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a SouthAmericaParaguay50mWidget.
-  const SouthAmericaParaguay50mWidget({
+  /// Creates a Paraguay50mWidget.
+  const Paraguay50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

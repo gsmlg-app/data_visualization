@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get europeHungary110m {
 ///
 /// Example:
 /// ```dart
-/// EuropeHungary110mWidget(
+/// Hungary110mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get europeHungary110m {
 ///   },
 /// )
 /// ```
-class EuropeHungary110mWidget extends StatelessWidget {
+class Hungary110mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class EuropeHungary110mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a EuropeHungary110mWidget.
-  const EuropeHungary110mWidget({
+  /// Creates a Hungary110mWidget.
+  const Hungary110mWidget({
     super.key,
     required this.projection,
     this.fillColor,

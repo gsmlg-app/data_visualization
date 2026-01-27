@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get europeBosniaAndHerzegovina50m {
 ///
 /// Example:
 /// ```dart
-/// EuropeBosniaAndHerzegovina50mWidget(
+/// BosniaAndHerzegovina50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get europeBosniaAndHerzegovina50m {
 ///   },
 /// )
 /// ```
-class EuropeBosniaAndHerzegovina50mWidget extends StatelessWidget {
+class BosniaAndHerzegovina50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class EuropeBosniaAndHerzegovina50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a EuropeBosniaAndHerzegovina50mWidget.
-  const EuropeBosniaAndHerzegovina50mWidget({
+  /// Creates a BosniaAndHerzegovina50mWidget.
+  const BosniaAndHerzegovina50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get northAmericaMontserrat10m {
 ///
 /// Example:
 /// ```dart
-/// NorthAmericaMontserrat10mWidget(
+/// Montserrat10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get northAmericaMontserrat10m {
 ///   },
 /// )
 /// ```
-class NorthAmericaMontserrat10mWidget extends StatelessWidget {
+class Montserrat10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class NorthAmericaMontserrat10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a NorthAmericaMontserrat10mWidget.
-  const NorthAmericaMontserrat10mWidget({
+  /// Creates a Montserrat10mWidget.
+  const Montserrat10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

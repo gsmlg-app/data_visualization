@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get northAmericaTurksAndCaicosIslands10m {
 ///
 /// Example:
 /// ```dart
-/// NorthAmericaTurksAndCaicosIslands10mWidget(
+/// TurksAndCaicosIslands10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get northAmericaTurksAndCaicosIslands10m {
 ///   },
 /// )
 /// ```
-class NorthAmericaTurksAndCaicosIslands10mWidget extends StatelessWidget {
+class TurksAndCaicosIslands10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class NorthAmericaTurksAndCaicosIslands10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a NorthAmericaTurksAndCaicosIslands10mWidget.
-  const NorthAmericaTurksAndCaicosIslands10mWidget({
+  /// Creates a TurksAndCaicosIslands10mWidget.
+  const TurksAndCaicosIslands10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

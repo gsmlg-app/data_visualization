@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get asiaKuwait50m {
 ///
 /// Example:
 /// ```dart
-/// AsiaKuwait50mWidget(
+/// Kuwait50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get asiaKuwait50m {
 ///   },
 /// )
 /// ```
-class AsiaKuwait50mWidget extends StatelessWidget {
+class Kuwait50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AsiaKuwait50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AsiaKuwait50mWidget.
-  const AsiaKuwait50mWidget({
+  /// Creates a Kuwait50mWidget.
+  const Kuwait50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

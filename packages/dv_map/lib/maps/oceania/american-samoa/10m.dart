@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get oceaniaAmericanSamoa10m {
 ///
 /// Example:
 /// ```dart
-/// OceaniaAmericanSamoa10mWidget(
+/// AmericanSamoa10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get oceaniaAmericanSamoa10m {
 ///   },
 /// )
 /// ```
-class OceaniaAmericanSamoa10mWidget extends StatelessWidget {
+class AmericanSamoa10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class OceaniaAmericanSamoa10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a OceaniaAmericanSamoa10mWidget.
-  const OceaniaAmericanSamoa10mWidget({
+  /// Creates a AmericanSamoa10mWidget.
+  const AmericanSamoa10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

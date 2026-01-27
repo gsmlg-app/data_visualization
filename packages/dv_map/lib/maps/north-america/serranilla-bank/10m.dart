@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get northAmericaSerranillaBank10m {
 ///
 /// Example:
 /// ```dart
-/// NorthAmericaSerranillaBank10mWidget(
+/// SerranillaBank10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get northAmericaSerranillaBank10m {
 ///   },
 /// )
 /// ```
-class NorthAmericaSerranillaBank10mWidget extends StatelessWidget {
+class SerranillaBank10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class NorthAmericaSerranillaBank10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a NorthAmericaSerranillaBank10mWidget.
-  const NorthAmericaSerranillaBank10mWidget({
+  /// Creates a SerranillaBank10mWidget.
+  const SerranillaBank10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

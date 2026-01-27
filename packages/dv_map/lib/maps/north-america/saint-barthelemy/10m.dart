@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get northAmericaSaintBarthelemy10m {
 ///
 /// Example:
 /// ```dart
-/// NorthAmericaSaintBarthelemy10mWidget(
+/// SaintBarthelemy10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get northAmericaSaintBarthelemy10m {
 ///   },
 /// )
 /// ```
-class NorthAmericaSaintBarthelemy10mWidget extends StatelessWidget {
+class SaintBarthelemy10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class NorthAmericaSaintBarthelemy10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a NorthAmericaSaintBarthelemy10mWidget.
-  const NorthAmericaSaintBarthelemy10mWidget({
+  /// Creates a SaintBarthelemy10mWidget.
+  const SaintBarthelemy10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

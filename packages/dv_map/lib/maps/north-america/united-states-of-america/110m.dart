@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get northAmericaUnitedStatesOfAmerica110m {
 ///
 /// Example:
 /// ```dart
-/// NorthAmericaUnitedStatesOfAmerica110mWidget(
+/// UnitedStatesOfAmerica110mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get northAmericaUnitedStatesOfAmerica110m {
 ///   },
 /// )
 /// ```
-class NorthAmericaUnitedStatesOfAmerica110mWidget extends StatelessWidget {
+class UnitedStatesOfAmerica110mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class NorthAmericaUnitedStatesOfAmerica110mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a NorthAmericaUnitedStatesOfAmerica110mWidget.
-  const NorthAmericaUnitedStatesOfAmerica110mWidget({
+  /// Creates a UnitedStatesOfAmerica110mWidget.
+  const UnitedStatesOfAmerica110mWidget({
     super.key,
     required this.projection,
     this.fillColor,

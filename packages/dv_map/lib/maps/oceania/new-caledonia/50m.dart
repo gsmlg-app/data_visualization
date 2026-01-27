@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get oceaniaNewCaledonia50m {
 ///
 /// Example:
 /// ```dart
-/// OceaniaNewCaledonia50mWidget(
+/// NewCaledonia50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get oceaniaNewCaledonia50m {
 ///   },
 /// )
 /// ```
-class OceaniaNewCaledonia50mWidget extends StatelessWidget {
+class NewCaledonia50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class OceaniaNewCaledonia50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a OceaniaNewCaledonia50mWidget.
-  const OceaniaNewCaledonia50mWidget({
+  /// Creates a NewCaledonia50mWidget.
+  const NewCaledonia50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

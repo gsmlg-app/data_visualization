@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get asiaKazakhstan10m {
 ///
 /// Example:
 /// ```dart
-/// AsiaKazakhstan10mWidget(
+/// Kazakhstan10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get asiaKazakhstan10m {
 ///   },
 /// )
 /// ```
-class AsiaKazakhstan10mWidget extends StatelessWidget {
+class Kazakhstan10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AsiaKazakhstan10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AsiaKazakhstan10mWidget.
-  const AsiaKazakhstan10mWidget({
+  /// Creates a Kazakhstan10mWidget.
+  const Kazakhstan10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

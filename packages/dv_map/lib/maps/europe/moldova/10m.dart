@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get europeMoldova10m {
 ///
 /// Example:
 /// ```dart
-/// EuropeMoldova10mWidget(
+/// Moldova10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get europeMoldova10m {
 ///   },
 /// )
 /// ```
-class EuropeMoldova10mWidget extends StatelessWidget {
+class Moldova10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class EuropeMoldova10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a EuropeMoldova10mWidget.
-  const EuropeMoldova10mWidget({
+  /// Creates a Moldova10mWidget.
+  const Moldova10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

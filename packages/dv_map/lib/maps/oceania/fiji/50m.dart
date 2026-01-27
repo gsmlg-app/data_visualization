@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get oceaniaFiji50m {
 ///
 /// Example:
 /// ```dart
-/// OceaniaFiji50mWidget(
+/// Fiji50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get oceaniaFiji50m {
 ///   },
 /// )
 /// ```
-class OceaniaFiji50mWidget extends StatelessWidget {
+class Fiji50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class OceaniaFiji50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a OceaniaFiji50mWidget.
-  const OceaniaFiji50mWidget({
+  /// Creates a Fiji50mWidget.
+  const Fiji50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

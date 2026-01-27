@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get asiaJapan50m {
 ///
 /// Example:
 /// ```dart
-/// AsiaJapan50mWidget(
+/// Japan50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get asiaJapan50m {
 ///   },
 /// )
 /// ```
-class AsiaJapan50mWidget extends StatelessWidget {
+class Japan50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AsiaJapan50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AsiaJapan50mWidget.
-  const AsiaJapan50mWidget({
+  /// Creates a Japan50mWidget.
+  const Japan50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

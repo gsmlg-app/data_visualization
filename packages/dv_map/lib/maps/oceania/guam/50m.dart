@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get oceaniaGuam50m {
 ///
 /// Example:
 /// ```dart
-/// OceaniaGuam50mWidget(
+/// Guam50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get oceaniaGuam50m {
 ///   },
 /// )
 /// ```
-class OceaniaGuam50mWidget extends StatelessWidget {
+class Guam50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class OceaniaGuam50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a OceaniaGuam50mWidget.
-  const OceaniaGuam50mWidget({
+  /// Creates a Guam50mWidget.
+  const Guam50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

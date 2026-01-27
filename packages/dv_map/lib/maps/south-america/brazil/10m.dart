@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get southAmericaBrazil10m {
 ///
 /// Example:
 /// ```dart
-/// SouthAmericaBrazil10mWidget(
+/// Brazil10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get southAmericaBrazil10m {
 ///   },
 /// )
 /// ```
-class SouthAmericaBrazil10mWidget extends StatelessWidget {
+class Brazil10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class SouthAmericaBrazil10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a SouthAmericaBrazil10mWidget.
-  const SouthAmericaBrazil10mWidget({
+  /// Creates a Brazil10mWidget.
+  const Brazil10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

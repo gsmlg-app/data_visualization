@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get oceaniaPitcairnIslands10m {
 ///
 /// Example:
 /// ```dart
-/// OceaniaPitcairnIslands10mWidget(
+/// PitcairnIslands10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get oceaniaPitcairnIslands10m {
 ///   },
 /// )
 /// ```
-class OceaniaPitcairnIslands10mWidget extends StatelessWidget {
+class PitcairnIslands10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class OceaniaPitcairnIslands10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a OceaniaPitcairnIslands10mWidget.
-  const OceaniaPitcairnIslands10mWidget({
+  /// Creates a PitcairnIslands10mWidget.
+  const PitcairnIslands10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

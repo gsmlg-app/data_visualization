@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get northAmericaAruba50m {
 ///
 /// Example:
 /// ```dart
-/// NorthAmericaAruba50mWidget(
+/// Aruba50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get northAmericaAruba50m {
 ///   },
 /// )
 /// ```
-class NorthAmericaAruba50mWidget extends StatelessWidget {
+class Aruba50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class NorthAmericaAruba50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a NorthAmericaAruba50mWidget.
-  const NorthAmericaAruba50mWidget({
+  /// Creates a Aruba50mWidget.
+  const Aruba50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

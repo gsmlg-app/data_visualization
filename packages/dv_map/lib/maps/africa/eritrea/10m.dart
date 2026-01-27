@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get africaEritrea10m {
 ///
 /// Example:
 /// ```dart
-/// AfricaEritrea10mWidget(
+/// Eritrea10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get africaEritrea10m {
 ///   },
 /// )
 /// ```
-class AfricaEritrea10mWidget extends StatelessWidget {
+class Eritrea10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AfricaEritrea10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AfricaEritrea10mWidget.
-  const AfricaEritrea10mWidget({
+  /// Creates a Eritrea10mWidget.
+  const Eritrea10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get northAmericaAnguilla50m {
 ///
 /// Example:
 /// ```dart
-/// NorthAmericaAnguilla50mWidget(
+/// Anguilla50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get northAmericaAnguilla50m {
 ///   },
 /// )
 /// ```
-class NorthAmericaAnguilla50mWidget extends StatelessWidget {
+class Anguilla50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class NorthAmericaAnguilla50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a NorthAmericaAnguilla50mWidget.
-  const NorthAmericaAnguilla50mWidget({
+  /// Creates a Anguilla50mWidget.
+  const Anguilla50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

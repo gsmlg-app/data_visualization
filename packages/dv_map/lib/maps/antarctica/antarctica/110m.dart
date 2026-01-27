@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get antarcticaAntarctica110m {
 ///
 /// Example:
 /// ```dart
-/// AntarcticaAntarctica110mWidget(
+/// Antarctica110mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get antarcticaAntarctica110m {
 ///   },
 /// )
 /// ```
-class AntarcticaAntarctica110mWidget extends StatelessWidget {
+class Antarctica110mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AntarcticaAntarctica110mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AntarcticaAntarctica110mWidget.
-  const AntarcticaAntarctica110mWidget({
+  /// Creates a Antarctica110mWidget.
+  const Antarctica110mWidget({
     super.key,
     required this.projection,
     this.fillColor,

@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get africaLesotho110m {
 ///
 /// Example:
 /// ```dart
-/// AfricaLesotho110mWidget(
+/// Lesotho110mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get africaLesotho110m {
 ///   },
 /// )
 /// ```
-class AfricaLesotho110mWidget extends StatelessWidget {
+class Lesotho110mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AfricaLesotho110mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AfricaLesotho110mWidget.
-  const AfricaLesotho110mWidget({
+  /// Creates a Lesotho110mWidget.
+  const Lesotho110mWidget({
     super.key,
     required this.projection,
     this.fillColor,

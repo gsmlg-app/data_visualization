@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get sevenSeasOpenOceanSouthGeorgiaAndTheIslands10m {
 ///
 /// Example:
 /// ```dart
-/// SevenSeasOpenOceanSouthGeorgiaAndTheIslands10mWidget(
+/// SouthGeorgiaAndTheIslands10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get sevenSeasOpenOceanSouthGeorgiaAndTheIslands10m {
 ///   },
 /// )
 /// ```
-class SevenSeasOpenOceanSouthGeorgiaAndTheIslands10mWidget extends StatelessWidget {
+class SouthGeorgiaAndTheIslands10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class SevenSeasOpenOceanSouthGeorgiaAndTheIslands10mWidget extends StatelessWidg
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a SevenSeasOpenOceanSouthGeorgiaAndTheIslands10mWidget.
-  const SevenSeasOpenOceanSouthGeorgiaAndTheIslands10mWidget({
+  /// Creates a SouthGeorgiaAndTheIslands10mWidget.
+  const SouthGeorgiaAndTheIslands10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

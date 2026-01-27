@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get oceaniaVanuatu110m {
 ///
 /// Example:
 /// ```dart
-/// OceaniaVanuatu110mWidget(
+/// Vanuatu110mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get oceaniaVanuatu110m {
 ///   },
 /// )
 /// ```
-class OceaniaVanuatu110mWidget extends StatelessWidget {
+class Vanuatu110mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class OceaniaVanuatu110mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a OceaniaVanuatu110mWidget.
-  const OceaniaVanuatu110mWidget({
+  /// Creates a Vanuatu110mWidget.
+  const Vanuatu110mWidget({
     super.key,
     required this.projection,
     this.fillColor,

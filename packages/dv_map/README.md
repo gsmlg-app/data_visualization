@@ -35,6 +35,7 @@ import 'package:dv_geo_core/dv_geo_core.dart';
 // Import specific maps - each exports both data and widget
 import 'package:dv_map/maps/world/110m.dart';
 import 'package:dv_map/maps/asia/china/110m.dart';
+import 'package:dv_map/maps/africa/nigeria/50m.dart';
 
 class MyMapApp extends StatelessWidget {
   @override
@@ -53,12 +54,19 @@ class MyMapApp extends StatelessWidget {
               },
             ),
           ),
-          // Use the generated AsiaChina110mWidget
+          // Use the generated China110mWidget (no continent prefix!)
           Expanded(
-            child: AsiaChina110mWidget(
+            child: China110mWidget(
               projection: MercatorProjection(),
               fillColor: Colors.red.shade200,
               strokeColor: Colors.red.shade700,
+            ),
+          ),
+          // Use the generated Nigeria50mWidget
+          Expanded(
+            child: Nigeria50mWidget(
+              projection: MercatorProjection(),
+              fillColor: Colors.green.shade300,
             ),
           ),
         ],
@@ -82,71 +90,30 @@ All generated widgets support:
 **Base widget** (for advanced custom use):
 - `MapWidget` - Base widget for rendering any GeoJSON data with full control
 
-### Raw Data Access
+### Accessing Raw GeoJSON Data
 
-Two APIs are available for accessing the raw map data:
-
-
-
-### 1. Tree-shakeable imports (recommended)
-
-Import only the maps you need. Your app will only bundle the imported maps:
+Each map file exports the raw GeoJSON data as a getter:
 
 ```dart
-// Import world map
 import 'package:dv_map/maps/world/110m.dart';
-
-// Import specific country maps
 import 'package:dv_map/maps/africa/nigeria/50m.dart';
-import 'package:dv_map/maps/asia/china/10m.dart';
-
-// Or import all maps from a continent
-import 'package:dv_map/maps/africa/africa.dart';
 
 void main() {
-  // Maps are available as camelCase getters (no async loading needed)
+  // Access the raw GeoJSON data (no async loading needed)
   final world = world110m;             // GeoJsonFeatureCollection
   final nigeria = africaNigeria50m;    // GeoJsonFeatureCollection
-  final china = asiaChina10m;          // GeoJsonFeatureCollection
 
   print('World has ${world.features.length} countries');
+  print('Nigeria has ${nigeria.features.length} features');
+
+  // Access feature properties
+  for (final feature in world.features) {
+    print(feature.properties!['name']);
+  }
 }
 ```
 
-**Best for:** Apps that know which maps they need at compile time.
-
-### 2. Dynamic asset loading
-
-Load maps at runtime based on user input or dynamic data:
-
-```dart
-import 'package:dv_map/dv_map.dart';
-
-Future<void> example() async {
-  // Load world map
-  final world = await DvMapLoader.loadWorld(MapScale.m110);
-
-  // Load country by ISO code
-  final usa = await DvMapLoader.loadCountry(
-    scale: MapScale.m110,
-    isoA3: 'USA',
-  );
-
-  // Load country by name
-  final japan = await DvMapLoader.loadCountry(
-    scale: MapScale.m50,
-    name: 'Japan',
-  );
-
-  // Get metadata about available countries
-  final index = await DvMapIndex.load(MapScale.m110);
-  print('${index.countries.length} countries available');
-}
-```
-
-**Best for:** Apps that need to load maps dynamically (e.g., user selects country from dropdown).
-
-**Note:** Dynamic loading bundles ALL assets (~112 MB), so use tree-shakeable imports when possible.
+**Tree-shakeable:** Your app only bundles the maps you import.
 
 ### Available maps
 
@@ -185,8 +152,8 @@ lib/maps/
 
 **Naming conventions:**
 - **Directory structure**: `{continent}/{country}/{scale}.dart`
-- **Data getters**: `{continent}{Country}{Scale}` (camelCase)
-- **Widget classes**: `{Continent}{Country}{Scale}Widget` (PascalCase + Widget)
+- **Data getters**: `{continent}{Country}{Scale}` (camelCase, includes continent)
+- **Widget classes**: `{Country}{Scale}Widget` (PascalCase + Widget, NO continent prefix)
 
 **World maps:**
 
@@ -200,41 +167,25 @@ lib/maps/
 
 | File | Data Getter | Widget Class |
 |------|-------------|--------------|
-| `maps/africa/nigeria/110m.dart` | `africaNigeria110m` | `AfricaNigeria110mWidget` |
-| `maps/asia/japan/50m.dart` | `asiaJapan50m` | `AsiaJapan50mWidget` |
-| `maps/europe/france/10m.dart` | `europeFrance10m` | `EuropeFrance10mWidget` |
-| `maps/asia/china/110m.dart` | `asiaChina110m` | `AsiaChina110mWidget` |
-| `maps/africa/south-sudan/50m.dart` | `africaSouthSudan50m` | `AfricaSouthSudan50mWidget` |
+| `maps/africa/nigeria/110m.dart` | `africaNigeria110m` | `Nigeria110mWidget` |
+| `maps/asia/japan/50m.dart` | `asiaJapan50m` | `Japan50mWidget` |
+| `maps/europe/france/10m.dart` | `europeFrance10m` | `France10mWidget` |
+| `maps/asia/china/110m.dart` | `asiaChina110m` | `China110mWidget` |
+| `maps/asia/afghanistan/110m.dart` | `asiaAfghanistan110m` | `Afghanistan110mWidget` |
+| `maps/africa/south-sudan/50m.dart` | `africaSouthSudan50m` | `SouthSudan50mWidget` |
 
-**Note:** Hyphens in country names are converted to underscores in data getters and removed in widget class names.
+**Note:**
+- Data getters include continent prefix for namespacing (e.g., `asiaChina110m`)
+- Widget classes omit continent prefix for cleaner usage (e.g., `China110mWidget`)
+- Hyphens in country names are converted to underscores in data getters and PascalCase in widget names
 
-## Choosing the Right API
+## Tree Shaking & Bundle Size
 
-### Tree-shakeable imports vs Dynamic loading
-
-| Feature | Tree-shakeable imports | Dynamic asset loading |
-|---------|----------------------|----------------------|
-| Bundle size | Only imported maps | All maps (~112 MB) |
-| Async loading | ❌ No (synchronous) | ✅ Yes (async) |
-| Runtime selection | ❌ Compile-time only | ✅ ISO/name lookup |
-| Tree shaking | ✅ Yes | ❌ No |
-| Use case | Known maps at build time | User-driven selection |
-
-**Data format** (both APIs):
-- Maps stored as gzipped binary (base64 encoded) in generated code
-- Assets stored as raw JSON for dynamic loading
-- 80-85% size reduction with generated code
-- Decompressed on first access, then cached
-
-**Bundle size examples:**
-
-Tree-shakeable imports:
+**Bundle size** - Only imported maps are included:
 - `world.110m` only: ~171 KB
 - `world.50m` only: ~1.3 MB
 - `world.110m` + 5 countries: ~350 KB
-
-Dynamic asset loading:
-- All maps bundled: ~112 MB (assets must be included)
+- Import what you need!
 
 **Size comparison:**
 
@@ -244,6 +195,8 @@ Dynamic asset loading:
 | world.50m | 8.4 MB | 1.3 MB | 84% |
 | world.10m | 46 MB | 7.3 MB | 84% |
 | Country (avg) | ~100 KB | ~15 KB | 85% |
+
+Maps are stored as gzipped binary (base64 encoded) for maximum compression.
 
 ## How It Works
 

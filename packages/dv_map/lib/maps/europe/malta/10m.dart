@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get europeMalta10m {
 ///
 /// Example:
 /// ```dart
-/// EuropeMalta10mWidget(
+/// Malta10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get europeMalta10m {
 ///   },
 /// )
 /// ```
-class EuropeMalta10mWidget extends StatelessWidget {
+class Malta10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class EuropeMalta10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a EuropeMalta10mWidget.
-  const EuropeMalta10mWidget({
+  /// Creates a Malta10mWidget.
+  const Malta10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

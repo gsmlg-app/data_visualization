@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get europeLuxembourg50m {
 ///
 /// Example:
 /// ```dart
-/// EuropeLuxembourg50mWidget(
+/// Luxembourg50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get europeLuxembourg50m {
 ///   },
 /// )
 /// ```
-class EuropeLuxembourg50mWidget extends StatelessWidget {
+class Luxembourg50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class EuropeLuxembourg50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a EuropeLuxembourg50mWidget.
-  const EuropeLuxembourg50mWidget({
+  /// Creates a Luxembourg50mWidget.
+  const Luxembourg50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get sevenSeasOpenOceanHeardIslandAndMcdonaldIslands10m 
 ///
 /// Example:
 /// ```dart
-/// SevenSeasOpenOceanHeardIslandAndMcdonaldIslands10mWidget(
+/// HeardIslandAndMcdonaldIslands10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get sevenSeasOpenOceanHeardIslandAndMcdonaldIslands10m 
 ///   },
 /// )
 /// ```
-class SevenSeasOpenOceanHeardIslandAndMcdonaldIslands10mWidget extends StatelessWidget {
+class HeardIslandAndMcdonaldIslands10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class SevenSeasOpenOceanHeardIslandAndMcdonaldIslands10mWidget extends Stateless
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a SevenSeasOpenOceanHeardIslandAndMcdonaldIslands10mWidget.
-  const SevenSeasOpenOceanHeardIslandAndMcdonaldIslands10mWidget({
+  /// Creates a HeardIslandAndMcdonaldIslands10mWidget.
+  const HeardIslandAndMcdonaldIslands10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

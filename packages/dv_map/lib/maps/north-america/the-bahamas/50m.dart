@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get northAmericaTheBahamas50m {
 ///
 /// Example:
 /// ```dart
-/// NorthAmericaTheBahamas50mWidget(
+/// TheBahamas50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get northAmericaTheBahamas50m {
 ///   },
 /// )
 /// ```
-class NorthAmericaTheBahamas50mWidget extends StatelessWidget {
+class TheBahamas50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class NorthAmericaTheBahamas50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a NorthAmericaTheBahamas50mWidget.
-  const NorthAmericaTheBahamas50mWidget({
+  /// Creates a TheBahamas50mWidget.
+  const TheBahamas50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

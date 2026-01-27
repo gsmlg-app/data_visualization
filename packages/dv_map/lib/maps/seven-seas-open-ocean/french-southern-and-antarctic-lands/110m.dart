@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get sevenSeasOpenOceanFrenchSouthernAndAntarcticLands11
 ///
 /// Example:
 /// ```dart
-/// SevenSeasOpenOceanFrenchSouthernAndAntarcticLands110mWidget(
+/// FrenchSouthernAndAntarcticLands110mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get sevenSeasOpenOceanFrenchSouthernAndAntarcticLands11
 ///   },
 /// )
 /// ```
-class SevenSeasOpenOceanFrenchSouthernAndAntarcticLands110mWidget extends StatelessWidget {
+class FrenchSouthernAndAntarcticLands110mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class SevenSeasOpenOceanFrenchSouthernAndAntarcticLands110mWidget extends Statel
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a SevenSeasOpenOceanFrenchSouthernAndAntarcticLands110mWidget.
-  const SevenSeasOpenOceanFrenchSouthernAndAntarcticLands110mWidget({
+  /// Creates a FrenchSouthernAndAntarcticLands110mWidget.
+  const FrenchSouthernAndAntarcticLands110mWidget({
     super.key,
     required this.projection,
     this.fillColor,

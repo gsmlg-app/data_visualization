@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get europeRomania50m {
 ///
 /// Example:
 /// ```dart
-/// EuropeRomania50mWidget(
+/// Romania50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get europeRomania50m {
 ///   },
 /// )
 /// ```
-class EuropeRomania50mWidget extends StatelessWidget {
+class Romania50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class EuropeRomania50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a EuropeRomania50mWidget.
-  const EuropeRomania50mWidget({
+  /// Creates a Romania50mWidget.
+  const Romania50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

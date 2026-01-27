@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get northAmericaUnitedStatesMinorOutlyingIslands10m {
 ///
 /// Example:
 /// ```dart
-/// NorthAmericaUnitedStatesMinorOutlyingIslands10mWidget(
+/// UnitedStatesMinorOutlyingIslands10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get northAmericaUnitedStatesMinorOutlyingIslands10m {
 ///   },
 /// )
 /// ```
-class NorthAmericaUnitedStatesMinorOutlyingIslands10mWidget extends StatelessWidget {
+class UnitedStatesMinorOutlyingIslands10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class NorthAmericaUnitedStatesMinorOutlyingIslands10mWidget extends StatelessWid
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a NorthAmericaUnitedStatesMinorOutlyingIslands10mWidget.
-  const NorthAmericaUnitedStatesMinorOutlyingIslands10mWidget({
+  /// Creates a UnitedStatesMinorOutlyingIslands10mWidget.
+  const UnitedStatesMinorOutlyingIslands10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

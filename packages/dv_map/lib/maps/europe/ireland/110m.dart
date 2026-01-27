@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get europeIreland110m {
 ///
 /// Example:
 /// ```dart
-/// EuropeIreland110mWidget(
+/// Ireland110mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get europeIreland110m {
 ///   },
 /// )
 /// ```
-class EuropeIreland110mWidget extends StatelessWidget {
+class Ireland110mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class EuropeIreland110mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a EuropeIreland110mWidget.
-  const EuropeIreland110mWidget({
+  /// Creates a Ireland110mWidget.
+  const Ireland110mWidget({
     super.key,
     required this.projection,
     this.fillColor,

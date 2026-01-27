@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get southAmericaArgentina10m {
 ///
 /// Example:
 /// ```dart
-/// SouthAmericaArgentina10mWidget(
+/// Argentina10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get southAmericaArgentina10m {
 ///   },
 /// )
 /// ```
-class SouthAmericaArgentina10mWidget extends StatelessWidget {
+class Argentina10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class SouthAmericaArgentina10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a SouthAmericaArgentina10mWidget.
-  const SouthAmericaArgentina10mWidget({
+  /// Creates a Argentina10mWidget.
+  const Argentina10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

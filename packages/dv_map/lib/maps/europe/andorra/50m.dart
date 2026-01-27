@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get europeAndorra50m {
 ///
 /// Example:
 /// ```dart
-/// EuropeAndorra50mWidget(
+/// Andorra50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get europeAndorra50m {
 ///   },
 /// )
 /// ```
-class EuropeAndorra50mWidget extends StatelessWidget {
+class Andorra50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class EuropeAndorra50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a EuropeAndorra50mWidget.
-  const EuropeAndorra50mWidget({
+  /// Creates a Andorra50mWidget.
+  const Andorra50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

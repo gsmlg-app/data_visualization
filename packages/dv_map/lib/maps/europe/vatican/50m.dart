@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get europeVatican50m {
 ///
 /// Example:
 /// ```dart
-/// EuropeVatican50mWidget(
+/// Vatican50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get europeVatican50m {
 ///   },
 /// )
 /// ```
-class EuropeVatican50mWidget extends StatelessWidget {
+class Vatican50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class EuropeVatican50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a EuropeVatican50mWidget.
-  const EuropeVatican50mWidget({
+  /// Creates a Vatican50mWidget.
+  const Vatican50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

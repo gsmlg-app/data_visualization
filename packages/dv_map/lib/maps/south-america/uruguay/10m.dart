@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get southAmericaUruguay10m {
 ///
 /// Example:
 /// ```dart
-/// SouthAmericaUruguay10mWidget(
+/// Uruguay10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get southAmericaUruguay10m {
 ///   },
 /// )
 /// ```
-class SouthAmericaUruguay10mWidget extends StatelessWidget {
+class Uruguay10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class SouthAmericaUruguay10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a SouthAmericaUruguay10mWidget.
-  const SouthAmericaUruguay10mWidget({
+  /// Creates a Uruguay10mWidget.
+  const Uruguay10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

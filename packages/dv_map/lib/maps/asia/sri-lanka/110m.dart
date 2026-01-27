@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get asiaSriLanka110m {
 ///
 /// Example:
 /// ```dart
-/// AsiaSriLanka110mWidget(
+/// SriLanka110mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get asiaSriLanka110m {
 ///   },
 /// )
 /// ```
-class AsiaSriLanka110mWidget extends StatelessWidget {
+class SriLanka110mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AsiaSriLanka110mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AsiaSriLanka110mWidget.
-  const AsiaSriLanka110mWidget({
+  /// Creates a SriLanka110mWidget.
+  const SriLanka110mWidget({
     super.key,
     required this.projection,
     this.fillColor,

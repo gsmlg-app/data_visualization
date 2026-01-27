@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get northAmericaTrinidadAndTobago50m {
 ///
 /// Example:
 /// ```dart
-/// NorthAmericaTrinidadAndTobago50mWidget(
+/// TrinidadAndTobago50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get northAmericaTrinidadAndTobago50m {
 ///   },
 /// )
 /// ```
-class NorthAmericaTrinidadAndTobago50mWidget extends StatelessWidget {
+class TrinidadAndTobago50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class NorthAmericaTrinidadAndTobago50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a NorthAmericaTrinidadAndTobago50mWidget.
-  const NorthAmericaTrinidadAndTobago50mWidget({
+  /// Creates a TrinidadAndTobago50mWidget.
+  const TrinidadAndTobago50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

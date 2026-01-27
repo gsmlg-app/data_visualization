@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get sevenSeasOpenOceanMaldives10m {
 ///
 /// Example:
 /// ```dart
-/// SevenSeasOpenOceanMaldives10mWidget(
+/// Maldives10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get sevenSeasOpenOceanMaldives10m {
 ///   },
 /// )
 /// ```
-class SevenSeasOpenOceanMaldives10mWidget extends StatelessWidget {
+class Maldives10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class SevenSeasOpenOceanMaldives10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a SevenSeasOpenOceanMaldives10mWidget.
-  const SevenSeasOpenOceanMaldives10mWidget({
+  /// Creates a Maldives10mWidget.
+  const Maldives10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

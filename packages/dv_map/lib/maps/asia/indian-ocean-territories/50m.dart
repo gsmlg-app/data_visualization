@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get asiaIndianOceanTerritories50m {
 ///
 /// Example:
 /// ```dart
-/// AsiaIndianOceanTerritories50mWidget(
+/// IndianOceanTerritories50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get asiaIndianOceanTerritories50m {
 ///   },
 /// )
 /// ```
-class AsiaIndianOceanTerritories50mWidget extends StatelessWidget {
+class IndianOceanTerritories50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AsiaIndianOceanTerritories50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AsiaIndianOceanTerritories50mWidget.
-  const AsiaIndianOceanTerritories50mWidget({
+  /// Creates a IndianOceanTerritories50mWidget.
+  const IndianOceanTerritories50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

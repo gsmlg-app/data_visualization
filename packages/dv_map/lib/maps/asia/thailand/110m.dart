@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get asiaThailand110m {
 ///
 /// Example:
 /// ```dart
-/// AsiaThailand110mWidget(
+/// Thailand110mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get asiaThailand110m {
 ///   },
 /// )
 /// ```
-class AsiaThailand110mWidget extends StatelessWidget {
+class Thailand110mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AsiaThailand110mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AsiaThailand110mWidget.
-  const AsiaThailand110mWidget({
+  /// Creates a Thailand110mWidget.
+  const Thailand110mWidget({
     super.key,
     required this.projection,
     this.fillColor,

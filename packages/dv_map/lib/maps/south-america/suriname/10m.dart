@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get southAmericaSuriname10m {
 ///
 /// Example:
 /// ```dart
-/// SouthAmericaSuriname10mWidget(
+/// Suriname10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get southAmericaSuriname10m {
 ///   },
 /// )
 /// ```
-class SouthAmericaSuriname10mWidget extends StatelessWidget {
+class Suriname10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class SouthAmericaSuriname10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a SouthAmericaSuriname10mWidget.
-  const SouthAmericaSuriname10mWidget({
+  /// Creates a Suriname10mWidget.
+  const Suriname10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

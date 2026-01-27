@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get africaEquatorialGuinea10m {
 ///
 /// Example:
 /// ```dart
-/// AfricaEquatorialGuinea10mWidget(
+/// EquatorialGuinea10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get africaEquatorialGuinea10m {
 ///   },
 /// )
 /// ```
-class AfricaEquatorialGuinea10mWidget extends StatelessWidget {
+class EquatorialGuinea10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AfricaEquatorialGuinea10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AfricaEquatorialGuinea10mWidget.
-  const AfricaEquatorialGuinea10mWidget({
+  /// Creates a EquatorialGuinea10mWidget.
+  const EquatorialGuinea10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

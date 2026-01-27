@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get asiaIraq10m {
 ///
 /// Example:
 /// ```dart
-/// AsiaIraq10mWidget(
+/// Iraq10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get asiaIraq10m {
 ///   },
 /// )
 /// ```
-class AsiaIraq10mWidget extends StatelessWidget {
+class Iraq10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AsiaIraq10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AsiaIraq10mWidget.
-  const AsiaIraq10mWidget({
+  /// Creates a Iraq10mWidget.
+  const Iraq10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

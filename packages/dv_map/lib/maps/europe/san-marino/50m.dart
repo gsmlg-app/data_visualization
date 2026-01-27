@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get europeSanMarino50m {
 ///
 /// Example:
 /// ```dart
-/// EuropeSanMarino50mWidget(
+/// SanMarino50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get europeSanMarino50m {
 ///   },
 /// )
 /// ```
-class EuropeSanMarino50mWidget extends StatelessWidget {
+class SanMarino50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class EuropeSanMarino50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a EuropeSanMarino50mWidget.
-  const EuropeSanMarino50mWidget({
+  /// Creates a SanMarino50mWidget.
+  const SanMarino50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

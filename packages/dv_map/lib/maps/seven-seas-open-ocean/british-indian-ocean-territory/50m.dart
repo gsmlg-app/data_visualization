@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get sevenSeasOpenOceanBritishIndianOceanTerritory50m {
 ///
 /// Example:
 /// ```dart
-/// SevenSeasOpenOceanBritishIndianOceanTerritory50mWidget(
+/// BritishIndianOceanTerritory50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get sevenSeasOpenOceanBritishIndianOceanTerritory50m {
 ///   },
 /// )
 /// ```
-class SevenSeasOpenOceanBritishIndianOceanTerritory50mWidget extends StatelessWidget {
+class BritishIndianOceanTerritory50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class SevenSeasOpenOceanBritishIndianOceanTerritory50mWidget extends StatelessWi
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a SevenSeasOpenOceanBritishIndianOceanTerritory50mWidget.
-  const SevenSeasOpenOceanBritishIndianOceanTerritory50mWidget({
+  /// Creates a BritishIndianOceanTerritory50mWidget.
+  const BritishIndianOceanTerritory50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

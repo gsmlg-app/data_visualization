@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get asiaEastTimor110m {
 ///
 /// Example:
 /// ```dart
-/// AsiaEastTimor110mWidget(
+/// EastTimor110mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get asiaEastTimor110m {
 ///   },
 /// )
 /// ```
-class AsiaEastTimor110mWidget extends StatelessWidget {
+class EastTimor110mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AsiaEastTimor110mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AsiaEastTimor110mWidget.
-  const AsiaEastTimor110mWidget({
+  /// Creates a EastTimor110mWidget.
+  const EastTimor110mWidget({
     super.key,
     required this.projection,
     this.fillColor,

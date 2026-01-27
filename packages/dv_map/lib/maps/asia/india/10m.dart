@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get asiaIndia10m {
 ///
 /// Example:
 /// ```dart
-/// AsiaIndia10mWidget(
+/// India10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get asiaIndia10m {
 ///   },
 /// )
 /// ```
-class AsiaIndia10mWidget extends StatelessWidget {
+class India10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AsiaIndia10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AsiaIndia10mWidget.
-  const AsiaIndia10mWidget({
+  /// Creates a India10mWidget.
+  const India10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

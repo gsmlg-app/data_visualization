@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get africaDemocraticRepublicOfTheCongo10m {
 ///
 /// Example:
 /// ```dart
-/// AfricaDemocraticRepublicOfTheCongo10mWidget(
+/// DemocraticRepublicOfTheCongo10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get africaDemocraticRepublicOfTheCongo10m {
 ///   },
 /// )
 /// ```
-class AfricaDemocraticRepublicOfTheCongo10mWidget extends StatelessWidget {
+class DemocraticRepublicOfTheCongo10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AfricaDemocraticRepublicOfTheCongo10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AfricaDemocraticRepublicOfTheCongo10mWidget.
-  const AfricaDemocraticRepublicOfTheCongo10mWidget({
+  /// Creates a DemocraticRepublicOfTheCongo10mWidget.
+  const DemocraticRepublicOfTheCongo10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get africaWesternSahara50m {
 ///
 /// Example:
 /// ```dart
-/// AfricaWesternSahara50mWidget(
+/// WesternSahara50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get africaWesternSahara50m {
 ///   },
 /// )
 /// ```
-class AfricaWesternSahara50mWidget extends StatelessWidget {
+class WesternSahara50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AfricaWesternSahara50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AfricaWesternSahara50mWidget.
-  const AfricaWesternSahara50mWidget({
+  /// Creates a WesternSahara50mWidget.
+  const WesternSahara50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

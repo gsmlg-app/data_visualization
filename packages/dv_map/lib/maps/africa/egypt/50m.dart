@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get africaEgypt50m {
 ///
 /// Example:
 /// ```dart
-/// AfricaEgypt50mWidget(
+/// Egypt50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get africaEgypt50m {
 ///   },
 /// )
 /// ```
-class AfricaEgypt50mWidget extends StatelessWidget {
+class Egypt50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AfricaEgypt50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AfricaEgypt50mWidget.
-  const AfricaEgypt50mWidget({
+  /// Creates a Egypt50mWidget.
+  const Egypt50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

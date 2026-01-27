@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get northAmericaElSalvador110m {
 ///
 /// Example:
 /// ```dart
-/// NorthAmericaElSalvador110mWidget(
+/// ElSalvador110mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get northAmericaElSalvador110m {
 ///   },
 /// )
 /// ```
-class NorthAmericaElSalvador110mWidget extends StatelessWidget {
+class ElSalvador110mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class NorthAmericaElSalvador110mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a NorthAmericaElSalvador110mWidget.
-  const NorthAmericaElSalvador110mWidget({
+  /// Creates a ElSalvador110mWidget.
+  const ElSalvador110mWidget({
     super.key,
     required this.projection,
     this.fillColor,

@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get northAmericaCostaRica10m {
 ///
 /// Example:
 /// ```dart
-/// NorthAmericaCostaRica10mWidget(
+/// CostaRica10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get northAmericaCostaRica10m {
 ///   },
 /// )
 /// ```
-class NorthAmericaCostaRica10mWidget extends StatelessWidget {
+class CostaRica10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class NorthAmericaCostaRica10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a NorthAmericaCostaRica10mWidget.
-  const NorthAmericaCostaRica10mWidget({
+  /// Creates a CostaRica10mWidget.
+  const CostaRica10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get northAmericaUsNavalBaseGuantanamoBay10m {
 ///
 /// Example:
 /// ```dart
-/// NorthAmericaUsNavalBaseGuantanamoBay10mWidget(
+/// UsNavalBaseGuantanamoBay10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get northAmericaUsNavalBaseGuantanamoBay10m {
 ///   },
 /// )
 /// ```
-class NorthAmericaUsNavalBaseGuantanamoBay10mWidget extends StatelessWidget {
+class UsNavalBaseGuantanamoBay10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class NorthAmericaUsNavalBaseGuantanamoBay10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a NorthAmericaUsNavalBaseGuantanamoBay10mWidget.
-  const NorthAmericaUsNavalBaseGuantanamoBay10mWidget({
+  /// Creates a UsNavalBaseGuantanamoBay10mWidget.
+  const UsNavalBaseGuantanamoBay10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

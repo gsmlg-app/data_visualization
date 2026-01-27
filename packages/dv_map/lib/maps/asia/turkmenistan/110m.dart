@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get asiaTurkmenistan110m {
 ///
 /// Example:
 /// ```dart
-/// AsiaTurkmenistan110mWidget(
+/// Turkmenistan110mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get asiaTurkmenistan110m {
 ///   },
 /// )
 /// ```
-class AsiaTurkmenistan110mWidget extends StatelessWidget {
+class Turkmenistan110mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AsiaTurkmenistan110mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AsiaTurkmenistan110mWidget.
-  const AsiaTurkmenistan110mWidget({
+  /// Creates a Turkmenistan110mWidget.
+  const Turkmenistan110mWidget({
     super.key,
     required this.projection,
     this.fillColor,

@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get southAmericaGuyana110m {
 ///
 /// Example:
 /// ```dart
-/// SouthAmericaGuyana110mWidget(
+/// Guyana110mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get southAmericaGuyana110m {
 ///   },
 /// )
 /// ```
-class SouthAmericaGuyana110mWidget extends StatelessWidget {
+class Guyana110mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class SouthAmericaGuyana110mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a SouthAmericaGuyana110mWidget.
-  const SouthAmericaGuyana110mWidget({
+  /// Creates a Guyana110mWidget.
+  const Guyana110mWidget({
     super.key,
     required this.projection,
     this.fillColor,

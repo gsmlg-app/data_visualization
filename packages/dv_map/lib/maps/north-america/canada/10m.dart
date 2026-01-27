@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get northAmericaCanada10m {
 ///
 /// Example:
 /// ```dart
-/// NorthAmericaCanada10mWidget(
+/// Canada10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get northAmericaCanada10m {
 ///   },
 /// )
 /// ```
-class NorthAmericaCanada10mWidget extends StatelessWidget {
+class Canada10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class NorthAmericaCanada10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a NorthAmericaCanada10mWidget.
-  const NorthAmericaCanada10mWidget({
+  /// Creates a Canada10mWidget.
+  const Canada10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

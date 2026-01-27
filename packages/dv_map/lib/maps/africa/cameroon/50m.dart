@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get africaCameroon50m {
 ///
 /// Example:
 /// ```dart
-/// AfricaCameroon50mWidget(
+/// Cameroon50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get africaCameroon50m {
 ///   },
 /// )
 /// ```
-class AfricaCameroon50mWidget extends StatelessWidget {
+class Cameroon50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AfricaCameroon50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AfricaCameroon50mWidget.
-  const AfricaCameroon50mWidget({
+  /// Creates a Cameroon50mWidget.
+  const Cameroon50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

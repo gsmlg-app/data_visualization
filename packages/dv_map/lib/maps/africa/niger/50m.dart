@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get africaNiger50m {
 ///
 /// Example:
 /// ```dart
-/// AfricaNiger50mWidget(
+/// Niger50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get africaNiger50m {
 ///   },
 /// )
 /// ```
-class AfricaNiger50mWidget extends StatelessWidget {
+class Niger50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AfricaNiger50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AfricaNiger50mWidget.
-  const AfricaNiger50mWidget({
+  /// Creates a Niger50mWidget.
+  const Niger50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

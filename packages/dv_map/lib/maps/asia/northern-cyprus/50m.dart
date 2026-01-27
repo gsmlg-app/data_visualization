@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get asiaNorthernCyprus50m {
 ///
 /// Example:
 /// ```dart
-/// AsiaNorthernCyprus50mWidget(
+/// NorthernCyprus50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get asiaNorthernCyprus50m {
 ///   },
 /// )
 /// ```
-class AsiaNorthernCyprus50mWidget extends StatelessWidget {
+class NorthernCyprus50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AsiaNorthernCyprus50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AsiaNorthernCyprus50mWidget.
-  const AsiaNorthernCyprus50mWidget({
+  /// Creates a NorthernCyprus50mWidget.
+  const NorthernCyprus50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

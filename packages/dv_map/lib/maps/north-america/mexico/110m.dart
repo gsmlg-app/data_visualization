@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get northAmericaMexico110m {
 ///
 /// Example:
 /// ```dart
-/// NorthAmericaMexico110mWidget(
+/// Mexico110mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get northAmericaMexico110m {
 ///   },
 /// )
 /// ```
-class NorthAmericaMexico110mWidget extends StatelessWidget {
+class Mexico110mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class NorthAmericaMexico110mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a NorthAmericaMexico110mWidget.
-  const NorthAmericaMexico110mWidget({
+  /// Creates a Mexico110mWidget.
+  const Mexico110mWidget({
     super.key,
     required this.projection,
     this.fillColor,

@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get africaSierraLeone10m {
 ///
 /// Example:
 /// ```dart
-/// AfricaSierraLeone10mWidget(
+/// SierraLeone10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get africaSierraLeone10m {
 ///   },
 /// )
 /// ```
-class AfricaSierraLeone10mWidget extends StatelessWidget {
+class SierraLeone10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AfricaSierraLeone10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AfricaSierraLeone10mWidget.
-  const AfricaSierraLeone10mWidget({
+  /// Creates a SierraLeone10mWidget.
+  const SierraLeone10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

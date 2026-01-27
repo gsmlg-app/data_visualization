@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get europePortugal10m {
 ///
 /// Example:
 /// ```dart
-/// EuropePortugal10mWidget(
+/// Portugal10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get europePortugal10m {
 ///   },
 /// )
 /// ```
-class EuropePortugal10mWidget extends StatelessWidget {
+class Portugal10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class EuropePortugal10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a EuropePortugal10mWidget.
-  const EuropePortugal10mWidget({
+  /// Creates a Portugal10mWidget.
+  const Portugal10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

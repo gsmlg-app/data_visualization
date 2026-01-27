@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get northAmericaSaintLucia50m {
 ///
 /// Example:
 /// ```dart
-/// NorthAmericaSaintLucia50mWidget(
+/// SaintLucia50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get northAmericaSaintLucia50m {
 ///   },
 /// )
 /// ```
-class NorthAmericaSaintLucia50mWidget extends StatelessWidget {
+class SaintLucia50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class NorthAmericaSaintLucia50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a NorthAmericaSaintLucia50mWidget.
-  const NorthAmericaSaintLucia50mWidget({
+  /// Creates a SaintLucia50mWidget.
+  const SaintLucia50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

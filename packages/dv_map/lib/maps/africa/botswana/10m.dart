@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get africaBotswana10m {
 ///
 /// Example:
 /// ```dart
-/// AfricaBotswana10mWidget(
+/// Botswana10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get africaBotswana10m {
 ///   },
 /// )
 /// ```
-class AfricaBotswana10mWidget extends StatelessWidget {
+class Botswana10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AfricaBotswana10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AfricaBotswana10mWidget.
-  const AfricaBotswana10mWidget({
+  /// Creates a Botswana10mWidget.
+  const Botswana10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get asiaSiachenGlacier50m {
 ///
 /// Example:
 /// ```dart
-/// AsiaSiachenGlacier50mWidget(
+/// SiachenGlacier50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get asiaSiachenGlacier50m {
 ///   },
 /// )
 /// ```
-class AsiaSiachenGlacier50mWidget extends StatelessWidget {
+class SiachenGlacier50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AsiaSiachenGlacier50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AsiaSiachenGlacier50mWidget.
-  const AsiaSiachenGlacier50mWidget({
+  /// Creates a SiachenGlacier50mWidget.
+  const SiachenGlacier50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

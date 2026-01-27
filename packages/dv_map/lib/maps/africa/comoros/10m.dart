@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get africaComoros10m {
 ///
 /// Example:
 /// ```dart
-/// AfricaComoros10mWidget(
+/// Comoros10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get africaComoros10m {
 ///   },
 /// )
 /// ```
-class AfricaComoros10mWidget extends StatelessWidget {
+class Comoros10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AfricaComoros10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AfricaComoros10mWidget.
-  const AfricaComoros10mWidget({
+  /// Creates a Comoros10mWidget.
+  const Comoros10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

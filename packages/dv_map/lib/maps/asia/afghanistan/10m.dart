@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get asiaAfghanistan10m {
 ///
 /// Example:
 /// ```dart
-/// AsiaAfghanistan10mWidget(
+/// Afghanistan10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get asiaAfghanistan10m {
 ///   },
 /// )
 /// ```
-class AsiaAfghanistan10mWidget extends StatelessWidget {
+class Afghanistan10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AsiaAfghanistan10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AsiaAfghanistan10mWidget.
-  const AsiaAfghanistan10mWidget({
+  /// Creates a Afghanistan10mWidget.
+  const Afghanistan10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

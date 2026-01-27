@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get asiaIsrael110m {
 ///
 /// Example:
 /// ```dart
-/// AsiaIsrael110mWidget(
+/// Israel110mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get asiaIsrael110m {
 ///   },
 /// )
 /// ```
-class AsiaIsrael110mWidget extends StatelessWidget {
+class Israel110mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AsiaIsrael110mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AsiaIsrael110mWidget.
-  const AsiaIsrael110mWidget({
+  /// Creates a Israel110mWidget.
+  const Israel110mWidget({
     super.key,
     required this.projection,
     this.fillColor,

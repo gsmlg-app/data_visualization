@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get africaZimbabwe50m {
 ///
 /// Example:
 /// ```dart
-/// AfricaZimbabwe50mWidget(
+/// Zimbabwe50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get africaZimbabwe50m {
 ///   },
 /// )
 /// ```
-class AfricaZimbabwe50mWidget extends StatelessWidget {
+class Zimbabwe50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AfricaZimbabwe50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AfricaZimbabwe50mWidget.
-  const AfricaZimbabwe50mWidget({
+  /// Creates a Zimbabwe50mWidget.
+  const Zimbabwe50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

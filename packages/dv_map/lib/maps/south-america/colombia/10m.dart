@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get southAmericaColombia10m {
 ///
 /// Example:
 /// ```dart
-/// SouthAmericaColombia10mWidget(
+/// Colombia10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get southAmericaColombia10m {
 ///   },
 /// )
 /// ```
-class SouthAmericaColombia10mWidget extends StatelessWidget {
+class Colombia10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class SouthAmericaColombia10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a SouthAmericaColombia10mWidget.
-  const SouthAmericaColombia10mWidget({
+  /// Creates a Colombia10mWidget.
+  const Colombia10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

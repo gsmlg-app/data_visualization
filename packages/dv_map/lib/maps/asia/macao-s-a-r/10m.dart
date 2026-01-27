@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get asiaMacaoSAR10m {
 ///
 /// Example:
 /// ```dart
-/// AsiaMacaoSAR10mWidget(
+/// MacaoSAR10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get asiaMacaoSAR10m {
 ///   },
 /// )
 /// ```
-class AsiaMacaoSAR10mWidget extends StatelessWidget {
+class MacaoSAR10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AsiaMacaoSAR10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AsiaMacaoSAR10mWidget.
-  const AsiaMacaoSAR10mWidget({
+  /// Creates a MacaoSAR10mWidget.
+  const MacaoSAR10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

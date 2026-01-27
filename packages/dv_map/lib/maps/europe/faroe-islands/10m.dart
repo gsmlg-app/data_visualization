@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get europeFaroeIslands10m {
 ///
 /// Example:
 /// ```dart
-/// EuropeFaroeIslands10mWidget(
+/// FaroeIslands10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get europeFaroeIslands10m {
 ///   },
 /// )
 /// ```
-class EuropeFaroeIslands10mWidget extends StatelessWidget {
+class FaroeIslands10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class EuropeFaroeIslands10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a EuropeFaroeIslands10mWidget.
-  const EuropeFaroeIslands10mWidget({
+  /// Creates a FaroeIslands10mWidget.
+  const FaroeIslands10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

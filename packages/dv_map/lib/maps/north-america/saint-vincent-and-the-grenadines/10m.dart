@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get northAmericaSaintVincentAndTheGrenadines10m {
 ///
 /// Example:
 /// ```dart
-/// NorthAmericaSaintVincentAndTheGrenadines10mWidget(
+/// SaintVincentAndTheGrenadines10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get northAmericaSaintVincentAndTheGrenadines10m {
 ///   },
 /// )
 /// ```
-class NorthAmericaSaintVincentAndTheGrenadines10mWidget extends StatelessWidget {
+class SaintVincentAndTheGrenadines10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class NorthAmericaSaintVincentAndTheGrenadines10mWidget extends StatelessWidget 
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a NorthAmericaSaintVincentAndTheGrenadines10mWidget.
-  const NorthAmericaSaintVincentAndTheGrenadines10mWidget({
+  /// Creates a SaintVincentAndTheGrenadines10mWidget.
+  const SaintVincentAndTheGrenadines10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

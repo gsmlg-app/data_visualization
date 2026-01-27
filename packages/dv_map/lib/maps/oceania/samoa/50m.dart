@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get oceaniaSamoa50m {
 ///
 /// Example:
 /// ```dart
-/// OceaniaSamoa50mWidget(
+/// Samoa50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get oceaniaSamoa50m {
 ///   },
 /// )
 /// ```
-class OceaniaSamoa50mWidget extends StatelessWidget {
+class Samoa50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class OceaniaSamoa50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a OceaniaSamoa50mWidget.
-  const OceaniaSamoa50mWidget({
+  /// Creates a Samoa50mWidget.
+  const Samoa50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get oceaniaAustralia110m {
 ///
 /// Example:
 /// ```dart
-/// OceaniaAustralia110mWidget(
+/// Australia110mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get oceaniaAustralia110m {
 ///   },
 /// )
 /// ```
-class OceaniaAustralia110mWidget extends StatelessWidget {
+class Australia110mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class OceaniaAustralia110mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a OceaniaAustralia110mWidget.
-  const OceaniaAustralia110mWidget({
+  /// Creates a Australia110mWidget.
+  const Australia110mWidget({
     super.key,
     required this.projection,
     this.fillColor,

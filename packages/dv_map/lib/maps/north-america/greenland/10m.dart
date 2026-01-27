@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get northAmericaGreenland10m {
 ///
 /// Example:
 /// ```dart
-/// NorthAmericaGreenland10mWidget(
+/// Greenland10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get northAmericaGreenland10m {
 ///   },
 /// )
 /// ```
-class NorthAmericaGreenland10mWidget extends StatelessWidget {
+class Greenland10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class NorthAmericaGreenland10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a NorthAmericaGreenland10mWidget.
-  const NorthAmericaGreenland10mWidget({
+  /// Creates a Greenland10mWidget.
+  const Greenland10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get oceaniaKiribati10m {
 ///
 /// Example:
 /// ```dart
-/// OceaniaKiribati10mWidget(
+/// Kiribati10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get oceaniaKiribati10m {
 ///   },
 /// )
 /// ```
-class OceaniaKiribati10mWidget extends StatelessWidget {
+class Kiribati10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class OceaniaKiribati10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a OceaniaKiribati10mWidget.
-  const OceaniaKiribati10mWidget({
+  /// Creates a Kiribati10mWidget.
+  const Kiribati10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

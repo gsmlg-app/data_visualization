@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get northAmericaHaiti10m {
 ///
 /// Example:
 /// ```dart
-/// NorthAmericaHaiti10mWidget(
+/// Haiti10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get northAmericaHaiti10m {
 ///   },
 /// )
 /// ```
-class NorthAmericaHaiti10mWidget extends StatelessWidget {
+class Haiti10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class NorthAmericaHaiti10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a NorthAmericaHaiti10mWidget.
-  const NorthAmericaHaiti10mWidget({
+  /// Creates a Haiti10mWidget.
+  const Haiti10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

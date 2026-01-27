@@ -140,8 +140,8 @@ class _GeneratedWidgetExamplePageState
   }
 
   Widget _buildChinaMap() {
-    // Use the generated AsiaChina110mWidget from asia/china/110m.dart
-    return AsiaChina110mWidget(
+    // Use the generated China110mWidget from asia/china/110m.dart
+    return China110mWidget(
       projection: MercatorProjection(),
       fillColor: Colors.red.shade200,
       strokeColor: Colors.red.shade900,
@@ -155,8 +155,8 @@ class _GeneratedWidgetExamplePageState
   }
 
   Widget _buildNigeriaMap() {
-    // Use the generated AfricaNigeria50mWidget from africa/nigeria/50m.dart
-    return AfricaNigeria50mWidget(
+    // Use the generated Nigeria50mWidget from africa/nigeria/50m.dart
+    return Nigeria50mWidget(
       projection: MercatorProjection(),
       fillColor: Colors.green.shade300,
       strokeColor: Colors.green.shade700,

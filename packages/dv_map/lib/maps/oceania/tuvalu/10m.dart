@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get oceaniaTuvalu10m {
 ///
 /// Example:
 /// ```dart
-/// OceaniaTuvalu10mWidget(
+/// Tuvalu10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get oceaniaTuvalu10m {
 ///   },
 /// )
 /// ```
-class OceaniaTuvalu10mWidget extends StatelessWidget {
+class Tuvalu10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class OceaniaTuvalu10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a OceaniaTuvalu10mWidget.
-  const OceaniaTuvalu10mWidget({
+  /// Creates a Tuvalu10mWidget.
+  const Tuvalu10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

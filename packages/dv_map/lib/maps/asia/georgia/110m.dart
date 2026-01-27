@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get asiaGeorgia110m {
 ///
 /// Example:
 /// ```dart
-/// AsiaGeorgia110mWidget(
+/// Georgia110mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get asiaGeorgia110m {
 ///   },
 /// )
 /// ```
-class AsiaGeorgia110mWidget extends StatelessWidget {
+class Georgia110mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AsiaGeorgia110mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AsiaGeorgia110mWidget.
-  const AsiaGeorgia110mWidget({
+  /// Creates a Georgia110mWidget.
+  const Georgia110mWidget({
     super.key,
     required this.projection,
     this.fillColor,

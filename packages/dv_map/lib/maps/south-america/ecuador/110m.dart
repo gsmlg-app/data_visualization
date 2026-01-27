@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get southAmericaEcuador110m {
 ///
 /// Example:
 /// ```dart
-/// SouthAmericaEcuador110mWidget(
+/// Ecuador110mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get southAmericaEcuador110m {
 ///   },
 /// )
 /// ```
-class SouthAmericaEcuador110mWidget extends StatelessWidget {
+class Ecuador110mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class SouthAmericaEcuador110mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a SouthAmericaEcuador110mWidget.
-  const SouthAmericaEcuador110mWidget({
+  /// Creates a Ecuador110mWidget.
+  const Ecuador110mWidget({
     super.key,
     required this.projection,
     this.fillColor,

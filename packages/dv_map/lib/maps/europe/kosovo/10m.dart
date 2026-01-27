@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get europeKosovo10m {
 ///
 /// Example:
 /// ```dart
-/// EuropeKosovo10mWidget(
+/// Kosovo10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get europeKosovo10m {
 ///   },
 /// )
 /// ```
-class EuropeKosovo10mWidget extends StatelessWidget {
+class Kosovo10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class EuropeKosovo10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a EuropeKosovo10mWidget.
-  const EuropeKosovo10mWidget({
+  /// Creates a Kosovo10mWidget.
+  const Kosovo10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

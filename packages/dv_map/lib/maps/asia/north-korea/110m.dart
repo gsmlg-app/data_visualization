@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get asiaNorthKorea110m {
 ///
 /// Example:
 /// ```dart
-/// AsiaNorthKorea110mWidget(
+/// NorthKorea110mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get asiaNorthKorea110m {
 ///   },
 /// )
 /// ```
-class AsiaNorthKorea110mWidget extends StatelessWidget {
+class NorthKorea110mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AsiaNorthKorea110mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AsiaNorthKorea110mWidget.
-  const AsiaNorthKorea110mWidget({
+  /// Creates a NorthKorea110mWidget.
+  const NorthKorea110mWidget({
     super.key,
     required this.projection,
     this.fillColor,

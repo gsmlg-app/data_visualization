@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get oceaniaFederatedStatesOfMicronesia50m {
 ///
 /// Example:
 /// ```dart
-/// OceaniaFederatedStatesOfMicronesia50mWidget(
+/// FederatedStatesOfMicronesia50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get oceaniaFederatedStatesOfMicronesia50m {
 ///   },
 /// )
 /// ```
-class OceaniaFederatedStatesOfMicronesia50mWidget extends StatelessWidget {
+class FederatedStatesOfMicronesia50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class OceaniaFederatedStatesOfMicronesia50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a OceaniaFederatedStatesOfMicronesia50mWidget.
-  const OceaniaFederatedStatesOfMicronesia50mWidget({
+  /// Creates a FederatedStatesOfMicronesia50mWidget.
+  const FederatedStatesOfMicronesia50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

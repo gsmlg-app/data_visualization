@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get europeNorthMacedonia110m {
 ///
 /// Example:
 /// ```dart
-/// EuropeNorthMacedonia110mWidget(
+/// NorthMacedonia110mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get europeNorthMacedonia110m {
 ///   },
 /// )
 /// ```
-class EuropeNorthMacedonia110mWidget extends StatelessWidget {
+class NorthMacedonia110mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class EuropeNorthMacedonia110mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a EuropeNorthMacedonia110mWidget.
-  const EuropeNorthMacedonia110mWidget({
+  /// Creates a NorthMacedonia110mWidget.
+  const NorthMacedonia110mWidget({
     super.key,
     required this.projection,
     this.fillColor,

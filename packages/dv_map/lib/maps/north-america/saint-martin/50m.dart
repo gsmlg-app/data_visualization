@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get northAmericaSaintMartin50m {
 ///
 /// Example:
 /// ```dart
-/// NorthAmericaSaintMartin50mWidget(
+/// SaintMartin50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get northAmericaSaintMartin50m {
 ///   },
 /// )
 /// ```
-class NorthAmericaSaintMartin50mWidget extends StatelessWidget {
+class SaintMartin50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class NorthAmericaSaintMartin50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a NorthAmericaSaintMartin50mWidget.
-  const NorthAmericaSaintMartin50mWidget({
+  /// Creates a SaintMartin50mWidget.
+  const SaintMartin50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

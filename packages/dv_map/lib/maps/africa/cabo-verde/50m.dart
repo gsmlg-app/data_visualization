@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get africaCaboVerde50m {
 ///
 /// Example:
 /// ```dart
-/// AfricaCaboVerde50mWidget(
+/// CaboVerde50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get africaCaboVerde50m {
 ///   },
 /// )
 /// ```
-class AfricaCaboVerde50mWidget extends StatelessWidget {
+class CaboVerde50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AfricaCaboVerde50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AfricaCaboVerde50mWidget.
-  const AfricaCaboVerde50mWidget({
+  /// Creates a CaboVerde50mWidget.
+  const CaboVerde50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

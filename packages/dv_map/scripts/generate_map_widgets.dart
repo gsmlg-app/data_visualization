@@ -85,7 +85,7 @@ void main() async {
       outputFile.parent.createSync(recursive: true);
 
       // Generate the Dart code
-      final dartCode = generateMapFile(getterName, relativePath, base64Data);
+      final dartCode = generateMapFile(getterName, relativePath, base64Data, outputPath);
       await outputFile.writeAsString(dartCode);
 
       allMaps[identifier] = MapInfo(
@@ -290,11 +290,32 @@ String generateMapFile(
   String getterName,
   String assetPath,
   String base64Data,
+  String outputPath,
 ) {
-  // Generate widget class name from getter name
-  // world110m → World110mWidget
-  // asiaChina110m → AsiaChina110mWidget
-  final widgetName = '${getterName[0].toUpperCase()}${getterName.substring(1)}Widget';
+  // Generate widget class name without continent prefix for country maps
+  // lib/maps/asia/afghanistan/110m.dart → Afghanistan110mWidget
+  // lib/maps/africa/nigeria/50m.dart → Nigeria50mWidget
+  // lib/maps/world/110m.dart → World110mWidget
+
+  String widgetName;
+  final pathParts = outputPath.split('/');
+
+  if (pathParts.length >= 5 && pathParts[2] != 'world') {
+    // Country map: extract country and scale
+    final country = pathParts[3]; // e.g., "afghanistan"
+    final scaleFile = pathParts[4].replaceAll('.dart', ''); // e.g., "110m"
+
+    // Convert to PascalCase
+    final countryPascal = _toCamelCase(country.replaceAll('-', '_'));
+    final capitalizedCountry = countryPascal[0].toUpperCase() + countryPascal.substring(1);
+    final scalePascal = _toCamelCase(scaleFile.replaceAll('-', '_'));
+    final capitalizedScale = scalePascal[0].toUpperCase() + scalePascal.substring(1);
+
+    widgetName = '$capitalizedCountry${capitalizedScale}Widget';
+  } else {
+    // World map or other: use full getter name
+    widgetName = '${getterName[0].toUpperCase()}${getterName.substring(1)}Widget';
+  }
 
   return """
 // Generated from: assets/$assetPath

@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get oceaniaNorfolkIsland10m {
 ///
 /// Example:
 /// ```dart
-/// OceaniaNorfolkIsland10mWidget(
+/// NorfolkIsland10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get oceaniaNorfolkIsland10m {
 ///   },
 /// )
 /// ```
-class OceaniaNorfolkIsland10mWidget extends StatelessWidget {
+class NorfolkIsland10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class OceaniaNorfolkIsland10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a OceaniaNorfolkIsland10mWidget.
-  const OceaniaNorfolkIsland10mWidget({
+  /// Creates a NorfolkIsland10mWidget.
+  const NorfolkIsland10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

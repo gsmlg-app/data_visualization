@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get asiaQatar110m {
 ///
 /// Example:
 /// ```dart
-/// AsiaQatar110mWidget(
+/// Qatar110mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get asiaQatar110m {
 ///   },
 /// )
 /// ```
-class AsiaQatar110mWidget extends StatelessWidget {
+class Qatar110mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AsiaQatar110mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AsiaQatar110mWidget.
-  const AsiaQatar110mWidget({
+  /// Creates a Qatar110mWidget.
+  const Qatar110mWidget({
     super.key,
     required this.projection,
     this.fillColor,

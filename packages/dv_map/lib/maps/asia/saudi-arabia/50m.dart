@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get asiaSaudiArabia50m {
 ///
 /// Example:
 /// ```dart
-/// AsiaSaudiArabia50mWidget(
+/// SaudiArabia50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get asiaSaudiArabia50m {
 ///   },
 /// )
 /// ```
-class AsiaSaudiArabia50mWidget extends StatelessWidget {
+class SaudiArabia50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AsiaSaudiArabia50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AsiaSaudiArabia50mWidget.
-  const AsiaSaudiArabia50mWidget({
+  /// Creates a SaudiArabia50mWidget.
+  const SaudiArabia50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get asiaHongKongSAR50m {
 ///
 /// Example:
 /// ```dart
-/// AsiaHongKongSAR50mWidget(
+/// HongKongSAR50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get asiaHongKongSAR50m {
 ///   },
 /// )
 /// ```
-class AsiaHongKongSAR50mWidget extends StatelessWidget {
+class HongKongSAR50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AsiaHongKongSAR50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AsiaHongKongSAR50mWidget.
-  const AsiaHongKongSAR50mWidget({
+  /// Creates a HongKongSAR50mWidget.
+  const HongKongSAR50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

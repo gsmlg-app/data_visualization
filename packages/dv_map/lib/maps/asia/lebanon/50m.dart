@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get asiaLebanon50m {
 ///
 /// Example:
 /// ```dart
-/// AsiaLebanon50mWidget(
+/// Lebanon50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get asiaLebanon50m {
 ///   },
 /// )
 /// ```
-class AsiaLebanon50mWidget extends StatelessWidget {
+class Lebanon50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AsiaLebanon50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AsiaLebanon50mWidget.
-  const AsiaLebanon50mWidget({
+  /// Creates a Lebanon50mWidget.
+  const Lebanon50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

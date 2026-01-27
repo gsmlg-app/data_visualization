@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get northAmericaUnitedStatesVirginIslands50m {
 ///
 /// Example:
 /// ```dart
-/// NorthAmericaUnitedStatesVirginIslands50mWidget(
+/// UnitedStatesVirginIslands50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get northAmericaUnitedStatesVirginIslands50m {
 ///   },
 /// )
 /// ```
-class NorthAmericaUnitedStatesVirginIslands50mWidget extends StatelessWidget {
+class UnitedStatesVirginIslands50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class NorthAmericaUnitedStatesVirginIslands50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a NorthAmericaUnitedStatesVirginIslands50mWidget.
-  const NorthAmericaUnitedStatesVirginIslands50mWidget({
+  /// Creates a UnitedStatesVirginIslands50mWidget.
+  const UnitedStatesVirginIslands50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

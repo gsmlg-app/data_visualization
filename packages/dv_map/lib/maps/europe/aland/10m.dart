@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get europeAland10m {
 ///
 /// Example:
 /// ```dart
-/// EuropeAland10mWidget(
+/// Aland10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get europeAland10m {
 ///   },
 /// )
 /// ```
-class EuropeAland10mWidget extends StatelessWidget {
+class Aland10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class EuropeAland10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a EuropeAland10mWidget.
-  const EuropeAland10mWidget({
+  /// Creates a Aland10mWidget.
+  const Aland10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

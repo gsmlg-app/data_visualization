@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get northAmericaDominica50m {
 ///
 /// Example:
 /// ```dart
-/// NorthAmericaDominica50mWidget(
+/// Dominica50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get northAmericaDominica50m {
 ///   },
 /// )
 /// ```
-class NorthAmericaDominica50mWidget extends StatelessWidget {
+class Dominica50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class NorthAmericaDominica50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a NorthAmericaDominica50mWidget.
-  const NorthAmericaDominica50mWidget({
+  /// Creates a Dominica50mWidget.
+  const Dominica50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

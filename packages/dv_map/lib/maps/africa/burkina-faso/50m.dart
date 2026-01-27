@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get africaBurkinaFaso50m {
 ///
 /// Example:
 /// ```dart
-/// AfricaBurkinaFaso50mWidget(
+/// BurkinaFaso50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get africaBurkinaFaso50m {
 ///   },
 /// )
 /// ```
-class AfricaBurkinaFaso50mWidget extends StatelessWidget {
+class BurkinaFaso50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AfricaBurkinaFaso50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AfricaBurkinaFaso50mWidget.
-  const AfricaBurkinaFaso50mWidget({
+  /// Creates a BurkinaFaso50mWidget.
+  const BurkinaFaso50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

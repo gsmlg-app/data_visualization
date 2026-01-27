@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get europeGermany110m {
 ///
 /// Example:
 /// ```dart
-/// EuropeGermany110mWidget(
+/// Germany110mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get europeGermany110m {
 ///   },
 /// )
 /// ```
-class EuropeGermany110mWidget extends StatelessWidget {
+class Germany110mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class EuropeGermany110mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a EuropeGermany110mWidget.
-  const EuropeGermany110mWidget({
+  /// Creates a Germany110mWidget.
+  const Germany110mWidget({
     super.key,
     required this.projection,
     this.fillColor,

@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get asiaDhekeliaSovereignBaseArea10m {
 ///
 /// Example:
 /// ```dart
-/// AsiaDhekeliaSovereignBaseArea10mWidget(
+/// DhekeliaSovereignBaseArea10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get asiaDhekeliaSovereignBaseArea10m {
 ///   },
 /// )
 /// ```
-class AsiaDhekeliaSovereignBaseArea10mWidget extends StatelessWidget {
+class DhekeliaSovereignBaseArea10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AsiaDhekeliaSovereignBaseArea10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AsiaDhekeliaSovereignBaseArea10mWidget.
-  const AsiaDhekeliaSovereignBaseArea10mWidget({
+  /// Creates a DhekeliaSovereignBaseArea10mWidget.
+  const DhekeliaSovereignBaseArea10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

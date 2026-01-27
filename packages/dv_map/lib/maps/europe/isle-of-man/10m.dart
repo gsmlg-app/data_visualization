@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get europeIsleOfMan10m {
 ///
 /// Example:
 /// ```dart
-/// EuropeIsleOfMan10mWidget(
+/// IsleOfMan10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get europeIsleOfMan10m {
 ///   },
 /// )
 /// ```
-class EuropeIsleOfMan10mWidget extends StatelessWidget {
+class IsleOfMan10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class EuropeIsleOfMan10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a EuropeIsleOfMan10mWidget.
-  const EuropeIsleOfMan10mWidget({
+  /// Creates a IsleOfMan10mWidget.
+  const IsleOfMan10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

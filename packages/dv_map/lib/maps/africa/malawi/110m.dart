@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get africaMalawi110m {
 ///
 /// Example:
 /// ```dart
-/// AfricaMalawi110mWidget(
+/// Malawi110mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get africaMalawi110m {
 ///   },
 /// )
 /// ```
-class AfricaMalawi110mWidget extends StatelessWidget {
+class Malawi110mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AfricaMalawi110mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AfricaMalawi110mWidget.
-  const AfricaMalawi110mWidget({
+  /// Creates a Malawi110mWidget.
+  const Malawi110mWidget({
     super.key,
     required this.projection,
     this.fillColor,

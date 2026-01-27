@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get asiaVietnam50m {
 ///
 /// Example:
 /// ```dart
-/// AsiaVietnam50mWidget(
+/// Vietnam50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get asiaVietnam50m {
 ///   },
 /// )
 /// ```
-class AsiaVietnam50mWidget extends StatelessWidget {
+class Vietnam50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AsiaVietnam50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AsiaVietnam50mWidget.
-  const AsiaVietnam50mWidget({
+  /// Creates a Vietnam50mWidget.
+  const Vietnam50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

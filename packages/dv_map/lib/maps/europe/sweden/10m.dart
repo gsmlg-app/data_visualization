@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get europeSweden10m {
 ///
 /// Example:
 /// ```dart
-/// EuropeSweden10mWidget(
+/// Sweden10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get europeSweden10m {
 ///   },
 /// )
 /// ```
-class EuropeSweden10mWidget extends StatelessWidget {
+class Sweden10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class EuropeSweden10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a EuropeSweden10mWidget.
-  const EuropeSweden10mWidget({
+  /// Creates a Sweden10mWidget.
+  const Sweden10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

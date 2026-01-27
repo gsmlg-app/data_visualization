@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get asiaUnitedArabEmirates110m {
 ///
 /// Example:
 /// ```dart
-/// AsiaUnitedArabEmirates110mWidget(
+/// UnitedArabEmirates110mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get asiaUnitedArabEmirates110m {
 ///   },
 /// )
 /// ```
-class AsiaUnitedArabEmirates110mWidget extends StatelessWidget {
+class UnitedArabEmirates110mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AsiaUnitedArabEmirates110mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AsiaUnitedArabEmirates110mWidget.
-  const AsiaUnitedArabEmirates110mWidget({
+  /// Creates a UnitedArabEmirates110mWidget.
+  const UnitedArabEmirates110mWidget({
     super.key,
     required this.projection,
     this.fillColor,

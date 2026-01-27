@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get northAmericaNicaragua50m {
 ///
 /// Example:
 /// ```dart
-/// NorthAmericaNicaragua50mWidget(
+/// Nicaragua50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get northAmericaNicaragua50m {
 ///   },
 /// )
 /// ```
-class NorthAmericaNicaragua50mWidget extends StatelessWidget {
+class Nicaragua50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class NorthAmericaNicaragua50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a NorthAmericaNicaragua50mWidget.
-  const NorthAmericaNicaragua50mWidget({
+  /// Creates a Nicaragua50mWidget.
+  const Nicaragua50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

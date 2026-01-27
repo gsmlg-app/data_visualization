@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get africaSaoTomeAndPrincipe10m {
 ///
 /// Example:
 /// ```dart
-/// AfricaSaoTomeAndPrincipe10mWidget(
+/// SaoTomeAndPrincipe10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get africaSaoTomeAndPrincipe10m {
 ///   },
 /// )
 /// ```
-class AfricaSaoTomeAndPrincipe10mWidget extends StatelessWidget {
+class SaoTomeAndPrincipe10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AfricaSaoTomeAndPrincipe10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AfricaSaoTomeAndPrincipe10mWidget.
-  const AfricaSaoTomeAndPrincipe10mWidget({
+  /// Creates a SaoTomeAndPrincipe10mWidget.
+  const SaoTomeAndPrincipe10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

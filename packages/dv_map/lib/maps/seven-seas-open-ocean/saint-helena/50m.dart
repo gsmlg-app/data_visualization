@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get sevenSeasOpenOceanSaintHelena50m {
 ///
 /// Example:
 /// ```dart
-/// SevenSeasOpenOceanSaintHelena50mWidget(
+/// SaintHelena50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get sevenSeasOpenOceanSaintHelena50m {
 ///   },
 /// )
 /// ```
-class SevenSeasOpenOceanSaintHelena50mWidget extends StatelessWidget {
+class SaintHelena50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class SevenSeasOpenOceanSaintHelena50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a SevenSeasOpenOceanSaintHelena50mWidget.
-  const SevenSeasOpenOceanSaintHelena50mWidget({
+  /// Creates a SaintHelena50mWidget.
+  const SaintHelena50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

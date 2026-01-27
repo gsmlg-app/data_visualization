@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get asiaTaiwan110m {
 ///
 /// Example:
 /// ```dart
-/// AsiaTaiwan110mWidget(
+/// Taiwan110mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get asiaTaiwan110m {
 ///   },
 /// )
 /// ```
-class AsiaTaiwan110mWidget extends StatelessWidget {
+class Taiwan110mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AsiaTaiwan110mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AsiaTaiwan110mWidget.
-  const AsiaTaiwan110mWidget({
+  /// Creates a Taiwan110mWidget.
+  const Taiwan110mWidget({
     super.key,
     required this.projection,
     this.fillColor,

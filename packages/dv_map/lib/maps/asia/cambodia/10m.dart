@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get asiaCambodia10m {
 ///
 /// Example:
 /// ```dart
-/// AsiaCambodia10mWidget(
+/// Cambodia10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get asiaCambodia10m {
 ///   },
 /// )
 /// ```
-class AsiaCambodia10mWidget extends StatelessWidget {
+class Cambodia10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AsiaCambodia10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AsiaCambodia10mWidget.
-  const AsiaCambodia10mWidget({
+  /// Creates a Cambodia10mWidget.
+  const Cambodia10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get oceaniaMarshallIslands10m {
 ///
 /// Example:
 /// ```dart
-/// OceaniaMarshallIslands10mWidget(
+/// MarshallIslands10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get oceaniaMarshallIslands10m {
 ///   },
 /// )
 /// ```
-class OceaniaMarshallIslands10mWidget extends StatelessWidget {
+class MarshallIslands10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class OceaniaMarshallIslands10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a OceaniaMarshallIslands10mWidget.
-  const OceaniaMarshallIslands10mWidget({
+  /// Creates a MarshallIslands10mWidget.
+  const MarshallIslands10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

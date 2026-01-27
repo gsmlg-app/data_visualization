@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get southAmericaPeru50m {
 ///
 /// Example:
 /// ```dart
-/// SouthAmericaPeru50mWidget(
+/// Peru50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get southAmericaPeru50m {
 ///   },
 /// )
 /// ```
-class SouthAmericaPeru50mWidget extends StatelessWidget {
+class Peru50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class SouthAmericaPeru50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a SouthAmericaPeru50mWidget.
-  const SouthAmericaPeru50mWidget({
+  /// Creates a Peru50mWidget.
+  const Peru50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

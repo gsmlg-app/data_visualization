@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get northAmericaCuba50m {
 ///
 /// Example:
 /// ```dart
-/// NorthAmericaCuba50mWidget(
+/// Cuba50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get northAmericaCuba50m {
 ///   },
 /// )
 /// ```
-class NorthAmericaCuba50mWidget extends StatelessWidget {
+class Cuba50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class NorthAmericaCuba50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a NorthAmericaCuba50mWidget.
-  const NorthAmericaCuba50mWidget({
+  /// Creates a Cuba50mWidget.
+  const Cuba50mWidget({
     super.key,
     required this.projection,
     this.fillColor,

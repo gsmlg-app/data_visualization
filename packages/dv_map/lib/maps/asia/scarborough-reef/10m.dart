@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get asiaScarboroughReef10m {
 ///
 /// Example:
 /// ```dart
-/// AsiaScarboroughReef10mWidget(
+/// ScarboroughReef10mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get asiaScarboroughReef10m {
 ///   },
 /// )
 /// ```
-class AsiaScarboroughReef10mWidget extends StatelessWidget {
+class ScarboroughReef10mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AsiaScarboroughReef10mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AsiaScarboroughReef10mWidget.
-  const AsiaScarboroughReef10mWidget({
+  /// Creates a ScarboroughReef10mWidget.
+  const ScarboroughReef10mWidget({
     super.key,
     required this.projection,
     this.fillColor,

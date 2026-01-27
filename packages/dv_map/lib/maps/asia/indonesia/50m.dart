@@ -46,7 +46,7 @@ GeoJsonFeatureCollection get asiaIndonesia50m {
 ///
 /// Example:
 /// ```dart
-/// AsiaIndonesia50mWidget(
+/// Indonesia50mWidget(
 ///   projection: MercatorProjection(),
 ///   fillColor: Color(0xFFE0E0E0),
 ///   strokeColor: Color(0xFF333333),
@@ -55,7 +55,7 @@ GeoJsonFeatureCollection get asiaIndonesia50m {
 ///   },
 /// )
 /// ```
-class AsiaIndonesia50mWidget extends StatelessWidget {
+class Indonesia50mWidget extends StatelessWidget {
   /// The projection to use for rendering.
   final Projection projection;
 
@@ -74,8 +74,8 @@ class AsiaIndonesia50mWidget extends StatelessWidget {
   /// Whether to enable anti-aliasing.
   final bool antiAlias;
 
-  /// Creates a AsiaIndonesia50mWidget.
-  const AsiaIndonesia50mWidget({
+  /// Creates a Indonesia50mWidget.
+  const Indonesia50mWidget({
     super.key,
     required this.projection,
     this.fillColor,
