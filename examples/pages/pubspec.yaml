@@ -24,4 +24,3 @@ flutter:
   assets:
     - assets/world.geo.json
     - assets/us-states.geo.json
-    - packages/dv_map/assets/
