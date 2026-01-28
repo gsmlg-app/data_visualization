@@ -770,7 +770,7 @@ for (final feature in geoJson['features']) {
   canvas.drawPath(path, paint);
 }
 ''',
-      relatedPackages: ['dv_geo_core'],
+      relatedPackages: ['dv_geo_core', 'dv_map'],
     ),
     PackageDoc(
       name: 'dv_geo_core',
@@ -797,7 +797,68 @@ import 'package:data_visualization/data_visualization.dart';
 final geoJson = await loadGeoJson('world.geo.json');
 final features = geoJson.features;
 ''',
-      relatedPackages: ['dv_geo'],
+      relatedPackages: ['dv_geo', 'dv_map'],
+    ),
+    PackageDoc(
+      name: 'dv_map',
+      description: 'Prebuilt Natural Earth GeoJSON maps with tree-shaking',
+      category: PackageCategory.geographic,
+      overview:
+          'The dv_map package provides 600+ prebuilt Natural Earth GeoJSON maps for Flutter. '
+          'Maps are embedded as gzipped Dart constants for zero-asset bundling and tree-shaking support. '
+          'Includes world maps and individual countries at 110m (low) and 50m (medium) resolutions. '
+          'Each map exports both raw GeoJSON data and a ready-to-use widget.',
+      api: [
+        ApiItem(
+          name: 'World110mWidget',
+          type: 'widget',
+          description: 'World map at 110m resolution with customizable projection',
+          signature: 'World110mWidget({Projection? projection, Color? fillColor, Color? strokeColor, Function? onFeatureTap})',
+        ),
+        ApiItem(
+          name: 'world110m',
+          type: 'getter',
+          description: 'Raw GeoJSON data for world map at 110m resolution',
+          signature: 'GeoJsonFeatureCollection get world110m',
+        ),
+        ApiItem(
+          name: 'world50m',
+          type: 'getter',
+          description: 'Raw GeoJSON data for world map at 50m resolution',
+          signature: 'GeoJsonFeatureCollection get world50m',
+        ),
+        ApiItem(
+          name: 'MapWidget',
+          type: 'widget',
+          description: 'Base widget for rendering any GeoJSON data with full control',
+          signature: 'MapWidget({required GeoJsonFeatureCollection data, Projection? projection, Color? fillColor, Color? strokeColor})',
+        ),
+      ],
+      usageExample: '''
+import 'package:dv_map/maps/world/110m.dart';
+import 'package:dv_map/maps/asia/china/110m.dart';
+import 'package:dv_geo_core/dv_geo_core.dart';
+
+// Use the generated widget (recommended)
+World110mWidget(
+  projection: MercatorProjection(),
+  fillColor: Colors.grey.shade300,
+  strokeColor: Colors.grey.shade700,
+  onFeatureTap: (feature, position) {
+    print('Tapped: \${feature.properties!["name"]}');
+  },
+)
+
+// Or use the raw GeoJSON data
+final worldData = world110m;
+final chinaData = asiaChina110m;
+
+print('World has \${worldData.features.length} countries');
+
+// Tree-shakeable: Only imported maps are bundled
+// Import only what you need for smaller bundle size
+''',
+      relatedPackages: ['dv_geo', 'dv_geo_core'],
     ),
 
     // Interactions
