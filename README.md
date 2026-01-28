@@ -1,6 +1,6 @@
 # Data Visualization
 
-A comprehensive data visualization library for Flutter, inspired by D3.js.
+A comprehensive data visualization library for Flutter, inspired by [@visx](https://visx.airbnb.tech/).
 
 [![CI](https://github.com/gsmlg-app/data_visualization/actions/workflows/ci.yml/badge.svg)](https://github.com/gsmlg-app/data_visualization/actions/workflows/ci.yml)
 [![pub package](https://img.shields.io/pub/v/data_visualization.svg)](https://pub.dev/packages/data_visualization)
@@ -298,4 +298,4 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ## Credits
 
-Inspired by [D3.js](https://d3js.org/) by Mike Bostock.
+Inspired by [@visx](https://visx.airbnb.tech/) - a collection of expressive, low-level visualization primitives for React by Airbnb.
